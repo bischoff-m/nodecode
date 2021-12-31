@@ -7,20 +7,14 @@
             "x": 10,
             "y": 10
         },
-        "arguments": [
-            {
-                "id": "datatype_dropdown",
-                "value": "String"
-            },
-            {
-                "id": "item_list",
-                "value": [
-                    "charttime",
-                    "terseform",
-                    "unitofmeasure"
-                ]
-            }
-        ]
+        "arguments": {
+            "datatype_dropdown": "String",
+            "item_list": [
+                "charttime",
+                "terseform",
+                "unitofmeasure"
+            ]
+        }
     },
     {
         "id": 1,
