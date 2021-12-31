@@ -11,16 +11,18 @@ with open('./config/programs/example_program.json', 'r') as f:
 
 
 def exec_input_list(static_args):
-    return
+    print(static_args)
+    return 42
 
-def exec_output():
-    return
+def exec_output(static_args):
+    print(static_args)
+    return 42
     
 
 def get_execute(program_nodeid):
     # get node object from program that corresponds to program_nodeid
     try:
-        program_node = (node for node in program if node['id'] == program_nodeid).__next__()
+        program_node = next(node for node in program if node['id'] == program_nodeid)
     except StopIteration:
         raise Exception(f'NodeID {program_nodeid} not found')
     
@@ -47,6 +49,12 @@ def run():
     # get execution method for output node
     # start recursion
     # log output
+
+    # try:
+    #     program_node = next(node for node in program if node['id'] == program_nodeid)
+    # except StopIteration:
+    #     raise Exception(f'NodeID {program_nodeid} not found')
+    
     return 42
 
 

@@ -1,7 +1,7 @@
 [
     {
         "id": 0,
-        "nodeid": "input_series",
+        "nodeid": "input_list",
         "styles": {
             "width": 200,
             "x": 10,
