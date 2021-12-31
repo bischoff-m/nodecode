@@ -1,0 +1,46 @@
+{
+    "name": "Basic Nodes",
+    "items": [
+        {
+            "id": "input_list",
+            "title": "List Input",
+            "fields": [
+                {
+                    "id": "output",
+                    "type": "OutputLabel",
+                    "arguments": {
+                        "text": "List",
+                        "datatype": "List"
+                    }
+                },
+                {
+                    "id": "datatype_dropdown",
+                    "type": "Dropdown",
+                    "arguments": {
+                        "values": [
+                            "String",
+                            "Int",
+                            "Float",
+                            "Boolean"
+                        ],
+                        "default": "String"
+                    }
+                },
+                {
+                    "id": "item_list",
+                    "type": "List"
+                }
+            ]
+        },
+        {
+            "id": "output",
+            "title": "Output",
+            "fields": [
+                {
+                    "id": "input",
+                    "type": "MultiInputLabel"
+                }
+            ]
+        }
+    ]
+}

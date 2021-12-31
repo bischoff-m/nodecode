@@ -1,0 +1,42 @@
+[
+    {
+        "id": 0,
+        "nodeid": "input_series",
+        "styles": {
+            "width": 200,
+            "x": 10,
+            "y": 10
+        },
+        "arguments": [
+            {
+                "id": "datatype_dropdown",
+                "value": "String"
+            },
+            {
+                "id": "item_list",
+                "value": [
+                    "charttime",
+                    "terseform",
+                    "unitofmeasure"
+                ]
+            }
+        ]
+    },
+    {
+        "id": 1,
+        "nodeid": "output",
+        "styles": {
+            "width": 200,
+            "x": 300,
+            "y": 10
+        },
+        "connections": {
+            "input": [
+                {
+                    "id": 0,
+                    "field": "output"
+                }
+            ]
+        }
+    }
+]
