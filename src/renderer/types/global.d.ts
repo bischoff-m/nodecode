@@ -1,5 +1,6 @@
 /// <reference types="vite/client" />
 
+export {}
 
 declare namespace NodeJS {
   interface ProcessEnv {

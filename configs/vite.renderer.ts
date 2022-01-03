@@ -15,12 +15,6 @@ export default defineConfig({
     emptyOutDir: true,
     outDir: '../../dist/renderer',
   },
-  resolve: {
-    alias: {
-      '@': join(__dirname, '../src/renderer/src'),
-      'src': join(__dirname, '../src'),
-    },
-  },
   server: {
     host: pkg.env.HOST,
     port: pkg.env.PORT,

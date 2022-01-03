@@ -1,6 +1,9 @@
 import { join } from 'path'
 import { app, BrowserWindow } from 'electron'
-import isDev from "electron-is-dev";
+import isDev from 'electron-is-dev';
+import icon from './icon.png';
+
+app.disableHardwareAcceleration(); // TODO: remove
 
 if (!app.requestSingleInstanceLock()) {
   app.quit()
@@ -10,20 +13,20 @@ if (!app.requestSingleInstanceLock()) {
 let win: BrowserWindow | null = null
 
 async function createWindow() {
-  // if (isDev) {
-  //     try {
-  //         const {
-  //             default: installExtension,
-  //             REACT_DEVELOPER_TOOLS,
-  //         } = require("electron-devtools-installer");
-  //         const name = await installExtension(REACT_DEVELOPER_TOOLS, true);
-  //         console.log(name, "was installed");
-  //     } catch (error) {}
-  // }
+  if (isDev) {
+    try {
+      const {
+        default: installExtension,
+        REACT_DEVELOPER_TOOLS,
+      } = require('electron-devtools-installer');
+      const name = await installExtension(REACT_DEVELOPER_TOOLS, true);
+      console.log(name, 'was installed');
+    } catch (error) { }
+  }
 
   win = new BrowserWindow({
     title: 'KnotFlow',
-    icon: join(__dirname, 'icon.ico'),
+    icon: icon,
     webPreferences: {
       preload: join(__dirname, '../preload/index.cjs')
     },
@@ -38,8 +41,8 @@ async function createWindow() {
     win.loadURL(url)
     win.webContents.openDevTools()
   }
-  
-  win.on('ready-to-show',async () => {
+
+  win.on('ready-to-show', async () => {
     win?.show();
     win?.maximize();
   })
