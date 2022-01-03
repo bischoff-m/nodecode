@@ -31,7 +31,7 @@ async function watchMain() {
   let electronProcess = null
   return getWatcher({
     name: 'electron-main-watcher',
-    configFile: 'vite.main.ts',
+    configFile: './.vite/vite.main.ts',
     writeBundle() {
       electronProcess && electronProcess.kill()
       electronProcess = spawn(electron, ['.'], {
@@ -49,7 +49,7 @@ async function watchMain() {
 async function watchPreload(viteDevServer) {
   return getWatcher({
     name: 'electron-preload-watcher',
-    configFile: 'vite.preload.ts',
+    configFile: './.vite/vite.preload.ts',
     writeBundle() {
       viteDevServer.ws.send({
         type: 'full-reload',
@@ -60,7 +60,7 @@ async function watchPreload(viteDevServer) {
 
 // bootstrap
 const viteDevServer = await createServer({
-  configFile: 'vite.renderer.ts',
+  configFile: './.vite/vite.renderer.ts',
 })
 
 await viteDevServer.listen()
