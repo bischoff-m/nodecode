@@ -1,0 +1,38 @@
+{
+  "name": "knotflow",
+  "productName": "KnotFlow",
+  "version": "0.1.0",
+  "description": "Graphical Node Editor",
+  "author": "Marco Bischoff <bischoff_m@aim.com>",
+  "license": "GPL-3.0-or-later",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bischoff-m/knotflow.git"
+  },
+  "engines": {
+    "node": ">=17.0.0",
+    "npm": ">=8.0.0"
+  },
+  "main": "dist/main/index.cjs",
+  "scripts": {
+    "dev": "node scripts/watch.mjs",
+    "build:win": "node scripts/build.mjs && electron-builder"
+  },
+  "devDependencies": {
+    "@types/react": "^17.0.33",
+    "@types/react-dom": "^17.0.10",
+    "@vitejs/plugin-react": "^1.0.7",
+    "electron": "^15.3.0",
+    "electron-builder": "^22.13.1",
+    "electron-is-dev": "^2.0.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "typescript": "^4.4.4",
+    "vite": "^2.6.13"
+  },
+  "env": {
+    "//": "Used in ./scripts/watch.mjs and ./src/main/index.ts",
+    "HOST": "127.0.0.1",
+    "PORT": 3344
+  }
+}
