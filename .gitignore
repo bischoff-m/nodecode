@@ -8,6 +8,7 @@ yarn-error.log*
 # Production
 build
 dist
+release
 
 # VS Code configuration
 .vscode
@@ -90,10 +91,8 @@ typings/
 # DynamoDB Local files
 .dynamodb/
 
-# ----
-dist
+# Custom
 **/.tmp
-release
 .DS_Store
 dist-ssr
 *.local

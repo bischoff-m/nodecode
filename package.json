@@ -15,9 +15,9 @@
   },
   "main": "dist/main/index.cjs",
   "scripts": {
-    "dev": "node scripts/watch.mjs",
-    "dist": "node scripts/build.mjs",
-    "build:win": "node scripts/build.mjs && electron-builder"
+    "dev": "node .vite/watch.mjs",
+    "dist": "node .vite/build.mjs",
+    "build:win": "node .vite/build.mjs && electron-builder"
   },
   "devDependencies": {
     "@types/react": "^17.0.33",
@@ -32,7 +32,7 @@
     "vite": "^2.6.13"
   },
   "env": {
-    "//": "Used in ./scripts/watch.mjs and ./src/main/index.ts",
+    "//": "Used in ./.vite/watch.mjs and ./src/main/index.ts",
     "HOST": "127.0.0.1",
     "PORT": 3344
   }
