@@ -36,5 +36,8 @@
     "//": "Used in ./.vite/watch.mjs and ./src/main/index.ts",
     "HOST": "127.0.0.1",
     "PORT": 3344
+  },
+  "dependencies": {
+    "@mui/material": "^5.2.6"
   }
 }
