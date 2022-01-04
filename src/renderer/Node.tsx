@@ -1,29 +1,37 @@
-import theme from './styles/theme';
+import { Theme } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 
-import Card from '@mui/material/Card';
-import CardHeader from '@mui/material/CardHeader';
-import CardMedia from '@mui/material/CardMedia';
-import CardContent from '@mui/material/CardContent';
-import { DefaultComponentProps } from '@mui/material/OverridableComponent';
-import { TypographyStyle } from '@mui/material';
+const useStyles = makeStyles((theme: Theme) => ({
+  card: {
+    width: 300,
+    backgroundColor: theme.palette.background.paper,
+    borderRadius: theme.shape.borderRadius,
+    overflow: 'hidden',
+    boxShadow: '0px 0px 5px 0px rgb(0 0 0 / 30%)',
+  },
+  header: {
+    backgroundColor: theme.palette.primary.main,
+    padding: 10,
+  },
+  content: {
+    padding: 10,
+  },
+}));
 
 export default function App() {
+  const classes = useStyles();
   return (
-    // <div>
-    //   <div>
-    //     Titel
-    //   </div>
-    //   <div>
-
-    //   </div>
-    // </div>
-    <Card>
-      <CardHeader
-        title='Mein Titel'
-      />
-      <CardContent>
-        Content
-      </CardContent>
-    </Card>
+    <div className={classes.card}>
+      <div className={classes.header}>
+        Titel
+      </div>
+      <div className={classes.content}>
+        Inhalt<br/>
+        Inhalt<br/>
+        Inhalt<br/>
+        Inhalt<br/>
+        Inhalt<br/>
+      </div>
+    </div>
   )
 }
