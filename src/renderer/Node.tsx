@@ -1,8 +1,10 @@
 import { Theme } from '@mui/material';
 import { makeStyles } from '@mui/styles';
+import { useState } from 'react';
 
 const useStyles = makeStyles((theme: Theme) => ({
   card: {
+    position: 'absolute',
     width: 300,
     backgroundColor: theme.palette.background.paper,
     borderRadius: theme.shape.borderRadius,
@@ -18,19 +20,23 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-export default function App() {
+type NodeProps = {
+  x: number,
+  y: number
+}
+
+export default function Node(props: NodeProps) {
   const classes = useStyles();
+  const [count, setCount] = useState(0);
+
   return (
-    <div className={classes.card}>
+    <div className={classes.card} style={{ left: props.x, top: props.y }}>
       <div className={classes.header}>
         Titel
       </div>
       <div className={classes.content}>
-        Inhalt<br/>
-        Inhalt<br/>
-        Inhalt<br/>
-        Inhalt<br/>
-        Inhalt<br/>
+        Inhalt<br />
+        <button onClick={() => setCount(count + 1)}>{count}</button>
       </div>
     </div>
   )
