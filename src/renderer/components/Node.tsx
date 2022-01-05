@@ -1,6 +1,7 @@
 import { Theme } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { useState } from 'react';
+import SelectField from './nodeComponents/SelectField';
 
 const useStyles = makeStyles((theme: Theme) => ({
   card: {
@@ -37,6 +38,7 @@ export default function Node(props: NodeProps) {
       <div className={classes.content}>
         Inhalt<br />
         <button onClick={() => setCount(count + 1)}>{count}</button>
+        <SelectField />
       </div>
     </div>
   )

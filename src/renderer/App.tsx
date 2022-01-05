@@ -1,7 +1,7 @@
 import Node from './components/Node';
 import NodeCanvas from './components/NodeCanvas';
 import theme from './styles/theme';
-import { DragEvent, MouseEvent, useState } from 'react';
+import { useState } from 'react';
 import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
@@ -22,7 +22,7 @@ export default function App() {
       <ThemeProvider theme={theme}>
         <CssBaseline enableColorScheme />
         <NodeCanvas>
-          <button onClick={() => setNum(num + 1)}>Hier</button>
+          <button onClick={() => setNum(num == 1 ? 2 : 1)}>Hier</button>
           {
             Array(num).fill(0).map((_, i) => (
               <Node

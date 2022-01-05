@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     'width': '100vw',
     'height': '100vh',
     transform: 'matrix(1, 0, 0, 1, 20, 0)',
-    backgroundColor: 'red'
+    // backgroundColor: 'red'
   }
 }));
 
