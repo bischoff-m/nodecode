@@ -1,26 +1,37 @@
 import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
 import { useState } from 'react';
 
-export default function SelectField() {
-  const [age, setAge] = useState('');
+
+type SelectFieldProps = {
+  values: string[],
+  default: string,
+  label: string,
+}
+
+export default function SelectField(props: SelectFieldProps) {
+  const [value, setValue] = useState(props.default);
 
   const handleChange = (event: SelectChangeEvent) => {
-    setAge(event.target.value as string);
+    setValue(event.target.value);
   };
 
   return (
     <FormControl fullWidth size='small'>
-      <InputLabel id="label">Age</InputLabel>
+      <InputLabel id="label">{props.label}</InputLabel>
       <Select
         labelId="label"
         id="select"
-        value={age}
-        label="Age"
+        value={value}
+        label={props.label}
         onChange={handleChange}
       >
-        <MenuItem value={10}>Ten</MenuItem>
-        <MenuItem value={20}>Twenty</MenuItem>
-        <MenuItem value={30}>Thirty</MenuItem>
+        {
+          props.values?.map((val, i) =>
+            <MenuItem key={i} value={val}>
+              {val}
+            </MenuItem>
+          )
+        }
       </Select>
     </FormControl>
   )

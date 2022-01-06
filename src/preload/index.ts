@@ -4,9 +4,9 @@ import { contextBridge, ipcRenderer } from 'electron'
 import { domReady } from './utils'
 import { useLoading } from './loading'
 
-const { appendLoading, removeLoading } = useLoading()
+const { appendLoading, removeLoading } = useLoading();
 
-; (async () => {
+(async () => {
   await domReady()
 
   appendLoading()

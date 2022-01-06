@@ -1,9 +1,12 @@
-import { Theme } from '@mui/material';
+import { Button, Theme } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { ReactNode, MouseEvent } from 'react';
+import Node from '@/components/Node';
+import { NodeCollectionSchema } from '@/types/nodeCollection';
 
 // https://github.com/everweij/direct-styled
-import { directstyled, useDirectStyle } from '../direct-styled';
+import { directstyled, useDirectStyle } from '@/lib/direct-styled';
+import SelectField from './nodeComponents/SelectField';
 
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
@@ -14,8 +17,6 @@ const useStyles = makeStyles((theme: Theme) => ({
   draggable: {
     'width': '100vw',
     'height': '100vh',
-    transform: 'matrix(1, 0, 0, 1, 20, 0)',
-    // backgroundColor: 'red'
   }
 }));
 
@@ -26,6 +27,7 @@ var canvasOrigin = { x: 0, y: 0 }
 type NodeCanvasProps = {
   children?: ReactNode
 }
+// const nodeConfig = await import('public/config/nodeCollections/basic_nodes.json') as NodeCollectionSchema
 
 export default function NodeCanvas(props: NodeCanvasProps) {
   const classes = useStyles();
@@ -62,6 +64,39 @@ export default function NodeCanvas(props: NodeCanvasProps) {
         style={style}
       >
         {props.children}
+        {
+          Array(3).fill(0).map((_, i) => (
+            <Node
+              key={i}
+              title='Test Node'
+              x={0}
+              y={120 * i + 30}
+            ></Node>
+          ))
+        }
+        {/* {
+          nodeConfig.items.map((item, i) =>
+            <Node
+              key={i}
+              title={item.title}
+              x={0}
+              y={i * 200}
+            >
+              {
+                item.fields.map((field, j) => {
+                  if (field.type === 'Dropdown')
+                    return <SelectField
+                      key={j}
+                      values={field.arguments.values}
+                      default={field.arguments.default}
+                      label='Datatype'
+                    />
+                  else return null
+                })
+              }
+            </Node>
+          )
+        } */}
       </directstyled.div>
     </div>
   )

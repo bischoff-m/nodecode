@@ -19,4 +19,10 @@ export default defineConfig({
     host: pkg.env.HOST,
     port: pkg.env.PORT,
   },
+  resolve: {
+    alias: {
+      '@': join(__dirname, '../src/renderer'),
+      'public': join(__dirname, '../public'),
+    },
+  },
 })

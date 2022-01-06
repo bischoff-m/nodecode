@@ -1,0 +1,98 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "definitions": {
+        "NodeCollection": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "nodes": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Node"
+                    }
+                }
+            },
+            "required": [
+                "name",
+                "nodes"
+            ],
+            "title": "NodeCollection"
+        },
+        "Node": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "fields": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Field"
+                    }
+                }
+            },
+            "required": [
+                "id",
+                "title",
+                "fields"
+            ],
+            "title": "Node"
+        },
+        "Field": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "arguments": {
+                    "$ref": "#/definitions/Arguments"
+                }
+            },
+            "required": [
+                "id",
+                "type",
+                "arguments"
+            ],
+            "title": "Field"
+        },
+        "Arguments": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "text": {
+                    "type": "string"
+                },
+                "datatype": {
+                    "type": "string"
+                },
+                "values": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "default": {
+                    "type": "string"
+                }
+            },
+            "required": [],
+            "title": "Arguments"
+        }
+    },
+    "allOf": [
+        {
+            "$ref": "#/definitions/NodeCollection"
+        }
+    ]
+}

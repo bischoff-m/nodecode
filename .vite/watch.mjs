@@ -3,6 +3,7 @@ import { join } from 'path'
 import electron from 'electron'
 import { spawn } from 'child_process'
 import { createServer, build as viteBuild } from 'vite'
+import prebuild from './prebuild.mjs'
 
 const pkg = JSON.parse(
   readFileSync(join(process.cwd(), 'package.json'), 'utf8')
@@ -59,10 +60,10 @@ async function watchPreload(viteDevServer) {
 }
 
 // bootstrap
+prebuild()
 const viteDevServer = await createServer({
   configFile: './.vite/vite.renderer.ts',
 })
-
 await viteDevServer.listen()
 await watchPreload(viteDevServer)
 await watchMain()

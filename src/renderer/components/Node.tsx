@@ -1,7 +1,6 @@
 import { Theme } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-import { useState } from 'react';
-import SelectField from './nodeComponents/SelectField';
+import { ReactNode, useState } from 'react';
 
 const useStyles = makeStyles((theme: Theme) => ({
   card: {
@@ -22,8 +21,10 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 type NodeProps = {
+  children?: ReactNode
+  title: string,
   x: number,
-  y: number
+  y: number,
 }
 
 export default function Node(props: NodeProps) {
@@ -33,12 +34,10 @@ export default function Node(props: NodeProps) {
   return (
     <div className={classes.card} style={{ left: props.x, top: props.y }}>
       <div className={classes.header}>
-        Titel
+        {props.title}
       </div>
       <div className={classes.content}>
-        Inhalt<br />
-        <button onClick={() => setCount(count + 1)}>{count}</button>
-        <SelectField />
+        {props.children}
       </div>
     </div>
   )
