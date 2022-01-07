@@ -1,6 +1,5 @@
 import { Theme } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-import { useState } from 'react';
 
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
@@ -14,13 +13,15 @@ const useStyles = makeStyles((theme: Theme) => ({
     paddingRight: 3,
   },
   label: {
+    
   },
   inputCircle: {
+    position: 'absolute',
     width: 14,
     height: 14,
     backgroundColor: theme.palette.primary.main,
     borderRadius: 7,
-    transform: 'translate(-20px, 0)'
+    transform: 'translate(-25px, 0)',
   }
 }));
 

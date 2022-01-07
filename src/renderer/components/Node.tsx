@@ -9,19 +9,20 @@ const useStyles = makeStyles((theme: Theme) => ({
     width: 300,
     backgroundColor: theme.palette.background.paper,
     borderRadius: theme.shape.borderRadius,
-    overflow: 'hidden',
     boxShadow: '0px 0px 5px 0px rgb(0 0 0 / 30%)',
   },
   header: {
-    backgroundColor: theme.palette.primary.main,
     padding: 10,
+    backgroundColor: theme.palette.primary.main,
+    borderTopLeftRadius: theme.shape.borderRadius,
+    borderTopRightRadius: theme.shape.borderRadius,
   },
   content: {
     padding: 15,
   },
 }));
 
-type NodeProps = {
+export type NodeProps = {
   children?: ReactNode
   title: string,
   x: number,

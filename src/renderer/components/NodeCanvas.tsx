@@ -1,28 +1,27 @@
-import { Button, Theme } from '@mui/material';
+import { Theme } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-import { ReactNode, MouseEvent as ReactMouseEvent, useState } from 'react';
+import { MouseEvent as ReactMouseEvent, useEffect, useState } from 'react';
 import Node from '@/components/Node';
-import { NodeCollectionSchema } from '@/types/nodeCollection';
-import SelectField from '@/components/nodeComponents/SelectField';
-import InputField from '@/components/nodeComponents/InputField';
 import gridSvg from '@/assets/gridSvg.svg';
+import SvgTest from '@/components/SvgTest';
+import { getNodeComponent, onNodesLoaded } from '@/components/NodeFactory';
 
 // https://github.com/everweij/direct-styled
 import { directstyled, useDirectStyle } from '@/lib/direct-styled';
-import SvgTest from './SvgTest';
 
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
-    'width': '100%',
-    'height': '100%',
+    width: '100%',
+    height: '100%',
+    position: 'fixed', // to stop the parent container from clipping
     backgroundColor: theme.palette.background.default,
     backgroundImage: `url(${gridSvg})`,
     backgroundRepeat: 'repeat',
     backgroundPosition: '0px 0px',
   },
   draggable: {
-    'width': '100vw',
-    'height': '100vh',
+    width: '100vw',
+    height: '100vh',
   }
 }));
 
@@ -30,27 +29,20 @@ var isDragging = false;
 var prevDragPos = { x: 0, y: 0 }
 var canvasOrigin = { x: 0, y: 0 }
 
-type NodeCanvasProps = {
-
-}
-
-export default function NodeCanvas(props: NodeCanvasProps) {
+export default function NodeCanvas() {
   const classes = useStyles();
   const [containerStyle, setContainerStyle] = useDirectStyle();
   const [dragStyle, setDragStyle] = useDirectStyle();
-  const [nodeConfig, setNodeConfig] = useState<NodeCollectionSchema>();
-
-  if (!nodeConfig) {
-    window.api.invoke(
-      'requestPublicFile',
-      '/public/config/nodeCollections/basic_nodes.json',
-      { encoding: 'utf-8' }
-    ).then((data) => {
-      setNodeConfig(JSON.parse(data) as NodeCollectionSchema)
-    }).catch((err) => {
-      throw err
-    });
-  }
+  const [nodes, setNodes] = useState(
+    Array(3).fill(0).map((_, i) => (
+      <Node
+        key={i}
+        title='Test Node'
+        x={0}
+        y={120 * i}
+      ></Node>
+    ))
+  );
 
   function handleMouseDown(e: ReactMouseEvent<"div", MouseEvent>) {
     isDragging = e.button === 1
@@ -74,41 +66,14 @@ export default function NodeCanvas(props: NodeCanvasProps) {
     })
   }
 
-  const content = nodeConfig
-    ? nodeConfig.nodes.map((item, i) =>
-      <Node
-        key={i}
-        title={item.title}
-        x={0}
-        y={i * 120}
-      >
-        {
-          item.fields.map((field, j) => {
-            if (field.type === 'Dropdown')
-              return <SelectField
-                key={j}
-                values={field.arguments.values}
-                default={field.arguments.default}
-                label='Datatype'
-              />
-            else if (field.type === 'MultiInputLabel')
-              return <InputField
-                key={j}
-                label='Output'
-              />
-            else return null
-          })
-        }
-      </Node>
+  useEffect(() => {
+    onNodesLoaded(() =>
+      setNodes([
+        getNodeComponent('input_list', { x: 0, y: 0 }, 0),
+        getNodeComponent('output', { x: 0, y: 200 }, 1),
+      ])
     )
-    : Array(3).fill(0).map((_, i) => (
-      <Node
-        key={i}
-        title='Test Node'
-        x={0}
-        y={120 * i}
-      ></Node>
-    ))
+  }, [])
 
   return (
     <directstyled.div
@@ -123,8 +88,8 @@ export default function NodeCanvas(props: NodeCanvasProps) {
         className={classes.draggable}
         style={dragStyle}
       >
-        <SvgTest defaultX={350} defaultY={0}/>
-        {content}
+        <SvgTest defaultX={350} defaultY={0} />
+        {nodes}
       </directstyled.div>
     </directstyled.div>
   )

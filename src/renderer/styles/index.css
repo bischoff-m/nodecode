@@ -2,8 +2,9 @@ html, body {
   font-family: 'Segoe UI', 'Roboto', 'Oxygen';
   min-height: 100vh;
   margin: 0;
+  overflow: hidden;
 }
 
-body {
-  background-color: aqua;
-}
+/* body > * {
+  position: fixed;
+} */
