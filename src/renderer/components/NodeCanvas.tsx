@@ -26,7 +26,6 @@ const useStyles = makeStyles((theme: Theme) => ({
   }
 }));
 
-var isNodeConfigLoaded = false;
 var isDragging = false;
 var prevDragPos = { x: 0, y: 0 }
 var canvasOrigin = { x: 0, y: 0 }
@@ -41,8 +40,7 @@ export default function NodeCanvas(props: NodeCanvasProps) {
   const [dragStyle, setDragStyle] = useDirectStyle();
   const [nodeConfig, setNodeConfig] = useState<NodeCollectionSchema>();
 
-  if (!isNodeConfigLoaded) {
-    isNodeConfigLoaded = true
+  if (!nodeConfig) {
     window.api.invoke(
       'requestPublicFile',
       '/public/config/nodeCollections/basic_nodes.json',
@@ -108,7 +106,7 @@ export default function NodeCanvas(props: NodeCanvasProps) {
         key={i}
         title='Test Node'
         x={0}
-        y={100 * i}
+        y={120 * i}
       ></Node>
     ))
 
@@ -125,8 +123,8 @@ export default function NodeCanvas(props: NodeCanvasProps) {
         className={classes.draggable}
         style={dragStyle}
       >
-        <SvgTest></SvgTest>
-        {/* {content} */}
+        <SvgTest defaultX={350} defaultY={0}/>
+        {content}
       </directstyled.div>
     </directstyled.div>
   )
