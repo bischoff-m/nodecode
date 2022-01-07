@@ -1,6 +1,6 @@
 import { Button, Theme } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-import { ReactNode, MouseEvent as ReactMouseEvent } from 'react';
+import { ReactNode, MouseEvent as ReactMouseEvent, useState } from 'react';
 import Node from '@/components/Node';
 import { NodeCollectionSchema } from '@/types/nodeCollection';
 import SelectField from '@/components/nodeComponents/SelectField';
@@ -26,20 +26,10 @@ const useStyles = makeStyles((theme: Theme) => ({
   }
 }));
 
+var isNodeConfigLoaded = false;
 var isDragging = false;
 var prevDragPos = { x: 0, y: 0 }
 var canvasOrigin = { x: 0, y: 0 }
-var nodeConfig: NodeCollectionSchema
-
-window.api.invoke(
-  'requestPublicFile',
-  '/public/config/nodeCollections/basic_nodes.json',
-  { encoding: 'utf-8' }
-).then((data) => {
-  nodeConfig = JSON.parse(data) as NodeCollectionSchema
-}).catch((err) => {
-  throw err
-});
 
 type NodeCanvasProps = {
 
@@ -49,6 +39,21 @@ export default function NodeCanvas(props: NodeCanvasProps) {
   const classes = useStyles();
   const [containerStyle, setContainerStyle] = useDirectStyle();
   const [dragStyle, setDragStyle] = useDirectStyle();
+  const [nodeConfig, setNodeConfig] = useState<NodeCollectionSchema>();
+
+  if (!isNodeConfigLoaded) {
+    isNodeConfigLoaded = true
+    window.api.invoke(
+      'requestPublicFile',
+      '/public/config/nodeCollections/basic_nodes.json',
+      { encoding: 'utf-8' }
+    ).then((data) => {
+      console.log('ahaaaa')
+      setNodeConfig(JSON.parse(data) as NodeCollectionSchema)
+    }).catch((err) => {
+      throw err
+    });
+  }
 
   function handleMouseDown(e: ReactMouseEvent<"div", MouseEvent>) {
     isDragging = e.button === 1
