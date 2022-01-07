@@ -1,8 +1,11 @@
 import { join } from 'path'
-import { app, BrowserWindow } from 'electron'
+import { app, BrowserWindow, ipcMain } from 'electron'
 import isDev from 'electron-is-dev';
+import fs from 'fs';
+import path from 'path';
 
-app.disableHardwareAcceleration(); // TODO: remove
+if (isDev)
+  app.disableHardwareAcceleration();
 
 if (!app.requestSingleInstanceLock()) {
   app.quit()
@@ -27,18 +30,13 @@ async function createWindow() {
     const url = `http://${pkg.env.HOST || '127.0.0.1'}:${pkg.env.PORT || 3000}`
 
     win.loadURL(url)
-    // win.webContents.openDevTools()
+    win.webContents.openDevTools()
   }
 
   win.on('ready-to-show', async () => {
     win?.show();
-    // win?.maximize();
-  })
-
-  // Test active push message to Renderer-process.
-  // TODO: what does this do? hide loading screen?
-  win.webContents.on('did-finish-load', () => {
-    win?.webContents.send('main-process-message', (new Date).toLocaleString())
+    if (!isDev)
+      win?.maximize();
   })
 }
 
@@ -66,4 +64,20 @@ app.on('activate', () => {
   } else {
     createWindow()
   }
+})
+
+ipcMain.handle('requestPublicFile', (event, filePath, fsOptions) => {
+  const relative = path.relative('/public', filePath);
+  // check if path exists and if it is a subdir of /public
+  if (!relative || relative.startsWith('..') || path.isAbsolute(relative))
+    throw Error('Path has to refer to a file in the /public directory: ' + filePath)
+
+  // check if path refers to file
+  const fullPath = path.join('public', relative)
+  if (!fs.lstatSync(fullPath).isFile())
+    throw Error('Path does not refer to a file: ' + fullPath)
+
+  const options = fsOptions ? { flag: 'r', ...fsOptions } : { flag: 'r' }
+  const data = fs.readFileSync(fullPath, options)
+  return data
 })

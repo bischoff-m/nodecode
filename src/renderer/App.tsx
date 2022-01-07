@@ -12,8 +12,7 @@ export default function App() {
     <div style={{ overflow: 'hidden' }}>
       <ThemeProvider theme={theme}>
         <CssBaseline enableColorScheme />
-        <NodeCanvas>
-        </NodeCanvas>
+        <NodeCanvas />
       </ThemeProvider>
     </div>
   )

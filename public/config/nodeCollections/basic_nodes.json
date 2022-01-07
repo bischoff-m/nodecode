@@ -1,6 +1,6 @@
 {
     "name": "Basic Nodes",
-    "items": [
+    "nodes": [
         {
             "id": "input_list",
             "title": "List Input",
@@ -38,7 +38,8 @@
             "fields": [
                 {
                     "id": "input",
-                    "type": "MultiInputLabel"
+                    "type": "MultiInputLabel",
+                    "arguments": {}
                 }
             ]
         }

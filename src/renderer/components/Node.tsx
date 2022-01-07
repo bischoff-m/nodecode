@@ -1,6 +1,7 @@
 import { Theme } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-import { ReactNode, useState } from 'react';
+import { ReactNode, useRef } from 'react';
+import Draggable from 'react-draggable';
 
 const useStyles = makeStyles((theme: Theme) => ({
   card: {
@@ -16,7 +17,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     padding: 10,
   },
   content: {
-    padding: 10,
+    padding: 15,
   },
 }));
 
@@ -29,16 +30,23 @@ type NodeProps = {
 
 export default function Node(props: NodeProps) {
   const classes = useStyles();
-  const [count, setCount] = useState(0);
+  const nodeRef = useRef(null);
 
   return (
-    <div className={classes.card} style={{ left: props.x, top: props.y }}>
-      <div className={classes.header}>
-        {props.title}
+    <Draggable
+      handle={'.' + classes.header}
+      defaultPosition={{x: props.x, y: props.y}}
+      grid={[20, 20]}
+      nodeRef={nodeRef}
+    >
+      <div className={classes.card} ref={nodeRef}>
+        <div className={classes.header}>
+          {props.title}
+        </div>
+        <div className={classes.content}>
+          {props.children}
+        </div>
       </div>
-      <div className={classes.content}>
-        {props.children}
-      </div>
-    </div>
+    </Draggable>
   )
 }

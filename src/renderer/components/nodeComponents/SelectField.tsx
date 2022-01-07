@@ -3,8 +3,8 @@ import { useState } from 'react';
 
 
 type SelectFieldProps = {
-  values: string[],
-  default: string,
+  values?: string[],
+  default?: string,
   label: string,
 }
 

@@ -1,5 +1,3 @@
-import fs from 'fs'
-import path from 'path'
 import { contextBridge, ipcRenderer } from 'electron'
 import { domReady } from './utils'
 import { useLoading } from './loading'
@@ -12,32 +10,43 @@ const { appendLoading, removeLoading } = useLoading();
   appendLoading()
 })();
 
-// ---------------------------------------------------
 
-contextBridge.exposeInMainWorld('bridge', {
-  __dirname,
-  __filename,
-  fs,
-  path,
-  ipcRenderer: withPrototype(ipcRenderer),
+const toMainChannels: string[] = [
+  'requestPublicFile'
+]
+
+const fromMainChannels: string[] = [
+  'responsePublicFile'
+]
+
+// https://www.electronjs.org/de/docs/latest/api/ipc-renderer
+const api: Window['api'] = {
+  send: (channel, ...args) => {
+    if (toMainChannels.includes(channel))
+      ipcRenderer.send(channel, ...args);
+    else
+      throw Error('IPC Channel does not exist.');
+  },
+  invoke: (channel, ...args) => {
+    if (toMainChannels.includes(channel))
+      return ipcRenderer.invoke(channel, ...args);
+    else
+      throw Error('IPC Channel does not exist.');
+  },
+  on: (channel, func) => {
+    if (fromMainChannels.includes(channel))
+      ipcRenderer.on(channel, (event, ...args) => func(...args));
+    else
+      throw Error('IPC Channel does not exist.');
+  },
+  once: (channel, func) => {
+    if (fromMainChannels.includes(channel))
+      ipcRenderer.once(channel, (event, ...args) => func(...args));
+    else
+      throw Error('IPC Channel does not exist.');
+  },
+  appendLoading,
   removeLoading,
-})
-
-// `exposeInMainWorld` can not detect `prototype` attribute and methods, manually patch it.
-function withPrototype(obj: Record<string, any>) {
-  const protos = Object.getPrototypeOf(obj)
-
-  for (const [key, value] of Object.entries(protos)) {
-    if (Object.prototype.hasOwnProperty.call(obj, key)) continue
-
-    if (typeof value === 'function') {
-      // Some native API not work in Renderer-process, like `NodeJS.EventEmitter['on']`. Wrap a function patch it.
-      obj[key] = function (...args: any) {
-        return value.call(obj, ...args)
-      }
-    } else {
-      obj[key] = value
-    }
-  }
-  return obj
 }
+
+contextBridge.exposeInMainWorld('api', api)
