@@ -5,7 +5,7 @@ import { useState } from 'react';
 type SelectFieldProps = {
   values?: string[],
   default?: string,
-  label: string,
+  label?: string,
 }
 
 export default function SelectField(props: SelectFieldProps) {

@@ -70,11 +70,23 @@
             "type": "object",
             "additionalProperties": false,
             "properties": {
-                "text": {
+                "label": {
                     "type": "string"
                 },
-                "datatype": {
+                "inputLabel": {
                     "type": "string"
+                },
+                "outputLabel": {
+                    "type": "string"
+                },
+                "inputDatatype": {
+                    "type": "string"
+                },
+                "outputDatatype": {
+                    "type": "string"
+                },
+                "inputMulti": {
+                    "type": "boolean"
                 },
                 "values": {
                     "type": "array",

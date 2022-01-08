@@ -12,13 +12,20 @@ const useStyles = makeStyles((theme: Theme) => ({
     boxShadow: '0px 0px 5px 0px rgb(0 0 0 / 30%)',
   },
   header: {
-    padding: 10,
+    padding: 8,
+    paddingLeft: 14,
     backgroundColor: theme.palette.primary.main,
     borderTopLeftRadius: theme.shape.borderRadius,
     borderTopRightRadius: theme.shape.borderRadius,
   },
   content: {
-    padding: 15,
+    padding: '10px 15px 10px 15px',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '10px'
+    // '& :not(:last-child)': {
+    //   paddingBottom: 10,
+    // }
   },
 }));
 

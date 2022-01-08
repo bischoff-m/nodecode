@@ -1,7 +1,7 @@
 import type { NodeProps } from '@/components/Node';
 import Node from '@/components/Node';
 import SelectField from '@/components/nodeComponents/SelectField';
-import InputField from '@/components/nodeComponents/InputField';
+import InputOutputField from '@/components/nodeComponents/InputOutputField';
 import { Arguments, NodeCollectionSchema } from '@/types/nodeCollection';
 
 var callbacks: (() => void)[] = [];
@@ -65,15 +65,13 @@ export function getFieldComponent(
   key: React.Key | undefined | null,
 ) {
   switch (fieldType) {
-    case 'Dropdown':
+    case 'SelectField':
       return <SelectField
-        label='Datatype'
         key={key}
         {...fieldProps}
       />
-    case 'MultiInputLabel':
-      return <InputField
-        label='Output'
+    case 'InputOutputField':
+      return <InputOutputField
         key={key}
         {...fieldProps}
       />

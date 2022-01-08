@@ -1,6 +1,6 @@
 import { Theme } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-import { MouseEvent as ReactMouseEvent, useEffect, useState } from 'react';
+import { MouseEvent as ReactMouseEvent, ReactElement, useEffect, useState } from 'react';
 import Node from '@/components/Node';
 import gridSvg from '@/assets/gridSvg.svg';
 import SvgTest from '@/components/SvgTest';
@@ -33,16 +33,7 @@ export default function NodeCanvas() {
   const classes = useStyles();
   const [containerStyle, setContainerStyle] = useDirectStyle();
   const [dragStyle, setDragStyle] = useDirectStyle();
-  const [nodes, setNodes] = useState(
-    Array(3).fill(0).map((_, i) => (
-      <Node
-        key={i}
-        title='Test Node'
-        x={0}
-        y={120 * i}
-      ></Node>
-    ))
-  );
+  const [nodes, setNodes] = useState<ReactElement[]>();
 
   function handleMouseDown(e: ReactMouseEvent<"div", MouseEvent>) {
     isDragging = e.button === 1
@@ -69,8 +60,8 @@ export default function NodeCanvas() {
   useEffect(() => {
     onNodesLoaded(() =>
       setNodes([
-        getNodeComponent('input_list', { x: 0, y: 0 }, 0),
-        getNodeComponent('output', { x: 0, y: 200 }, 1),
+        getNodeComponent('input_list', { x: 40, y: 100 }, 0),
+        getNodeComponent('output', { x: 500, y: 100 }, 1),
       ])
     )
   }, [])
@@ -88,7 +79,7 @@ export default function NodeCanvas() {
         className={classes.draggable}
         style={dragStyle}
       >
-        <SvgTest defaultX={350} defaultY={0} />
+        <SvgTest defaultX={350} defaultY={300} />
         {nodes}
       </directstyled.div>
     </directstyled.div>

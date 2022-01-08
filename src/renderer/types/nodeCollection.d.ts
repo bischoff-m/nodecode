@@ -22,8 +22,12 @@ export interface Field {
   arguments: Arguments;
 }
 export interface Arguments {
-  text?: string;
-  datatype?: string;
+  label?: string;
+  inputLabel?: string;
+  outputLabel?: string;
+  inputDatatype?: string;
+  outputDatatype?: string;
+  inputMulti?: boolean;
   values?: string[];
   default?: string;
 }
