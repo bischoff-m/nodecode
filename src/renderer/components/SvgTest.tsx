@@ -1,9 +1,8 @@
-import { Button, Theme } from '@mui/material';
+import { Theme } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { useEffect, useRef } from 'react';
 import Draggable, { DraggableData, DraggableEvent } from 'react-draggable';
-import { decrement, increment } from '@/redux/connectorSlice';
-import { useTypedDispatch, useTypedSelector } from '@/redux/hooks';
+import { useSelectorTyped } from '@/redux/hooks';
 
 const handleSize = 20
 
@@ -33,8 +32,7 @@ export default function SvgTest(props: SvgTestProps) {
   const pathRef = useRef<SVGPathElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
 
-  const count = useTypedSelector(state => state.connectors.value)
-  const dispatch = useTypedDispatch()
+  const connectCoords = useSelectorTyped(state => state.connectors.coordinates)
 
   var handlePos1 = { x: props.defaultX, y: props.defaultY }
   var handlePos2 = { x: props.defaultX + 100, y: props.defaultY + 100 }
@@ -57,7 +55,8 @@ export default function SvgTest(props: SvgTestProps) {
     svgRef.current.setAttribute('height', `${height}px`)
 
     // update path https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths
-    const inverted = (handlePos1.x > handlePos2.x && handlePos1.y <= handlePos2.y) || (handlePos1.x <= handlePos2.x && handlePos1.y > handlePos2.y)
+    const inverted = (handlePos1.x > handlePos2.x && handlePos1.y <= handlePos2.y)
+      || (handlePos1.x <= handlePos2.x && handlePos1.y > handlePos2.y)
     const x1 = handleSize / 2
     const y1 = !inverted ? handleSize / 2 : height - handleSize / 2
     const x2 = width / 2
@@ -105,8 +104,7 @@ export default function SvgTest(props: SvgTestProps) {
       >
         <div className={`${classes.handle} handle2`} ref={handleRef2}></div>
       </Draggable>
-      <Button onClick={() => dispatch(increment())} variant='contained'>{count}</Button>
-      <Button onClick={() => dispatch(decrement())} variant='contained'>{count}</Button>
+      {/* <div>{canvasOrigin.x} {canvasOrigin.y}</div> */}
     </>
   )
 }

@@ -1,4 +1,3 @@
-import type { NodeProps } from '@/components/Node';
 import Node from '@/components/Node';
 import SelectField from '@/components/nodeComponents/SelectField';
 import InputOutputField from '@/components/nodeComponents/InputOutputField';
@@ -26,9 +25,9 @@ export function onNodesLoaded(callback: () => void): void {
 }
 
 export function getNodeComponent(
+  nodeKey: string,
   nodeID: string,
   position: { x: number, y: number },
-  key: React.Key | undefined | null,
 ): JSX.Element {
   // check if config file has been loaded
   if (!nodeConfig)
@@ -44,41 +43,40 @@ export function getNodeComponent(
   if (!node) throw Error('')
 
   return <Node
+    key={nodeKey}
     title={node.title}
     x={position.x}
     y={position.y}
-    key={key}
   >
     {
       node.fields.map((field, j) => getFieldComponent(
+        field.id,
         field.type,
         field.arguments,
         j,
+        nodeKey,
       ))
     }
   </Node>
 }
 
 export function getFieldComponent(
+  fieldKey: string,
   fieldType: string,
   fieldProps: Arguments,
   key: React.Key | undefined | null,
+  nodeKey: string,
 ) {
+  const allProps = { key, nodeKey, fieldKey, ...fieldProps }
   switch (fieldType) {
     case 'SelectField':
-      return <SelectField
-        key={key}
-        {...fieldProps}
-      />
+      return <SelectField {...allProps} />
     case 'InputOutputField':
-      return <InputOutputField
-        key={key}
-        {...fieldProps}
-      />
+      return <InputOutputField {...allProps} />
     default:
       return null
-      // TODO: throw Error
-      // return <div>Not implemented yet.</div>
-      // throw Error(`Field type \"${fieldType}\" could not be found.`)
+    // TODO: throw Error
+    // return <div>Not implemented yet.</div>
+    // throw Error(`Field type \"${fieldType}\" could not be found.`)
   }
 }

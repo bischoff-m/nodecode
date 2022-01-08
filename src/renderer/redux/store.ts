@@ -1,9 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit';
-import connectorReducer from '@/redux/connectorSlice';
+import connectorsReducer from '@/redux/connectorsSlice';
 
 const store = configureStore({
   reducer: {
-    connectors: connectorReducer,
+    connectors: connectorsReducer,
   },
 })
 export default store

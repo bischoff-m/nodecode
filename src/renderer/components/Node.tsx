@@ -22,10 +22,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     padding: '10px 15px 10px 15px',
     display: 'flex',
     flexDirection: 'column',
-    gap: '10px'
-    // '& :not(:last-child)': {
-    //   paddingBottom: 10,
-    // }
+    gap: '10px',
   },
 }));
 

@@ -6,11 +6,18 @@ import SvgTest from '@/components/SvgTest';
 import { getNodeComponent, onNodesLoaded } from '@/components/NodeFactory';
 import { directstyled, useDirectStyle } from '@/lib/direct-styled'; // https://github.com/everweij/direct-styled
 
+
+let isDragging = false;
+let prevDragPos = { x: 0, y: 0 }
+let canvasOrigin = { x: 0, y: 0 }
+
+export const getCanvasOrigin = () => canvasOrigin
+
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
     width: '100%',
     height: '100%',
-    position: 'fixed', // to stop the parent container from clipping
+    position: 'absolute', // to stop the parent container from clipping
     backgroundColor: theme.palette.background.default,
     backgroundImage: `url(${gridSvg})`,
     backgroundRepeat: 'repeat',
@@ -21,10 +28,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     height: '100vh',
   }
 }));
-
-var isDragging = false;
-var prevDragPos = { x: 0, y: 0 }
-var canvasOrigin = { x: 0, y: 0 }
 
 export default function NodeCanvas() {
   const classes = useStyles();
@@ -57,9 +60,10 @@ export default function NodeCanvas() {
   useEffect(() => {
     onNodesLoaded(() =>
       setNodes([
-        getNodeComponent('input_list', { x: 40, y: 100 }, 0),
-        getNodeComponent('output', { x: 500, y: 100 }, 1),
+        getNodeComponent('node1', 'input_list', { x: 40, y: 100 }),
+        getNodeComponent('node2', 'output', { x: 500, y: 100 }),
       ])
+      // setNodes(Array(1).fill(0).map((_, i) => getNodeComponent('node' + i, 'input_list', { x: 40, y: 100 })))
     )
   }, [])
 

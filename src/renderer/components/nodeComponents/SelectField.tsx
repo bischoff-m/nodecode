@@ -1,12 +1,13 @@
 import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
 import { useState } from 'react';
+import type {FieldProps} from '@/types/util';
 
 
 type SelectFieldProps = {
   values?: string[],
   default?: string,
   label?: string,
-}
+} & FieldProps // TODO: is this really needed? (maybe to refer to JSON when <Select> value changes)
 
 export default function SelectField(props: SelectFieldProps) {
   const [value, setValue] = useState(props.default);
