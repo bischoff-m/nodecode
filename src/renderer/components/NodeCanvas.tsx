@@ -1,13 +1,10 @@
 import { Theme } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { MouseEvent as ReactMouseEvent, ReactElement, useEffect, useState } from 'react';
-import Node from '@/components/Node';
 import gridSvg from '@/assets/gridSvg.svg';
 import SvgTest from '@/components/SvgTest';
 import { getNodeComponent, onNodesLoaded } from '@/components/NodeFactory';
-
-// https://github.com/everweij/direct-styled
-import { directstyled, useDirectStyle } from '@/lib/direct-styled';
+import { directstyled, useDirectStyle } from '@/lib/direct-styled'; // https://github.com/everweij/direct-styled
 
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
@@ -79,8 +76,8 @@ export default function NodeCanvas() {
         className={classes.draggable}
         style={dragStyle}
       >
-        <SvgTest defaultX={350} defaultY={300} />
         {nodes}
+        <SvgTest defaultX={350} defaultY={300} />
       </directstyled.div>
     </directstyled.div>
   )
