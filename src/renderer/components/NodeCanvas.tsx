@@ -71,7 +71,7 @@ export default function NodeCanvas() {
     <directstyled.div
       className={classes.container}
       onMouseDown={handleMouseDown}
-      onMouseUp={(e) => { isDragging = false }}
+      onMouseUp={() => { isDragging = false }}
       onMouseMove={handleMouseMove}
       onMouseEnter={(e) => { if (e.buttons !== 4) isDragging = false }}
       style={containerStyle}
@@ -81,7 +81,7 @@ export default function NodeCanvas() {
         style={dragStyle}
       >
         {nodes}
-        <SvgTest defaultX={350} defaultY={300} />
+        <SvgTest defaultPosLeft={{ x: 350, y: 300 }} defaultPosRight={{ x: 450, y: 400 }} />
       </directstyled.div>
     </directstyled.div>
   )

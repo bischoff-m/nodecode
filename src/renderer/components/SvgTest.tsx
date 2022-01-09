@@ -1,10 +1,13 @@
 import { Theme } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-import { useEffect, useRef } from 'react';
-import Draggable, { DraggableData, DraggableEvent } from 'react-draggable';
+import { useEffect, useRef, useState } from 'react';
+import type { MouseEvent as ReactMouseEvent } from 'react';
+import Draggable, { DraggableEvent } from 'react-draggable';
 import { useSelectorTyped } from '@/redux/hooks';
+import { Coord2D } from '@/types/util';
+import { getCanvasOrigin } from '@/components/NodeCanvas';
 
-const handleSize = 20
+const handleSize = 40
 
 const useStyles = makeStyles((theme: Theme) => ({
   handle: {
@@ -13,7 +16,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     width: handleSize,
     height: handleSize,
     borderRadius: handleSize / 2,
-    opacity: 1,
+    opacity: 0,
   },
   svg: {
     position: 'absolute',
@@ -21,66 +24,77 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 type SvgTestProps = {
-  defaultX: number,
-  defaultY: number,
+  defaultPosLeft: Coord2D,
+  defaultPosRight: Coord2D,
 }
 
 export default function SvgTest(props: SvgTestProps) {
   const classes = useStyles();
-  const handleRef1 = useRef<HTMLDivElement>(null);
-  const handleRef2 = useRef<HTMLDivElement>(null);
+  const refLeft = useRef<HTMLDivElement>(null);
+  const refRight = useRef<HTMLDivElement>(null);
   const pathRef = useRef<SVGPathElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
+  const [posLeft, setPosLeft] = useState<Coord2D>(props.defaultPosLeft)
+  const [posRight, setPosRight] = useState<Coord2D>(props.defaultPosRight)
 
   const connectCoords = useSelectorTyped(state => state.connectors.coordinates)
 
-  var handlePos1 = { x: props.defaultX, y: props.defaultY }
-  var handlePos2 = { x: props.defaultX + 100, y: props.defaultY + 100 }
-
-  function moveHandle(): void {
+  function updateCurve(): void {
     if (!pathRef.current || !svgRef.current)
       return
 
-    // set x and y for svg
-    const minX = Math.min(handlePos1.x, handlePos2.x)
-    const minY = Math.min(handlePos1.y, handlePos2.y)
-    svgRef.current.setAttribute('style', `transform: translate(${minX - handleSize / 2}px, ${minY - handleSize / 2}px)`)
+    // move svg container to top left handle position
+    const minX = Math.min(posLeft.x, posRight.x)
+    const minY = Math.min(posLeft.y, posRight.y)
+    const padding = 4 * handleSize
+    svgRef.current.setAttribute('style', `transform: translate(${minX - padding}px, ${minY - padding}px)`)
 
     // set width and height for svg
-    const maxX = Math.max(handlePos1.x, handlePos2.x)
-    const maxY = Math.max(handlePos1.y, handlePos2.y)
-    const width = maxX - minX + handleSize
-    const height = maxY - minY + handleSize
+    const maxX = Math.max(posLeft.x, posRight.x)
+    const maxY = Math.max(posLeft.y, posRight.y)
+    const width = maxX - minX + padding * 2
+    const height = maxY - minY + padding * 2
     svgRef.current.setAttribute('width', `${width}px`)
     svgRef.current.setAttribute('height', `${height}px`)
 
     // update path https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths
-    const inverted = (handlePos1.x > handlePos2.x && handlePos1.y <= handlePos2.y)
-      || (handlePos1.x <= handlePos2.x && handlePos1.y > handlePos2.y)
-    const x1 = handleSize / 2
-    const y1 = !inverted ? handleSize / 2 : height - handleSize / 2
+    const inverted = (posLeft.x > posRight.x && posLeft.y <= posRight.y)
+      || (posLeft.x <= posRight.x && posLeft.y > posRight.y)
+    const x1 = padding
+    const y1 = !inverted ? padding : height - padding
     const x2 = width / 2
-    const y2 = !inverted ? handleSize / 2 : height - handleSize / 2
+    const y2 = !inverted ? padding : height - padding
     const x3 = width / 2
-    const y3 = !inverted ? height - handleSize / 2 : handleSize / 2
-    const x4 = width - handleSize / 2
-    const y4 = !inverted ? height - handleSize / 2 : handleSize / 2
+    const y3 = !inverted ? height - padding : padding
+    const x4 = width - padding
+    const y4 = !inverted ? height - padding : padding
 
     pathRef.current.setAttribute('d', `M${x1} ${y1} C ${x2} ${y2}, ${x3} ${y3}, ${x4} ${y4}`)
   }
 
-  function handleDrag(event: DraggableEvent, data: DraggableData) {
-    // update handle position based on event and move handle
-    if (data.node.classList.contains('handle1'))
-      handlePos1 = { x: data.x + handleSize / 2, y: data.y + handleSize / 2 }
-    else if (data.node.classList.contains('handle2'))
-      handlePos2 = { x: data.x + handleSize / 2, y: data.y + handleSize / 2 }
+  function handleDrag(
+    setHandlePos: (value: React.SetStateAction<Coord2D>) => void,
+    event: DraggableEvent,
+  ) {
+    // TODO: dont allow connection of two inputs or two outputs
+    const e = event as ReactMouseEvent;
+    const canvasOrigin = getCanvasOrigin();
+    const mousePos = { x: e.clientX - canvasOrigin.x, y: e.clientY - canvasOrigin.y}
+    const connectDistances = connectCoords.map(conn => Math.sqrt((conn.coords.x - mousePos.x) ** 2 + (conn.coords.y - mousePos.y) ** 2))
+    const minDistance = Math.min(...connectDistances)
 
-    moveHandle()
+    if (minDistance <= handleSize / 2) {
+      // stick to nearest connector
+      setHandlePos({ ...connectCoords[connectDistances.indexOf(minDistance)].coords })
+    } else {
+      // stick to mouse
+      setHandlePos({ x: mousePos.x, y: mousePos.y })
+    }
+    updateCurve()
   }
 
   useEffect(() => {
-    moveHandle()
+    updateCurve()
   }, [])
 
   return (
@@ -89,22 +103,21 @@ export default function SvgTest(props: SvgTestProps) {
         <path ref={pathRef} stroke="#fff" fill="none" id="svg_2" d="M0 0 C 50 0, 50 100, 100 100" strokeWidth="2" />
       </svg>
       <Draggable
-        handle={'.handle1'}
-        defaultPosition={{ x: handlePos1.x - handleSize / 2, y: handlePos1.y - handleSize / 2 }}
-        nodeRef={handleRef1}
-        onDrag={handleDrag}
+        handle={'.handleLeft'}
+        position={{ x: posLeft.x - handleSize / 2, y: posLeft.y - handleSize / 2 }}
+        nodeRef={refLeft}
+        onDrag={event => handleDrag(setPosLeft, event)}
       >
-        <div className={`${classes.handle} handle1`} ref={handleRef1}></div>
+        <div className={`${classes.handle} handleLeft`} ref={refLeft}></div>
       </Draggable>
       <Draggable
-        handle={'.handle2'}
-        defaultPosition={{ x: handlePos2.x - handleSize / 2, y: handlePos2.y - handleSize / 2 }}
-        nodeRef={handleRef2}
-        onDrag={handleDrag}
+        handle={'.handleRight'}
+        position={{ x: posRight.x - handleSize / 2, y: posRight.y - handleSize / 2 }}
+        nodeRef={refRight}
+        onDrag={event => handleDrag(setPosRight, event)}
       >
-        <div className={`${classes.handle} handle2`} ref={handleRef2}></div>
+        <div className={`${classes.handle} handleRight`} ref={refRight}></div>
       </Draggable>
-      {/* <div>{canvasOrigin.x} {canvasOrigin.y}</div> */}
     </>
   )
 }

@@ -75,14 +75,16 @@ export default function InputOutputField(props: InputOutputFieldProps) {
       coords: {
         x: leftCoords.x - canvasOrigin.x + handleSize / 2,
         y: leftCoords.y - canvasOrigin.y + handleSize / 2,
-      }
+      },
+      isInput: true,
     }))
     props.outputLabel && dispatch(registerConnector({
       connKey: `${props.nodeKey}.${props.fieldKey}.right`,
       coords: {
         x: rightCoords.x - canvasOrigin.x + handleSize / 2,
         y: rightCoords.y - canvasOrigin.y + handleSize / 2,
-      }
+      },
+      isInput: false,
     }))
   }, [])
 
