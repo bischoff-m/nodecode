@@ -44,6 +44,7 @@ export function getNodeComponent(
 
   return <Node
     key={nodeKey}
+    nodeKey={nodeKey}
     title={node.title}
     x={position.x}
     y={position.y}

@@ -34,6 +34,7 @@ export default function NodeCanvas() {
   const [containerStyle, setContainerStyle] = useDirectStyle();
   const [dragStyle, setDragStyle] = useDirectStyle();
   const [nodes, setNodes] = useState<ReactElement[]>();
+  const [isLoaded, setIsLoaded] = useState(false);
 
   function handleMouseDown(e: ReactMouseEvent<"div", MouseEvent>) {
     isDragging = e.button === 1
@@ -58,13 +59,14 @@ export default function NodeCanvas() {
   }
 
   useEffect(() => {
-    onNodesLoaded(() =>
+    onNodesLoaded(() => {
       setNodes([
         getNodeComponent('node1', 'input_list', { x: 40, y: 100 }),
         getNodeComponent('node2', 'output', { x: 500, y: 100 }),
       ])
+      setIsLoaded(true)
       // setNodes(Array(1).fill(0).map((_, i) => getNodeComponent('node' + i, 'input_list', { x: 40, y: 100 })))
-    )
+    })
   }, [])
 
   return (
@@ -81,7 +83,7 @@ export default function NodeCanvas() {
         style={dragStyle}
       >
         {nodes}
-        <SvgTest defaultPosLeft={{ x: 350, y: 300 }} defaultPosRight={{ x: 450, y: 400 }} />
+        {isLoaded && <SvgTest defaultConnKeyLeft='node1.output.right' defaultConnKeyRight='node2.input.left' key={0} />}
       </directstyled.div>
     </directstyled.div>
   )

@@ -1,7 +1,12 @@
+import { useDispatchTyped } from '@/redux/hooks';
+import { moveNode } from '@/redux/connectorsSlice';
 import { Theme } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { ReactNode, useRef } from 'react';
-import Draggable from 'react-draggable';
+import Draggable, { DraggableData, DraggableEvent } from 'react-draggable';
+import type { MouseEvent as ReactMouseEvent } from 'react';
+
+const gridSize = 20;
 
 const useStyles = makeStyles((theme: Theme) => ({
   card: {
@@ -28,6 +33,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 export type NodeProps = {
   children?: ReactNode
+  nodeKey: string,
   title: string,
   x: number,
   y: number,
@@ -37,12 +43,24 @@ export default function Node(props: NodeProps) {
   const classes = useStyles();
   const nodeRef = useRef(null);
 
+  const dispatch = useDispatchTyped();
+
+  function handleDrag(event: DraggableEvent, data: DraggableData) {
+    const e = event as ReactMouseEvent;
+    console.log(event);
+    dispatch(moveNode({
+      nodeKey: props.nodeKey,
+      by: { x: data.deltaX, y: data.deltaY }
+    }))
+  }
+
   return (
     <Draggable
       handle={'.' + classes.header}
-      defaultPosition={{x: props.x, y: props.y}}
-      grid={[20, 20]}
+      defaultPosition={{ x: props.x, y: props.y }}
+      grid={[gridSize, gridSize]}
       nodeRef={nodeRef}
+      onDrag={handleDrag}
     >
       <div className={classes.card} ref={nodeRef}>
         <div className={classes.header}>
