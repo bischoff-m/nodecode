@@ -30,8 +30,12 @@ export const connectorSlice = createSlice({
   reducers: {
     registerConnector: (state, action: PayloadAction<Connector>) => {
       const key = action.payload.connKey;
-      if (!state.coordinates.map(item => item.connKey).includes(key))
-        state.coordinates.push(action.payload);
+      const connKeys = state.coordinates.map(item => item.connKey)
+      const index = connKeys.indexOf(key)
+      if (index !== -1)
+        state.coordinates[index] = action.payload
+      else
+        state.coordinates.push(action.payload)
     },
     moveNode: (state, action: PayloadAction<NodeUpdate>) => {
       const p = action.payload
