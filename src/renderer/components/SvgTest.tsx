@@ -9,8 +9,6 @@ import { getCanvasOrigin } from '@/components/NodeCanvas';
 import type { Connector } from '@/redux/connectorsSlice';
 
 const handleSize = 40;
-let connKeyLeft: string | undefined;
-let connKeyRight: string | undefined;
 
 const useStyles = makeStyles((theme: Theme) => ({
   handle: {
@@ -24,7 +22,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   svg: {
     position: 'absolute',
     pointerEvents: 'none',
-  }
+  },
 }));
 
 type SvgTestProps = {
@@ -39,15 +37,13 @@ export default function SvgTest(props: SvgTestProps) {
   const refPath = useRef<SVGPathElement>(null);
   const refSVG = useRef<SVGSVGElement>(null);
   const connectCoords = useSelectorTyped(state => state.connectors.coordinates);
-  // const mousePos = useState<Coord2D>({ x: 0, y: 0 });
-  const [posLeft, setPosLeft] = useState<Coord2D>({ x: 0, y: 0 });
-  const [posRight, setPosRight] = useState<Coord2D>({ x: 0, y: 0 });
+  const [mousePos, setMousePos] = useState<Coord2D>({ x: 0, y: 0 });
+  const [connKeyLeft, setConnKeyLeft] = useState<string | undefined>(undefined);
+  const [connKeyRight, setConnKeyRight] = useState<string | undefined>(undefined);
 
   useEffect(() => {
-    connKeyLeft = props.defaultConnKeyLeft
-    connKeyRight = props.defaultConnKeyRight
-    setPosLeft(coordsFromConnKey(connKeyLeft))
-    setPosRight(coordsFromConnKey(connKeyRight))
+    setConnKeyLeft(props.defaultConnKeyLeft)
+    setConnKeyRight(props.defaultConnKeyRight)
     updateCurve();
   }, [])
 
@@ -71,50 +67,50 @@ export default function SvgTest(props: SvgTestProps) {
     // TODO: dont allow connection of two inputs or two outputs
     const e = event as ReactMouseEvent;
     const canvasOrigin = getCanvasOrigin();
-    const mousePos = { x: e.clientX - canvasOrigin.x, y: e.clientY - canvasOrigin.y }
+    const newMousePos = { x: e.clientX - canvasOrigin.x, y: e.clientY - canvasOrigin.y }
+    console.log(mousePos);
 
-    const setPos = isLeftHandle ? setPosLeft : setPosRight
-    const snapConn = snapsToConn(mousePos)
+    const setConnKey = isLeftHandle ? setConnKeyLeft : setConnKeyRight
+    const snapConn = snapsToConn(newMousePos)
     if (snapConn) {
       // stick to nearest connector
-      setPos({ ...snapConn.coords })
+      setConnKey(snapConn.connKey)
     } else {
       // stick to mouse
-      setPos({ x: mousePos.x, y: mousePos.y })
+      setConnKey(undefined)
     }
+    setMousePos(newMousePos)
     updateCurve()
-  }
-
-  function handleDragStop(isLeftHandle: boolean, event: DraggableEvent) {
-    // if handle snapped to connector: update connKey for handle
-    const handlePos = isLeftHandle ? posLeft : posRight
-    const setPos = isLeftHandle ? setPosLeft : setPosRight
-    const setConnKey = (k: string) => isLeftHandle ? connKeyLeft = k : connKeyRight = k
-
-    const snapConn = snapsToConn(handlePos)
-    if (snapConn) {
-      setConnKey(snapConn.connKey)
-      setPos({ ...snapConn.coords })
-    }
   }
 
   function updateCurve(): void {
     if (!refPath.current || !refSVG.current || !refLeft.current || !refRight.current)
       return
 
-    // calculate position of handles relative to canvas
-    // const canvasOrigin = getCanvasOrigin()
-    // const leftPosAbsolute = refLeft.current.getBoundingClientRect()
-    // const rightPosAbsolute = refRight.current.getBoundingClientRect()
-    // const posLeft = {
-    //   x: leftPosAbsolute.x + handleSize / 2 - canvasOrigin.x,
-    //   y: leftPosAbsolute.y + handleSize / 2 - canvasOrigin.y,
-    // }
-    // const posRight = {
-    //   x: rightPosAbsolute.x + handleSize / 2 - canvasOrigin.x,
-    //   y: rightPosAbsolute.y + handleSize / 2 - canvasOrigin.y,
-    // }
-    // console.log(posLeft.x, posLeft.x)
+    let posLeft: Coord2D;
+    let posRight: Coord2D;
+    const canvasOrigin = getCanvasOrigin()
+
+    if (connKeyLeft) {
+      posLeft = coordsFromConnKey(connKeyLeft)
+    } else {
+      // calculate position of handles relative to canvas
+      const leftPosAbsolute = refLeft.current.getBoundingClientRect()
+      posLeft = {
+        x: leftPosAbsolute.x + handleSize / 2 - canvasOrigin.x,
+        y: leftPosAbsolute.y + handleSize / 2 - canvasOrigin.y,
+      }
+    }
+    if (connKeyRight) {
+      posRight = coordsFromConnKey(connKeyRight)
+    } else {
+      // calculate position of handles relative to canvas
+      const rightPosAbsolute = refRight.current.getBoundingClientRect()
+      posRight = {
+        x: rightPosAbsolute.x + handleSize / 2 - canvasOrigin.x,
+        y: rightPosAbsolute.y + handleSize / 2 - canvasOrigin.y,
+      }
+    }
 
     // move svg container to top left handle position
     const minX = Math.min(posLeft.x, posRight.x)
@@ -145,8 +141,19 @@ export default function SvgTest(props: SvgTestProps) {
     refPath.current.setAttribute('d', `M${x1} ${y1} C ${x2} ${y2}, ${x3} ${y3}, ${x4} ${y4}`)
   }
 
-  // refLeft.current && console.log(refLeft.current.getBoundingClientRect())
-  console.log(connKeyLeft, connKeyRight)
+  function getHandlePos(isLeft: boolean) {
+    const connKey = isLeft ? connKeyLeft : connKeyRight
+    const oppositeConnKey = isLeft ? connKeyLeft : connKeyRight
+    let handlePos = mousePos
+    if (connKey)
+      handlePos = coordsFromConnKey(connKey)
+    else if (oppositeConnKey)
+      handlePos = coordsFromConnKey(oppositeConnKey)
+    return { x: handlePos.x - handleSize / 2, y: handlePos.y - handleSize / 2 }
+  }
+
+  updateCurve();
+
   return (
     <>
       <svg className={classes.svg} ref={refSVG}>
@@ -154,19 +161,18 @@ export default function SvgTest(props: SvgTestProps) {
       </svg>
       <Draggable
         handle={'.handleLeft'}
-        position={{ x: posLeft.x - handleSize / 2, y: posLeft.y - handleSize / 2 }}
+        position={getHandlePos(true)}
         nodeRef={refLeft}
         onDrag={event => handleDrag(true, event)}
-        onStop={event => handleDragStop(true, event)}
+        disabled={true}
       >
         <div className={`${classes.handle} handleLeft`} ref={refLeft}></div>
       </Draggable>
       <Draggable
         handle={'.handleRight'}
-        position={{ x: posRight.x - handleSize / 2, y: posRight.y - handleSize / 2 }}
+        position={getHandlePos(false)}
         nodeRef={refRight}
         onDrag={event => handleDrag(false, event)}
-        onStop={event => handleDragStop(false, event)}
       >
         <div className={`${classes.handle} handleRight`} ref={refRight}></div>
       </Draggable>
