@@ -47,7 +47,6 @@ export default function Node(props: NodeProps) {
 
   function handleDrag(event: DraggableEvent, data: DraggableData) {
     const e = event as ReactMouseEvent;
-    console.log(event);
     dispatch(moveNode({
       nodeKey: props.nodeKey,
       by: { x: data.deltaX, y: data.deltaY }

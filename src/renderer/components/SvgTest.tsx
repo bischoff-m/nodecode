@@ -40,7 +40,7 @@ export default function SvgTest(props: SvgTestProps) {
   const [mousePos, setMousePos] = useState<Coord2D>({ x: 0, y: 0 });
   const [connKeyLeft, setConnKeyLeft] = useState<string | undefined>(undefined);
   const [connKeyRight, setConnKeyRight] = useState<string | undefined>(undefined);
-  const [isHidden, setIsHidden] = useState<boolean>(props.defaultConnKeyLeft && props.defaultConnKeyRight ? true : false)
+  const [isHidden, setIsHidden] = useState<boolean>(props.defaultConnKeyLeft && props.defaultConnKeyRight ? false : true)
 
   useEffect(() => {
     setConnKeyLeft(props.defaultConnKeyLeft)
@@ -90,7 +90,8 @@ export default function SvgTest(props: SvgTestProps) {
     const canvasOrigin = getCanvasOrigin()
 
     if (connKeyLeft) {
-      posLeft = coordsFromConnKey(connKeyLeft)
+      let connPos = coordsFromConnKey(connKeyLeft)
+      posLeft = { x: connPos.x + 7, y: connPos.y }
     } else {
       // calculate position of handles relative to canvas
       const leftPosAbsolute = refLeft.current.getBoundingClientRect()
@@ -100,7 +101,8 @@ export default function SvgTest(props: SvgTestProps) {
       }
     }
     if (connKeyRight) {
-      posRight = coordsFromConnKey(connKeyRight)
+      let connPos = coordsFromConnKey(connKeyRight)
+      posRight = { x: connPos.x - 7, y: connPos.y }
     } else {
       // calculate position of handles relative to canvas
       const rightPosAbsolute = refRight.current.getBoundingClientRect()

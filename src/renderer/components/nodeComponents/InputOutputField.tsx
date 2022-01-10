@@ -21,9 +21,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     paddingLeft: 3,
     paddingRight: 3,
   },
-  label: {
-
-  },
   connContainer: {
     display: 'flex',
     flexDirection: 'row',
@@ -92,10 +89,10 @@ export default function InputOutputField(props: InputOutputFieldProps) {
         <div className={classes.connector} style={{ opacity: props.inputLabel ? 1 : 0 }} ref={leftHandleRef}></div>
         <div className={classes.connector} style={{ opacity: props.outputLabel ? 1 : 0 }} ref={rightHandleRef}></div>
       </div>
-      <span className={classes.label} style={{ opacity: props.inputLabel ? 1 : 0 }}>
+      <span style={{ opacity: props.inputLabel ? 1 : 0 }}>
         {props.inputLabel}
       </span>
-      <span className={classes.label} style={{ opacity: props.outputLabel ? 1 : 0 }}>
+      <span style={{ opacity: props.outputLabel ? 1 : 0 }}>
         {props.outputLabel}
       </span>
     </div>
