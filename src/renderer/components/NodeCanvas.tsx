@@ -2,7 +2,7 @@ import { Theme } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { MouseEvent as ReactMouseEvent, ReactElement, useEffect, useState } from 'react';
 import gridSvg from '@/assets/gridSvg.svg';
-import SvgTest from '@/components/SvgTest';
+import CurveConnection from '@/components/CurveConnection';
 import { getNodeComponent, onNodesLoaded } from '@/components/NodeFactory';
 import { directstyled, useDirectStyle } from '@/lib/direct-styled'; // https://github.com/everweij/direct-styled
 
@@ -83,7 +83,7 @@ export default function NodeCanvas() {
         style={dragStyle}
       >
         {nodes}
-        {isLoaded && <SvgTest defaultConnKeyLeft='node1.output.right' defaultConnKeyRight='node2.input.left' key={0} />}
+        {isLoaded && <CurveConnection defaultConnKeyLeft='node1.output.right' defaultConnKeyRight='node2.input.left' key={0} />}
       </directstyled.div>
     </directstyled.div>
   )

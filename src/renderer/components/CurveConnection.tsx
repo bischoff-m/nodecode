@@ -25,12 +25,12 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-type SvgTestProps = {
+type CurveConnectionProps = {
   defaultConnKeyLeft: string,
   defaultConnKeyRight: string,
 }
 
-export default function SvgTest(props: SvgTestProps) {
+export default function CurveConnection(props: CurveConnectionProps) {
   const classes = useStyles();
   const refLeft = useRef<HTMLDivElement>(null);
   const refRight = useRef<HTMLDivElement>(null);
@@ -63,15 +63,15 @@ export default function SvgTest(props: SvgTestProps) {
       return undefined
   }
 
-  function handleDrag(isLeftHandle: boolean, event: DraggableEvent) {
+  function handleDrag(isLeft: boolean, event: DraggableEvent) {
     // TODO: dont allow connection of two inputs or two outputs
     const e = event as ReactMouseEvent;
     const canvasOrigin = getCanvasOrigin();
     const newMousePos = { x: e.clientX - canvasOrigin.x, y: e.clientY - canvasOrigin.y }
 
-    const setConnKey = isLeftHandle ? setConnKeyLeft : setConnKeyRight
+    const setConnKey = isLeft ? setConnKeyLeft : setConnKeyRight
     const snapConn = snapsToConn(newMousePos)
-    if (snapConn) {
+    if (snapConn && (isLeft ? !snapConn.isInput : snapConn.isInput)) {
       // stick to nearest connector
       setConnKey(snapConn.connKey)
     } else {
@@ -83,7 +83,7 @@ export default function SvgTest(props: SvgTestProps) {
 
   function getCurve() {
     if (!refPath.current || !refSVG.current || !refLeft.current || !refRight.current)
-      return "M0 0 C 50 0, 50 100, 100 100"
+      return "M0 0 C 0 0, 0 0, 0 0"
 
     let posLeft: Coord2D;
     let posRight: Coord2D;
@@ -127,16 +127,16 @@ export default function SvgTest(props: SvgTestProps) {
     refSVG.current.setAttribute('height', `${height}px`)
 
     // update path https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths
-    const inverted = (posLeft.x > posRight.x && posLeft.y <= posRight.y)
-      || (posLeft.x <= posRight.x && posLeft.y > posRight.y)
-    const x1 = padding
-    const y1 = !inverted ? padding : height - padding
-    const x2 = width / 2
-    const y2 = !inverted ? padding : height - padding
-    const x3 = width / 2
-    const y3 = !inverted ? height - padding : padding
-    const x4 = width - padding
-    const y4 = !inverted ? height - padding : padding
+    const isInvertedX = posLeft.x > posRight.x
+    const isInvertedY = posLeft.y > posRight.y
+    const x1 = !isInvertedX ? padding : width - padding
+    const y1 = !isInvertedY ? padding : height - padding
+    const x2 = x1 + width / 2 - padding
+    const y2 = y1
+    const x4 = !isInvertedX ? width - padding : padding
+    const y4 = !isInvertedY ? height - padding : padding
+    const x3 = x4 - width / 2 + padding
+    const y3 = y4
 
     return `M${x1} ${y1} C ${x2} ${y2}, ${x3} ${y3}, ${x4} ${y4}`
   }
@@ -151,8 +151,6 @@ export default function SvgTest(props: SvgTestProps) {
       handlePos = coordsFromConnKey(oppositeConnKey)
     return { x: handlePos.x - handleSize / 2, y: handlePos.y - handleSize / 2 }
   }
-
-  // updateCurve();
 
   return (
     <>
