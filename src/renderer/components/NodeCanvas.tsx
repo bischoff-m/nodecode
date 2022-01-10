@@ -83,7 +83,15 @@ export default function NodeCanvas() {
         style={dragStyle}
       >
         {nodes}
-        {isLoaded && <CurveConnection defaultConnKeyLeft='node1.output.right' defaultConnKeyRight='node2.input.left' key={0} />}
+        {
+          isLoaded &&
+          <CurveConnection
+            defaultConnKeyLeft='node1.output.right'
+            defaultConnKeyRight='node2.input.left'
+            key={0}
+            curveID='0'
+          />
+        }
       </directstyled.div>
     </directstyled.div>
   )

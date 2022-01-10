@@ -1,6 +1,6 @@
 import { Theme } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-import { useEffect, useRef, useState } from 'react';
+import { Key, useEffect, useRef, useState } from 'react';
 import type { MouseEvent as ReactMouseEvent } from 'react';
 import Draggable, { DraggableEvent } from 'react-draggable';
 import { useSelectorTyped } from '@/redux/hooks';
@@ -28,6 +28,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 type CurveConnectionProps = {
   defaultConnKeyLeft: string,
   defaultConnKeyRight: string,
+  curveID: string,
 }
 
 export default function CurveConnection(props: CurveConnectionProps) {
@@ -159,7 +160,7 @@ export default function CurveConnection(props: CurveConnectionProps) {
           ref={refPath}
           d={getCurve()}
           style={{ display: isHidden ? 'none' : '' }}
-          id="svg_2" // TODO: define as parameter to support many curves
+          id={`svg_${props.curveID}`}
           strokeWidth="2"
           stroke="#fff"
           fill="none"
