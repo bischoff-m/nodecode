@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     width: handleSize,
     height: handleSize,
     borderRadius: handleSize / 2,
-    opacity: 0.5,
+    opacity: 0,
   },
   svg: {
     position: 'absolute',
@@ -40,11 +40,11 @@ export default function SvgTest(props: SvgTestProps) {
   const [mousePos, setMousePos] = useState<Coord2D>({ x: 0, y: 0 });
   const [connKeyLeft, setConnKeyLeft] = useState<string | undefined>(undefined);
   const [connKeyRight, setConnKeyRight] = useState<string | undefined>(undefined);
+  const [isHidden, setIsHidden] = useState<boolean>(props.defaultConnKeyLeft && props.defaultConnKeyRight ? true : false)
 
   useEffect(() => {
     setConnKeyLeft(props.defaultConnKeyLeft)
     setConnKeyRight(props.defaultConnKeyRight)
-    updateCurve();
   }, [])
 
   function coordsFromConnKey(connKey: string) {
@@ -68,7 +68,6 @@ export default function SvgTest(props: SvgTestProps) {
     const e = event as ReactMouseEvent;
     const canvasOrigin = getCanvasOrigin();
     const newMousePos = { x: e.clientX - canvasOrigin.x, y: e.clientY - canvasOrigin.y }
-    console.log(mousePos);
 
     const setConnKey = isLeftHandle ? setConnKeyLeft : setConnKeyRight
     const snapConn = snapsToConn(newMousePos)
@@ -80,12 +79,11 @@ export default function SvgTest(props: SvgTestProps) {
       setConnKey(undefined)
     }
     setMousePos(newMousePos)
-    updateCurve()
   }
 
-  function updateCurve(): void {
+  function getCurve() {
     if (!refPath.current || !refSVG.current || !refLeft.current || !refRight.current)
-      return
+      return "M0 0 C 50 0, 50 100, 100 100"
 
     let posLeft: Coord2D;
     let posRight: Coord2D;
@@ -138,12 +136,12 @@ export default function SvgTest(props: SvgTestProps) {
     const x4 = width - padding
     const y4 = !inverted ? height - padding : padding
 
-    refPath.current.setAttribute('d', `M${x1} ${y1} C ${x2} ${y2}, ${x3} ${y3}, ${x4} ${y4}`)
+    return `M${x1} ${y1} C ${x2} ${y2}, ${x3} ${y3}, ${x4} ${y4}`
   }
 
   function getHandlePos(isLeft: boolean) {
     const connKey = isLeft ? connKeyLeft : connKeyRight
-    const oppositeConnKey = isLeft ? connKeyLeft : connKeyRight
+    const oppositeConnKey = isLeft ? connKeyRight : connKeyLeft
     let handlePos = mousePos
     if (connKey)
       handlePos = coordsFromConnKey(connKey)
@@ -152,19 +150,29 @@ export default function SvgTest(props: SvgTestProps) {
     return { x: handlePos.x - handleSize / 2, y: handlePos.y - handleSize / 2 }
   }
 
-  updateCurve();
+  // updateCurve();
 
   return (
     <>
       <svg className={classes.svg} ref={refSVG}>
-        <path ref={refPath} stroke="#fff" fill="none" id="svg_2" d="M0 0 C 50 0, 50 100, 100 100" strokeWidth="2" />
+        <path
+          ref={refPath}
+          d={getCurve()}
+          style={{ display: isHidden ? 'none' : '' }}
+          id="svg_2" // TODO: define as parameter to support many curves
+          strokeWidth="2"
+          stroke="#fff"
+          fill="none"
+        />
       </svg>
       <Draggable
         handle={'.handleLeft'}
         position={getHandlePos(true)}
         nodeRef={refLeft}
-        onDrag={event => handleDrag(true, event)}
         disabled={true}
+        onStart={() => setIsHidden(false)}
+        onStop={() => setIsHidden(connKeyLeft && connKeyRight ? false : true)}
+        onDrag={event => handleDrag(true, event)}
       >
         <div className={`${classes.handle} handleLeft`} ref={refLeft}></div>
       </Draggable>
@@ -172,6 +180,8 @@ export default function SvgTest(props: SvgTestProps) {
         handle={'.handleRight'}
         position={getHandlePos(false)}
         nodeRef={refRight}
+        onStart={() => setIsHidden(false)}
+        onStop={() => setIsHidden(connKeyLeft && connKeyRight ? false : true)}
         onDrag={event => handleDrag(false, event)}
       >
         <div className={`${classes.handle} handleRight`} ref={refRight}></div>
