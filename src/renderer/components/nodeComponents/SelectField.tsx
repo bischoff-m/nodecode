@@ -1,6 +1,19 @@
 import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
 import { useState } from 'react';
 import type { FieldProps } from '@/types/util';
+import { makeStyles } from '@mui/styles';
+import { Theme } from '@mui/material';
+
+const useStyles = makeStyles((theme: Theme) => ({
+  container: {
+    height: 40,
+    paddingTop: 5,
+  },
+  select: {
+    height: 35,
+    backgroundColor: '#262626', // TODO: add to theme
+  },
+}));
 
 // TODO: These props should be required. Is there a way to define is in nodeCollection.schema.json?
 type SelectFieldProps = {
@@ -10,6 +23,7 @@ type SelectFieldProps = {
 } & FieldProps
 
 export default function SelectField(props: SelectFieldProps) {
+  const classes = useStyles();
   const [value, setValue] = useState(props.default);
 
   const handleChange = (event: SelectChangeEvent) => {
@@ -17,23 +31,26 @@ export default function SelectField(props: SelectFieldProps) {
   };
 
   return (
-    <FormControl fullWidth size='small'>
-      <InputLabel id="label">{props.label}</InputLabel>
-      <Select
-        labelId="label"
-        id="select"
-        value={value}
-        label={props.label}
-        onChange={handleChange}
-      >
-        {
-          props.values?.map((val, i) =>
-            <MenuItem key={i} value={val}>
-              {val}
-            </MenuItem>
-          )
-        }
-      </Select>
-    </FormControl>
+    <div className={classes.container}>
+      <FormControl fullWidth size='small'>
+        <InputLabel id="label">{props.label}</InputLabel>
+        <Select
+          className={classes.select}
+          labelId="label"
+          id="select"
+          value={value}
+          label={props.label}
+          onChange={handleChange}
+        >
+          {
+            props.values?.map((val, i) =>
+              <MenuItem key={i} value={val}>
+                {val}
+              </MenuItem>
+            )
+          }
+        </Select>
+      </FormControl>
+    </div>
   )
 }

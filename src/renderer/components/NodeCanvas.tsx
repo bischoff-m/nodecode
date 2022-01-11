@@ -23,6 +23,10 @@ const useStyles = makeStyles((theme: Theme) => ({
     backgroundRepeat: 'repeat',
     backgroundPosition: '0px 0px',
   },
+  nodesContainer: {
+    position: 'absolute',
+    zIndex: 100,
+  },
   draggable: {
     width: '100vw',
     height: '100vh',
@@ -82,7 +86,9 @@ export default function NodeCanvas() {
         className={classes.draggable}
         style={dragStyle}
       >
-        {nodes}
+        <div className={classes.nodesContainer}>
+          {nodes}
+        </div>
         {
           isLoaded &&
           <CurveConnection

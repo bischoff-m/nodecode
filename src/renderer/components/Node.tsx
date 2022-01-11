@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     width: 300,
     backgroundColor: theme.palette.background.paper,
     borderRadius: theme.shape.borderRadius,
-    boxShadow: '0px 0px 5px 0px rgb(0 0 0 / 30%)',
+    boxShadow: '0px 0px 5px 0px rgb(0 0 0 / 60%)',
   },
   header: {
     padding: 8,

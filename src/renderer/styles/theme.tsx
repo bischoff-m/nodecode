@@ -27,20 +27,7 @@ const theme = createTheme({
 });
 
 theme.components = {
-  MuiCard: {
-    styleOverrides: {
-      root: {
-        boxShadow: '0px 0px 5px 0px rgb(0 0 0 / 30%)',
-      },
-    },
-  },
-  MuiCardHeader: {
-    styleOverrides: {
-      root: {
-        backgroundColor: theme.palette.primary.main,
-      },
-    },
-  },
+
 }
 
 export default theme

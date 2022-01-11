@@ -1,6 +1,6 @@
 import { Theme } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-import { Key, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { MouseEvent as ReactMouseEvent } from 'react';
 import Draggable, { DraggableEvent } from 'react-draggable';
 import { useSelectorTyped } from '@/redux/hooks';
@@ -18,11 +18,15 @@ const useStyles = makeStyles((theme: Theme) => ({
     height: handleSize,
     borderRadius: handleSize / 2,
     opacity: 0,
+    zIndex: 1000,
   },
   svg: {
     position: 'absolute',
     pointerEvents: 'none',
+    // zIndex: 500,
   },
+  aboveNodes: { zIndex: 500 },
+  belowNodes: { zIndex: 10 },
 }));
 
 type CurveConnectionProps = {
@@ -41,7 +45,7 @@ export default function CurveConnection(props: CurveConnectionProps) {
   const [mousePos, setMousePos] = useState<Coord2D>({ x: 0, y: 0 });
   const [connKeyLeft, setConnKeyLeft] = useState<string | undefined>(undefined);
   const [connKeyRight, setConnKeyRight] = useState<string | undefined>(undefined);
-  const [isHidden, setIsHidden] = useState<boolean>(props.defaultConnKeyLeft && props.defaultConnKeyRight ? false : true)
+  const [isDragging, setIsDragging] = useState<boolean>(props.defaultConnKeyLeft && props.defaultConnKeyRight ? false : true)
 
   useEffect(() => {
     setConnKeyLeft(props.defaultConnKeyLeft)
@@ -88,29 +92,18 @@ export default function CurveConnection(props: CurveConnectionProps) {
 
     let posLeft: Coord2D;
     let posRight: Coord2D;
-    const canvasOrigin = getCanvasOrigin()
 
     if (connKeyLeft) {
       let connPos = coordsFromConnKey(connKeyLeft)
       posLeft = { x: connPos.x + 7, y: connPos.y }
     } else {
-      // calculate position of handles relative to canvas
-      const leftPosAbsolute = refLeft.current.getBoundingClientRect()
-      posLeft = {
-        x: leftPosAbsolute.x + handleSize / 2 - canvasOrigin.x,
-        y: leftPosAbsolute.y + handleSize / 2 - canvasOrigin.y,
-      }
+      posLeft = mousePos
     }
     if (connKeyRight) {
       let connPos = coordsFromConnKey(connKeyRight)
       posRight = { x: connPos.x - 7, y: connPos.y }
     } else {
-      // calculate position of handles relative to canvas
-      const rightPosAbsolute = refRight.current.getBoundingClientRect()
-      posRight = {
-        x: rightPosAbsolute.x + handleSize / 2 - canvasOrigin.x,
-        y: rightPosAbsolute.y + handleSize / 2 - canvasOrigin.y,
-      }
+      posRight = mousePos
     }
 
     // move svg container to top left handle position
@@ -155,11 +148,11 @@ export default function CurveConnection(props: CurveConnectionProps) {
 
   return (
     <>
-      <svg className={classes.svg} ref={refSVG}>
+      <svg className={`${classes.svg} ${isDragging ? classes.aboveNodes : classes.belowNodes}`} ref={refSVG}>
         <path
           ref={refPath}
           d={getCurve()}
-          style={{ display: isHidden ? 'none' : '' }}
+          style={{ display: isDragging || (connKeyLeft && connKeyRight) ? '' : 'none' }}
           id={`svg_${props.curveID}`}
           strokeWidth="2"
           stroke="#fff"
@@ -171,8 +164,8 @@ export default function CurveConnection(props: CurveConnectionProps) {
         position={getHandlePos(true)}
         nodeRef={refLeft}
         disabled={true}
-        onStart={() => setIsHidden(false)}
-        onStop={() => setIsHidden(connKeyLeft && connKeyRight ? false : true)}
+        onStart={() => setIsDragging(true)}
+        onStop={() => setIsDragging(false)}
         onDrag={event => handleDrag(true, event)}
       >
         <div className={`${classes.handle} handleLeft`} ref={refLeft}></div>
@@ -181,8 +174,8 @@ export default function CurveConnection(props: CurveConnectionProps) {
         handle={'.handleRight'}
         position={getHandlePos(false)}
         nodeRef={refRight}
-        onStart={() => setIsHidden(false)}
-        onStop={() => setIsHidden(connKeyLeft && connKeyRight ? false : true)}
+        onStart={() => setIsDragging(true)}
+        onStop={() => setIsDragging(false)}
         onDrag={event => handleDrag(false, event)}
       >
         <div className={`${classes.handle} handleRight`} ref={refRight}></div>

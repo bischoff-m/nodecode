@@ -2,6 +2,7 @@ import Node from '@/components/Node';
 import SelectField from '@/components/nodeComponents/SelectField';
 import InputOutputField from '@/components/nodeComponents/InputOutputField';
 import { Arguments, NodeCollectionSchema } from '@/types/nodeCollection';
+import ListField from './nodeComponents/ListField';
 
 var callbacks: (() => void)[] = [];
 var nodeConfig: NodeCollectionSchema | null;
@@ -74,6 +75,8 @@ export function getFieldComponent(
       return <SelectField {...allProps} />
     case 'InputOutputField':
       return <InputOutputField {...allProps} />
+    case 'ListField':
+      return <ListField {...allProps} />
     default:
       return null
     // TODO: throw Error

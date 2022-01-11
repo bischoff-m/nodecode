@@ -29,7 +29,7 @@
                 },
                 {
                     "id": "item_list",
-                    "type": "List"
+                    "type": "ListField"
                 }
             ]
         },
