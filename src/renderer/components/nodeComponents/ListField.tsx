@@ -17,6 +17,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     marginTop: 5,
     backgroundColor: '#262626',
     borderRadius: theme.shape.borderRadius,
+    boxShadow: 'inset 0px 0px 3px rgb(0 0 0 / 40%)',
   },
   input: {
     height: 35,
@@ -46,7 +47,7 @@ type ListFieldProps = {
 
 export default function ListField(props: ListFieldProps) {
   const classes = useStyles();
-  const [listItems, setListItems] = useState<string[]>(['a', 'b', 'c']);
+  const [listItems, setListItems] = useState<string[]>(['charttime', 'terseform', 'unitofmeasure']);
   const [inputValue, setInputValue] = useState('');
 
   function handleAddItem() {
@@ -76,7 +77,7 @@ export default function ListField(props: ListFieldProps) {
             </InputAdornment>
           }
         />
-        <List dense disablePadding sx={{ paddingTop: '3px' }}>
+        <List dense disablePadding sx={{ paddingTop: listItems.length > 0 ? '3px' : '0px' }}>
           {
             listItems.map((item, i) =>
               <ListItem
