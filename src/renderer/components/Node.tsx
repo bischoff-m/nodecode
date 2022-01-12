@@ -5,6 +5,7 @@ import { makeStyles } from '@mui/styles';
 import { ReactNode, useRef } from 'react';
 import Draggable, { DraggableData, DraggableEvent } from 'react-draggable';
 import type { MouseEvent as ReactMouseEvent } from 'react';
+import { getZoom } from '@/components/NodeCanvas';
 
 const gridSize = 20;
 
@@ -57,6 +58,7 @@ export default function Node(props: NodeProps) {
     <Draggable
       handle={'.' + classes.header}
       defaultPosition={{ x: props.x, y: props.y }}
+      scale={getZoom()}
       grid={[gridSize, gridSize]}
       nodeRef={nodeRef}
       onDrag={handleDrag}

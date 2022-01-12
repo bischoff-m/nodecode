@@ -1,17 +1,21 @@
 import { Theme } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-import { MouseEvent as ReactMouseEvent, ReactElement, useEffect, useState } from 'react';
+import { MouseEvent as ReactMouseEvent, WheelEvent as ReactWheelEvent, ReactElement, useEffect, useState, useRef } from 'react';
 import gridSvg from '@/assets/gridSvg.svg';
 import CurveConnection from '@/components/CurveConnection';
 import { getNodeComponent, onNodesLoaded } from '@/components/NodeFactory';
 import { directstyled, useDirectStyle } from '@/lib/direct-styled'; // https://github.com/everweij/direct-styled
 
 
+const zoomDelta = 0.8
 let isDragging = false;
-let prevDragPos = { x: 0, y: 0 }
-let canvasOrigin = { x: 0, y: 0 }
+let prevDragPos = { x: 0, y: 0 };
+let canvasOrigin = { x: 0, y: 0 };
+let canvasOriginWithZoom = { x: 0, y: 0 };
+let zoom = 1;
 
 export const getCanvasOrigin = () => canvasOrigin
+export const getZoom = () => zoom
 
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
@@ -35,30 +39,56 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 export default function NodeCanvas() {
   const classes = useStyles();
+  const containerRef = useRef<HTMLDivElement>(null);
   const [containerStyle, setContainerStyle] = useDirectStyle();
   const [dragStyle, setDragStyle] = useDirectStyle();
   const [nodes, setNodes] = useState<ReactElement[]>();
   const [isLoaded, setIsLoaded] = useState(false);
+  // const [zoom, setZoom] = useState(1);
 
-  function handleMouseDown(e: ReactMouseEvent<"div", MouseEvent>) {
-    isDragging = e.button === 1
+  function handleMouseDown(e: ReactMouseEvent<"div">) {
     prevDragPos = { x: e.clientX, y: e.clientY }
+    isDragging = e.button === 1
+    isDragging && e.preventDefault()
   }
 
-  function handleMouseMove(e: ReactMouseEvent<"div", MouseEvent>) {
+  function handleMouseMove(e: ReactMouseEvent<"div">) {
     e.preventDefault()
     if (!isDragging)
       return
     canvasOrigin.x += e.clientX - prevDragPos.x
     canvasOrigin.y += e.clientY - prevDragPos.y
+    canvasOriginWithZoom.x += e.clientX - prevDragPos.x
+    canvasOriginWithZoom.y += e.clientY - prevDragPos.y
     prevDragPos.x = e.clientX
     prevDragPos.y = e.clientY
     setDragStyle({
-      transform: `matrix(1, 0, 0, 1, ${canvasOrigin.x}, ${canvasOrigin.y})`,
+      transform: `matrix(${zoom}, 0, 0, ${zoom}, ${canvasOrigin.x}, ${canvasOrigin.y})`,
     })
     setContainerStyle({
-      backgroundPositionX: canvasOrigin.x,
-      backgroundPositionY: canvasOrigin.y,
+      backgroundPositionX: canvasOriginWithZoom.x,
+      backgroundPositionY: canvasOriginWithZoom.y,
+      backgroundSize: `${zoom * 100}px ${zoom * 100}px`,
+    })
+  }
+
+  function handleWheel(e: ReactWheelEvent<"div">) {
+    if (!containerRef.current)
+      return
+    const width = containerRef.current.offsetWidth
+    const height = containerRef.current.offsetHeight
+
+    const zoomBy = zoomDelta ** Math.sign(e.deltaY)
+    zoom *= zoomBy
+    canvasOriginWithZoom.x = canvasOrigin.x + (width - width * zoom) / 2
+    canvasOriginWithZoom.y = canvasOrigin.y + (height - height * zoom) / 2
+    setDragStyle({
+      transform: `matrix(${zoom}, 0, 0, ${zoom}, ${canvasOrigin.x}, ${canvasOrigin.y})`,
+    })
+    setContainerStyle({
+      backgroundPositionX: canvasOriginWithZoom.x,
+      backgroundPositionY: canvasOriginWithZoom.y,
+      backgroundSize: `${zoom * 100}px ${zoom * 100}px`,
     })
   }
 
@@ -76,10 +106,12 @@ export default function NodeCanvas() {
   return (
     <directstyled.div
       className={classes.container}
-      onMouseDown={handleMouseDown}
+      ref={containerRef}
       onMouseUp={() => { isDragging = false }}
+      onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
       onMouseEnter={(e) => { if (e.buttons !== 4) isDragging = false }}
+      onWheel={handleWheel}
       style={containerStyle}
     >
       <directstyled.div

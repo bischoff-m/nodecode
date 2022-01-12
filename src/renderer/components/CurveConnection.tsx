@@ -23,7 +23,6 @@ const useStyles = makeStyles((theme: Theme) => ({
   svg: {
     position: 'absolute',
     pointerEvents: 'none',
-    // zIndex: 500,
   },
   aboveNodes: { zIndex: 500 },
   belowNodes: { zIndex: 10 },
