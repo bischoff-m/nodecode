@@ -25,7 +25,7 @@ def get_execute(program_nodeid):
     try:
         program_node = next(node for node in program if node['id'] == program_nodeid)
     except StopIteration:
-        raise Exception(f'NodeID {program_nodeid} not found')
+        raise Exception(f'NodeID {program_nodeid} not found.')
 
     # define, which method to execute for given node
     nodeid = program_node['nodeid']
@@ -34,7 +34,7 @@ def get_execute(program_nodeid):
     elif nodeid == 'output':
         exec_method = exec_output
     else:
-        raise Exception(f'Missing implementation for nodeID {nodeid}')
+        raise Exception(f'Missing implementation for nodeID {nodeid}.')
 
     # check whether to bind static arguments given by program JSON file
     if 'arguments' not in program_node:
@@ -47,18 +47,22 @@ def get_execute(program_nodeid):
 
 
 def run():
-    # get output node
-    # get execution method for output node
-    # start recursion
-    # log output
+    # TODO: bind output of node to ID, so that it does not have to be
+    #       executed twice if its output leads to multiple nodes
 
-    # try:
-    #     program_node = next(node for node in program if node['id'] == program_nodeid)
-    # except StopIteration:
-    #     raise Exception(f'NodeID {program_nodeid} not found')
+    output_nodes = [node for node in program if node['nodeid'] == 'output']
+    if not output_nodes:
+        raise Exception('No output node found.')
+    elif len(output_nodes) > 1:
+        raise Exception('Multiple output nodes are not implemented yet.')
+    output_node = output_nodes[0]
 
-    return 42
+    recursion_entry = get_execute(output_node['id'])
+    out = recursion_entry()
+    print(f'Finished execution with output: {out}')
 
+
+run()
 
 """
 exec_ methods:
