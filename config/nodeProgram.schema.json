@@ -1,0 +1,94 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "definitions": {
+        "NodeProgram": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/Node"
+            },
+            "title": "NodeProgram"
+        },
+        "Node": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "nodeID": {
+                    "type": "string"
+                },
+                "styles": {
+                    "$ref": "#/definitions/Styles"
+                },
+                "arguments": {
+                    "$ref": "#/definitions/Arguments"
+                },
+                "connections": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Connection"
+                    }
+                }
+            },
+            "required": [
+                "id",
+                "nodeID",
+                "styles"
+            ],
+            "title": "Node"
+        },
+        "Arguments": {
+            "type": "object",
+            "additionalProperties": true,
+            "title": "Arguments"
+        },
+        "Connection": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "fromID": {
+                    "type": "string"
+                },
+                "fromField": {
+                    "type": "string"
+                },
+                "toField": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "fromField",
+                "fromID",
+                "toField"
+            ],
+            "title": "Connection"
+        },
+        "Styles": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "width": {
+                    "type": "integer"
+                },
+                "x": {
+                    "type": "integer"
+                },
+                "y": {
+                    "type": "integer"
+                }
+            },
+            "required": [
+                "width",
+                "x",
+                "y"
+            ],
+            "title": "Styles"
+        }
+    },
+    "allOf": [
+        {
+            "$ref": "#/definitions/NodeProgram"
+        }
+    ]
+}
