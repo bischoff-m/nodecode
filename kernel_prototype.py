@@ -3,7 +3,7 @@
 import json
 from functools import partial
 
-with open('./config/nodes/basic_nodes.json', 'r') as f:
+with open('./config/nodeCollections/basic_nodes.json', 'r') as f:
     nodes = json.load(f)
 
 with open('./config/programs/example_program.json', 'r') as f:
@@ -14,10 +14,11 @@ def exec_input_list(static_args):
     print(static_args)
     return 42
 
+
 def exec_output(static_args):
     print(static_args)
     return 42
-    
+
 
 def get_execute(program_nodeid):
     # get node object from program that corresponds to program_nodeid
@@ -25,7 +26,7 @@ def get_execute(program_nodeid):
         program_node = next(node for node in program if node['id'] == program_nodeid)
     except StopIteration:
         raise Exception(f'NodeID {program_nodeid} not found')
-    
+
     # define, which method to execute for given node
     nodeid = program_node['nodeid']
     if nodeid == 'input_list':
@@ -34,15 +35,16 @@ def get_execute(program_nodeid):
         exec_method = exec_output
     else:
         raise Exception(f'Missing implementation for nodeID {nodeid}')
-    
+
     # check whether to bind static arguments given by program JSON file
     if 'arguments' not in program_node:
         arguments = {}
     else:
         arguments = program_node['arguments']
-    
+
     # bind static arguments and return
     return partial(exec_method, arguments)
+
 
 def run():
     # get output node
@@ -54,7 +56,7 @@ def run():
     #     program_node = next(node for node in program if node['id'] == program_nodeid)
     # except StopIteration:
     #     raise Exception(f'NodeID {program_nodeid} not found')
-    
+
     return 42
 
 

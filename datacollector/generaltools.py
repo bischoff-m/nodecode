@@ -3,6 +3,7 @@ import time
 import os
 import re
 
+
 def cache_path():
     """
     Returns the path to the directory used for cache data by the datacollector library.
@@ -12,6 +13,7 @@ def cache_path():
     if not os.path.exists(d):
         os.mkdir(d)
     return d
+
 
 def cached_patientids():
     """
@@ -25,6 +27,7 @@ def cached_patientids():
         if ptid:
             ids.add(int(ptid.group()))
     return ids
+
 
 def formattime(tdelta):
     """
@@ -50,20 +53,22 @@ def formattime(tdelta):
         res += f'{round(secs)}s'
     return res.strip()
 
+
 class Timer:
     """
     This class is used to measure elapsed time.
     The timer is started on initialization. The elapsed time can be accessed by calling Timer.elapsed().
     """
+
     def __init__(self):
         self.inittime = time.time()
-    
+
     def elapsed(self):
         """
         Returns a string representation of the elapsed time since initilazation.
         """
         return formattime(time.time() - self.inittime)
-    
+
     def reset(self):
         """
         Restarts the timer. Works like initializing a new one.
