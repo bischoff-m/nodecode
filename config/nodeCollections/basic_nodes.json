@@ -1,22 +1,23 @@
 {
     "name": "Basic Nodes",
-    "items": [
+    "nodes": [
         {
             "id": "input_list",
             "title": "List Input",
             "fields": [
                 {
                     "id": "output",
-                    "type": "OutputLabel",
+                    "type": "InputOutputField",
                     "arguments": {
-                        "text": "List",
-                        "datatype": "List"
+                        "outputLabel": "List",
+                        "outputDatatype": "array"
                     }
                 },
                 {
-                    "id": "datatype_dropdown",
-                    "type": "Dropdown",
+                    "id": "datatype",
+                    "type": "SelectField",
                     "arguments": {
+                        "label": "Datatype",
                         "values": [
                             "String",
                             "Int",
@@ -28,7 +29,7 @@
                 },
                 {
                     "id": "item_list",
-                    "type": "List"
+                    "type": "ListField"
                 }
             ]
         },
@@ -38,7 +39,12 @@
             "fields": [
                 {
                     "id": "input",
-                    "type": "MultiInputLabel"
+                    "type": "InputOutputField",
+                    "arguments": {
+                        "inputLabel": "Output",
+                        "inputDatatype": "any",
+                        "inputMulti": true
+                    }
                 }
             ]
         }
