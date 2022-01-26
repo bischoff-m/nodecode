@@ -14,7 +14,8 @@
                 "terseform",
                 "unitofmeasure"
             ]
-        }
+        },
+        "connections": []
     },
     {
         "id": "1",
@@ -24,6 +25,7 @@
             "x": 300,
             "y": 10
         },
+        "arguments": {},
         "connections": [
             {
                 "fromID": "0",

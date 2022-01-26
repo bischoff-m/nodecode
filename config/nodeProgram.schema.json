@@ -34,7 +34,9 @@
             "required": [
                 "id",
                 "nodeID",
-                "styles"
+                "styles",
+                "arguments",
+                "connections"
             ],
             "title": "Node"
         },
