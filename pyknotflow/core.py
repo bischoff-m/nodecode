@@ -1,8 +1,6 @@
-# %%
 from typing import Type, Dict, List
 from abc import ABC, abstractmethod
 import networkx as nx
-import json
 
 # TODO: update type hinting to python 3.9
 # TODO: add docstrings to all classes and methods
@@ -64,7 +62,7 @@ class NodeProgram:
         while leaves:
             # initialize all leaf nodes and set the weight of all outgoing edges to 0
             for leafID in leaves:
-                node = next(node for node in program if node['id'] == leafID)
+                node = next(node for node in nodeList if node['id'] == leafID)
                 predecessors = {conn['toField']: self.nodes[conn['fromID']] for conn in node['connections']}
                 nodeClass = NODE_CLASSES[node['nodeID']]
                 self.nodes[leafID] = nodeClass(node['arguments'], predecessors)
@@ -77,12 +75,3 @@ class NodeProgram:
         for outputID in [n['id'] for n in nodeList if n['nodeID'] == 'output']:
             print(f'Output Node {outputID}:')
             print(self.nodes[outputID].get_data())
-
-
-with open('./config/programs/example_program.json', 'r') as f:
-    program = json.load(f)
-
-NodeProgram(program)
-None
-
-# %%

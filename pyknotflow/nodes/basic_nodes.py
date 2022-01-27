@@ -1,6 +1,8 @@
-from ..core import Node, register_nodeclass
+from pyknotflow.core import Node
+from pyknotflow.util import register_node
 
 
+@register_node('input_list')
 class InputListNode(Node):
     def run(self, field=None):
         output = self.arguments['item_list']
@@ -16,10 +18,7 @@ class InputListNode(Node):
             return output
 
 
+@register_node('output')
 class OutputNode(Node):
     def run(self, field=None):
         return [conn.get_data() for conn in self.connections.values()]
-
-
-register_nodeclass('input_list', InputListNode)
-register_nodeclass('output', OutputNode)
