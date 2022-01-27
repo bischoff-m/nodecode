@@ -1,8 +1,8 @@
-from ..core import Node
+from ..core import Node, register_nodeclass
 
 
 class InputListNode(Node):
-    def run(self):
+    def run(self, field=None):
         output = self.arguments['item_list']
         list_type = self.arguments['datatype_dropdown']
 
@@ -17,6 +17,9 @@ class InputListNode(Node):
 
 
 class OutputNode(Node):
-    def run(self):
-        for conn in self.connections:
-            print(conn.get_value())
+    def run(self, field=None):
+        return [conn.get_data() for conn in self.connections.values()]
+
+
+register_nodeclass('input_list', InputListNode)
+register_nodeclass('output', OutputNode)
