@@ -33,6 +33,8 @@ def register_nodeclass(id: str, cls: Type[Node]):
 
 class NodeProgram:
     def __init__(self, nodeList: List[Dict]):
+        self.program = nodeList
+
         # check if all needed nodes were registered
         nodeIDs = {node['nodeID'] for node in nodeList}
         missing_IDs = nodeIDs - set(NODE_CLASSES)
@@ -72,6 +74,6 @@ class NodeProgram:
             # for the next iteration, use nodes where all predecessors have already been processed
             leaves = {x for x in G.nodes() if G.in_degree(x, weight='weight') == 0 and x not in self.nodes}
 
-        for outputID in [n['id'] for n in nodeList if n['nodeID'] == 'output']:
-            print(f'Output Node {outputID}:')
-            print(self.nodes[outputID].get_data())
+    def run(self):
+        output_nodes = [n['id'] for n in self.program if n['nodeID'] == 'output']
+        return {outputID: self.nodes[outputID].get_data() for outputID in output_nodes}

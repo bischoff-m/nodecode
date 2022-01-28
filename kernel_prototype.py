@@ -1,4 +1,21 @@
 # %%
+
+import json
+from pyknotflow.core import NodeProgram
+import pyknotflow.nodes as nodes
+
+nodes.register_all()
+
+with open('./config/programs/example_program.json', 'r') as f:
+    programDef = json.load(f)
+
+program = NodeProgram(programDef)
+output = program.run()
+for outputID, data in output.items():
+    print(f'Output Node {outputID}:')
+    print(data)
+
+# %%
 # import websocket
 # import _thread
 # import time
@@ -36,25 +53,5 @@
 #                                 on_close=on_close)
 
 #     ws.run_forever()
-
-
-# %%
-
-import json
-from pyknotflow.core import NodeProgram
-import pyknotflow.nodes as nodes
-
-nodes.register_all()
-
-with open('./config/collections/basic_nodes.json', 'r') as f:
-    node_definitions = json.load(f)
-
-with open('./config/programs/example_program.json', 'r') as f:
-    program = json.load(f)
-
-NodeProgram(program)
-
-None
-
 
 # %%
