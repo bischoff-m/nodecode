@@ -1,10 +1,9 @@
 import { Theme } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { registerConnector } from '@/redux/connectorsSlice';
-import { useDispatchTyped } from '@/redux/hooks';
+import { useDispatchTyped, useSelectorTyped } from '@/redux/hooks';
 import { useEffect, useRef } from 'react';
 import type { FieldProps } from '@/types/util';
-import { getCanvasOrigin } from '@/components/NodeCanvas';
 
 // TODO: implement MultiInput and datatypes
 // TODO: add aditional checks for properties
@@ -57,13 +56,14 @@ export default function InputOutputField(props: InputOutputFieldProps) {
   const classes = useStyles();
   const leftHandleRef = useRef<HTMLDivElement>(null);
   const rightHandleRef = useRef<HTMLDivElement>(null);
+  const canvasOrigin = useSelectorTyped(state => state.canvas.origin);
+
   const dispatch = useDispatchTyped();
 
   useEffect(() => {
     if (!leftHandleRef.current || !rightHandleRef.current)
       return
 
-    const canvasOrigin = getCanvasOrigin();
     const leftCoords = leftHandleRef.current.getBoundingClientRect()
     const rightCoords = rightHandleRef.current.getBoundingClientRect()
 
@@ -81,7 +81,7 @@ export default function InputOutputField(props: InputOutputFieldProps) {
           isInput: isLeft,
         }))
     })
-  }, [])
+  }, [canvasOrigin])
 
   return (
     <div className={classes.container}>

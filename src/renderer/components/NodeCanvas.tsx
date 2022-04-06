@@ -1,5 +1,5 @@
 import { useDispatchTyped, useSelectorTyped } from '@/redux/hooks';
-import { setZoom } from '@/redux/canvasSlice';
+import { setOrigin, setOriginZoomed, setZoom } from '@/redux/canvasSlice';
 import { Theme } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { MouseEvent as ReactMouseEvent, WheelEvent as ReactWheelEvent, ReactElement, useEffect, useState, useRef } from 'react';
@@ -12,10 +12,6 @@ import { directstyled, useDirectStyle } from '@/lib/direct-styled'; // https://g
 const zoomDelta = 0.8
 let isDragging = false;
 let prevDragPos = { x: 0, y: 0 };
-let canvasOrigin = { x: 0, y: 0 };
-let canvasOriginWithZoom = { x: 0, y: 0 };
-
-export const getCanvasOrigin = () => canvasOrigin
 
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
@@ -44,8 +40,9 @@ export default function NodeCanvas() {
   const [dragStyle, setDragStyle] = useDirectStyle();
   const [nodes, setNodes] = useState<ReactElement[]>();
   const [isLoaded, setIsLoaded] = useState(false);
-  // const [zoom, setZoom] = useState(1);
   const zoom = useSelectorTyped(state => state.canvas.zoom);
+  const origin = useSelectorTyped(state => state.canvas.origin);
+  const originZoomed = useSelectorTyped(state => state.canvas.originZoomed);
 
   const dispatch = useDispatchTyped();
 
@@ -59,20 +56,27 @@ export default function NodeCanvas() {
     e.preventDefault()
     if (!isDragging)
       return
-    canvasOrigin.x += e.clientX - prevDragPos.x
-    canvasOrigin.y += e.clientY - prevDragPos.y
-    canvasOriginWithZoom.x += e.clientX - prevDragPos.x
-    canvasOriginWithZoom.y += e.clientY - prevDragPos.y
+    const newOrigin = {
+      x: origin.x + e.clientX - prevDragPos.x,
+      y: origin.y + e.clientY - prevDragPos.y,
+    }
+    const newOriginZoomed = {
+      x: originZoomed.x + e.clientX - prevDragPos.x,
+      y: originZoomed.y + e.clientY - prevDragPos.y,
+    }
     prevDragPos.x = e.clientX
     prevDragPos.y = e.clientY
+    dispatch(setOrigin(newOrigin))
+    dispatch(setOriginZoomed(newOriginZoomed))
     setDragStyle({
-      transform: `matrix(${zoom}, 0, 0, ${zoom}, ${canvasOrigin.x}, ${canvasOrigin.y})`,
+      transform: `matrix(${zoom}, 0, 0, ${zoom}, ${newOrigin.x}, ${newOrigin.y})`,
     })
     setContainerStyle({
-      backgroundPositionX: canvasOriginWithZoom.x,
-      backgroundPositionY: canvasOriginWithZoom.y,
+      backgroundPositionX: newOriginZoomed.x,
+      backgroundPositionY: newOriginZoomed.y,
       backgroundSize: `${zoom * 100}px ${zoom * 100}px`,
     })
+    console.log(newOrigin, newOriginZoomed, zoom)
   }
 
   function handleWheel(e: ReactWheelEvent<"div">) {
@@ -80,19 +84,21 @@ export default function NodeCanvas() {
       return
     const width = containerRef.current.offsetWidth
     const height = containerRef.current.offsetHeight
+    const newZoom = zoom * (zoomDelta ** Math.sign(e.deltaY))
+    const newOriginZoomed = {
+      x: origin.x - width * (newZoom - 1) / 2,
+      y: origin.y - height * (newZoom - 1) / 2,
+    }
 
-    const zoomBy = zoomDelta ** Math.sign(e.deltaY)
-    // zoom *= zoomBy
-    dispatch(setZoom(zoom * zoomBy))
-    canvasOriginWithZoom.x = canvasOrigin.x + (width - width * zoom) / 2
-    canvasOriginWithZoom.y = canvasOrigin.y + (height - height * zoom) / 2
+    dispatch(setZoom(newZoom))
+    dispatch(setOriginZoomed(newOriginZoomed))
     setDragStyle({
-      transform: `matrix(${zoom}, 0, 0, ${zoom}, ${canvasOrigin.x}, ${canvasOrigin.y})`,
+      transform: `matrix(${newZoom}, 0, 0, ${newZoom}, ${origin.x}, ${origin.y})`,
     })
     setContainerStyle({
-      backgroundPositionX: canvasOriginWithZoom.x,
-      backgroundPositionY: canvasOriginWithZoom.y,
-      backgroundSize: `${zoom * 100}px ${zoom * 100}px`,
+      backgroundPositionX: newOriginZoomed.x,
+      backgroundPositionY: newOriginZoomed.y,
+      backgroundSize: `${newZoom * 100}px ${newZoom * 100}px`,
     })
   }
 

@@ -5,24 +5,29 @@ import type { MouseEvent as ReactMouseEvent } from 'react';
 import Draggable, { DraggableEvent } from 'react-draggable';
 import { useSelectorTyped } from '@/redux/hooks';
 import { Coord2D } from '@/types/util';
-import { getCanvasOrigin } from '@/components/NodeCanvas';
 import type { Connector } from '@/redux/connectorsSlice';
+import { directstyled, useDirectStyle } from '@/lib/direct-styled'; // https://github.com/everweij/direct-styled
 
 const handleSize = 40;
 
 const useStyles = makeStyles((theme: Theme) => ({
+  container: {
+    // TODO?
+  },
+  svg: {
+    position: 'fixed',
+    pointerEvents: 'none',
+    width: '100%',
+    height: '100%',
+  },
   handle: {
     position: 'absolute',
     backgroundColor: 'red',
     width: handleSize,
     height: handleSize,
     borderRadius: handleSize / 2,
-    opacity: 0,
+    opacity: 0.5,
     zIndex: 1000,
-  },
-  svg: {
-    position: 'absolute',
-    pointerEvents: 'none',
   },
   aboveNodes: { zIndex: 500 },
   belowNodes: { zIndex: 10 },
@@ -40,8 +45,16 @@ export default function CurveConnection(props: CurveConnectionProps) {
   const refRight = useRef<HTMLDivElement>(null);
   const refPath = useRef<SVGPathElement>(null);
   const refSVG = useRef<SVGSVGElement>(null);
+  const refContainer = useRef<HTMLDivElement>(null);
+  const [containerStyle, setContainerStyle] = useDirectStyle();
+
+  // Redux state
   const connectCoords = useSelectorTyped(state => state.connectors.coordinates);
   const canvasZoom = useSelectorTyped(state => state.canvas.zoom);
+  const canvasOrigin = useSelectorTyped(state => state.canvas.origin);
+  const canvasOriginZoomed = useSelectorTyped(state => state.canvas.originZoomed);
+
+  // React state
   const [mousePos, setMousePos] = useState<Coord2D>({ x: 0, y: 0 });
   const [connKeyLeft, setConnKeyLeft] = useState<string | undefined>(undefined);
   const [connKeyRight, setConnKeyRight] = useState<string | undefined>(undefined);
@@ -50,7 +63,7 @@ export default function CurveConnection(props: CurveConnectionProps) {
   useEffect(() => {
     setConnKeyLeft(props.defaultConnKeyLeft)
     setConnKeyRight(props.defaultConnKeyRight)
-  }, [])
+  }, [props])
 
   function coordsFromConnKey(connKey: string) {
     let conn = connectCoords.find(conn => conn.connKey === connKey)
@@ -71,7 +84,6 @@ export default function CurveConnection(props: CurveConnectionProps) {
   function handleDrag(isLeft: boolean, event: DraggableEvent) {
     // TODO: dont allow connection of two inputs or two outputs
     const e = event as ReactMouseEvent;
-    const canvasOrigin = getCanvasOrigin();
     const newMousePos = { x: e.clientX - canvasOrigin.x, y: e.clientY - canvasOrigin.y }
 
     const setConnKey = isLeft ? setConnKeyLeft : setConnKeyRight
@@ -93,6 +105,8 @@ export default function CurveConnection(props: CurveConnectionProps) {
     let posLeft: Coord2D;
     let posRight: Coord2D;
 
+    refSVG.current.setAttribute('style', `transform: matrix(${1 / canvasZoom}, 0, 0, ${1 / canvasZoom}, ${-canvasOrigin.x / canvasZoom}, ${-canvasOrigin.y / canvasZoom})`)
+
     if (connKeyLeft) {
       let connPos = coordsFromConnKey(connKeyLeft)
       posLeft = { x: connPos.x + 7, y: connPos.y }
@@ -110,15 +124,17 @@ export default function CurveConnection(props: CurveConnectionProps) {
     const minX = Math.min(posLeft.x, posRight.x)
     const minY = Math.min(posLeft.y, posRight.y)
     const padding = 4 * handleSize
-    refSVG.current.setAttribute('style', `transform: translate(${minX - padding}px, ${minY - padding}px)`)
+
+    // refSVG.current.setAttribute('style', `transform: translate(${minX - padding}px, ${minY - padding}px)`)
+    // refSVG.current.setAttribute('style', `transform: translate(${-canvasOrigin.x}px, ${-canvasOrigin.y}px)`)
 
     // set width and height for svg
     const maxX = Math.max(posLeft.x, posRight.x)
     const maxY = Math.max(posLeft.y, posRight.y)
     const width = maxX - minX + padding * 2
     const height = maxY - minY + padding * 2
-    refSVG.current.setAttribute('width', `${width}px`)
-    refSVG.current.setAttribute('height', `${height}px`)
+    // refSVG.current.setAttribute('width', `${width}px`)
+    // refSVG.current.setAttribute('height', `${height}px`)
 
     // update path https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths
     const isInvertedX = posLeft.x > posRight.x
@@ -147,9 +163,16 @@ export default function CurveConnection(props: CurveConnectionProps) {
   }
 
   return (
-    <>
-      <svg className={`${classes.svg} ${isDragging ? classes.aboveNodes : classes.belowNodes}`} ref={refSVG}>
-        <rect width="100%" height="100%" fill="red" />
+    <directstyled.div // TODO: update container size and position without redux?
+      className={classes.container}
+      ref={refContainer}
+      style={containerStyle}
+    >
+      <svg
+        className={`${classes.svg} ${isDragging ? classes.aboveNodes : classes.belowNodes}`}
+        ref={refSVG}
+      >
+        <rect width="100%" height="100%" fill="blue" opacity={0.2} />
         <path
           ref={refPath}
           d={getCurve()}
@@ -181,6 +204,6 @@ export default function CurveConnection(props: CurveConnectionProps) {
       >
         <div className={`${classes.handle} handleRight`} ref={refRight}></div>
       </Draggable>
-    </>
+    </directstyled.div>
   )
 }
