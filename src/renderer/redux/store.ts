@@ -1,9 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
 import connectorsReducer from '@/redux/connectorsSlice';
+import canvasReducer from '@/redux/canvasSlice';
 
 const store = configureStore({
   reducer: {
     connectors: connectorsReducer,
+    canvas: canvasReducer,
   },
 })
 export default store

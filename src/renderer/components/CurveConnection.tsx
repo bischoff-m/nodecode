@@ -41,6 +41,7 @@ export default function CurveConnection(props: CurveConnectionProps) {
   const refPath = useRef<SVGPathElement>(null);
   const refSVG = useRef<SVGSVGElement>(null);
   const connectCoords = useSelectorTyped(state => state.connectors.coordinates);
+  const canvasZoom = useSelectorTyped(state => state.canvas.zoom);
   const [mousePos, setMousePos] = useState<Coord2D>({ x: 0, y: 0 });
   const [connKeyLeft, setConnKeyLeft] = useState<string | undefined>(undefined);
   const [connKeyRight, setConnKeyRight] = useState<string | undefined>(undefined);
@@ -148,6 +149,7 @@ export default function CurveConnection(props: CurveConnectionProps) {
   return (
     <>
       <svg className={`${classes.svg} ${isDragging ? classes.aboveNodes : classes.belowNodes}`} ref={refSVG}>
+        <rect width="100%" height="100%" fill="red" />
         <path
           ref={refPath}
           d={getCurve()}

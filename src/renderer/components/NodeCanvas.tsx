@@ -1,3 +1,5 @@
+import { useDispatchTyped, useSelectorTyped } from '@/redux/hooks';
+import { setZoom } from '@/redux/canvasSlice';
 import { Theme } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { MouseEvent as ReactMouseEvent, WheelEvent as ReactWheelEvent, ReactElement, useEffect, useState, useRef } from 'react';
@@ -12,10 +14,8 @@ let isDragging = false;
 let prevDragPos = { x: 0, y: 0 };
 let canvasOrigin = { x: 0, y: 0 };
 let canvasOriginWithZoom = { x: 0, y: 0 };
-let zoom = 1;
 
 export const getCanvasOrigin = () => canvasOrigin
-export const getZoom = () => zoom
 
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
@@ -45,6 +45,9 @@ export default function NodeCanvas() {
   const [nodes, setNodes] = useState<ReactElement[]>();
   const [isLoaded, setIsLoaded] = useState(false);
   // const [zoom, setZoom] = useState(1);
+  const zoom = useSelectorTyped(state => state.canvas.zoom);
+
+  const dispatch = useDispatchTyped();
 
   function handleMouseDown(e: ReactMouseEvent<"div">) {
     prevDragPos = { x: e.clientX, y: e.clientY }
@@ -79,7 +82,8 @@ export default function NodeCanvas() {
     const height = containerRef.current.offsetHeight
 
     const zoomBy = zoomDelta ** Math.sign(e.deltaY)
-    zoom *= zoomBy
+    // zoom *= zoomBy
+    dispatch(setZoom(zoom * zoomBy))
     canvasOriginWithZoom.x = canvasOrigin.x + (width - width * zoom) / 2
     canvasOriginWithZoom.y = canvasOrigin.y + (height - height * zoom) / 2
     setDragStyle({
