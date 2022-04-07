@@ -52,7 +52,6 @@ export default function CurveConnection(props: CurveConnectionProps) {
   const connectCoords = useSelectorTyped(state => state.connectors.coordinates);
   const canvasZoom = useSelectorTyped(state => state.canvas.zoom);
   const canvasOrigin = useSelectorTyped(state => state.canvas.origin);
-  const canvasOriginZoomed = useSelectorTyped(state => state.canvas.originZoomed);
 
   // React state
   const [mousePos, setMousePos] = useState<Coord2D>({ x: 0, y: 0 });
@@ -66,9 +65,13 @@ export default function CurveConnection(props: CurveConnectionProps) {
   }, [props])
 
   function coordsFromConnKey(connKey: string) {
+    // Takes a unique id for a connector and looks up the coordinates
     let conn = connectCoords.find(conn => conn.connKey === connKey)
     if (conn)
-      return conn.coords
+      return {
+        x: conn.coords.x / canvasZoom,
+        y: conn.coords.y / canvasZoom,
+      }
     else throw Error(`Connector key not found: ${connKey}`)
   }
 
@@ -96,6 +99,23 @@ export default function CurveConnection(props: CurveConnectionProps) {
       setConnKey(undefined)
     }
     setMousePos(newMousePos)
+  }
+
+  function getHandlePos(isLeft: boolean) {
+    // Called when handles are dragged
+    // TODO: document logic
+    const connKey = isLeft ? connKeyLeft : connKeyRight
+    const oppositeConnKey = isLeft ? connKeyRight : connKeyLeft
+    let a = 10;
+    let handlePos = {
+      x: mousePos.x * a,
+      y: mousePos.y * a,
+    }
+    if (connKey)
+      handlePos = coordsFromConnKey(connKey)
+    else if (oppositeConnKey)
+      handlePos = coordsFromConnKey(oppositeConnKey)
+    return { x: handlePos.x - handleSize / 2, y: handlePos.y - handleSize / 2 }
   }
 
   function getCurve() {
@@ -151,17 +171,6 @@ export default function CurveConnection(props: CurveConnectionProps) {
     return `M${x1} ${y1} C ${x2} ${y2}, ${x3} ${y3}, ${x4} ${y4}`
   }
 
-  function getHandlePos(isLeft: boolean) {
-    const connKey = isLeft ? connKeyLeft : connKeyRight
-    const oppositeConnKey = isLeft ? connKeyRight : connKeyLeft
-    let handlePos = mousePos
-    if (connKey)
-      handlePos = coordsFromConnKey(connKey)
-    else if (oppositeConnKey)
-      handlePos = coordsFromConnKey(oppositeConnKey)
-    return { x: handlePos.x - handleSize / 2, y: handlePos.y - handleSize / 2 }
-  }
-
   return (
     <directstyled.div // TODO: update container size and position without redux?
       className={classes.container}
@@ -191,6 +200,7 @@ export default function CurveConnection(props: CurveConnectionProps) {
         onStart={() => setIsDragging(true)}
         onStop={() => setIsDragging(false)}
         onDrag={event => handleDrag(true, event)}
+        scale={canvasZoom}
       >
         <div className={`${classes.handle} handleLeft`} ref={refLeft}></div>
       </Draggable>
@@ -201,6 +211,7 @@ export default function CurveConnection(props: CurveConnectionProps) {
         onStart={() => setIsDragging(true)}
         onStop={() => setIsDragging(false)}
         onDrag={event => handleDrag(false, event)}
+        scale={canvasZoom}
       >
         <div className={`${classes.handle} handleRight`} ref={refRight}></div>
       </Draggable>
