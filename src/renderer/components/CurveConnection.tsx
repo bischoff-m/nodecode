@@ -15,10 +15,10 @@ const useStyles = makeStyles((theme: Theme) => ({
     // TODO?
   },
   svg: {
-    position: 'fixed',
+    position: 'absolute',
     pointerEvents: 'none',
-    width: '100%',
-    height: '100%',
+    // width: '100%',
+    // height: '100%',
   },
   handle: {
     position: 'absolute',
@@ -68,10 +68,12 @@ export default function CurveConnection(props: CurveConnectionProps) {
     // Takes a unique id for a connector and looks up the coordinates
     let conn = connectCoords.find(conn => conn.connKey === connKey)
     if (conn)
-      return {
-        x: conn.coords.x / canvasZoom,
-        y: conn.coords.y / canvasZoom,
-      }
+      return conn.coords
+     // TODO: remove
+      // return {
+      //   x: conn.coords.x,
+      //   y: conn.coords.y,
+      // }
     else throw Error(`Connector key not found: ${connKey}`)
   }
 
@@ -106,11 +108,13 @@ export default function CurveConnection(props: CurveConnectionProps) {
     // TODO: document logic
     const connKey = isLeft ? connKeyLeft : connKeyRight
     const oppositeConnKey = isLeft ? connKeyRight : connKeyLeft
-    let a = 10;
-    let handlePos = {
-      x: mousePos.x * a,
-      y: mousePos.y * a,
-    }
+    let handlePos = mousePos;
+    // TODO: remove
+    // let a = 1;
+    // let handlePos = {
+    //   x: mousePos.x * a,
+    //   y: mousePos.y * a,
+    // }
     if (connKey)
       handlePos = coordsFromConnKey(connKey)
     else if (oppositeConnKey)
@@ -125,7 +129,7 @@ export default function CurveConnection(props: CurveConnectionProps) {
     let posLeft: Coord2D;
     let posRight: Coord2D;
 
-    refSVG.current.setAttribute('style', `transform: matrix(${1 / canvasZoom}, 0, 0, ${1 / canvasZoom}, ${-canvasOrigin.x / canvasZoom}, ${-canvasOrigin.y / canvasZoom})`)
+    // refSVG.current.setAttribute('style', `transform: matrix(${1 / canvasZoom}, 0, 0, ${1 / canvasZoom}, ${-canvasOrigin.x / canvasZoom}, ${-canvasOrigin.y / canvasZoom})`)
 
     if (connKeyLeft) {
       let connPos = coordsFromConnKey(connKeyLeft)
@@ -145,16 +149,15 @@ export default function CurveConnection(props: CurveConnectionProps) {
     const minY = Math.min(posLeft.y, posRight.y)
     const padding = 4 * handleSize
 
-    // refSVG.current.setAttribute('style', `transform: translate(${minX - padding}px, ${minY - padding}px)`)
-    // refSVG.current.setAttribute('style', `transform: translate(${-canvasOrigin.x}px, ${-canvasOrigin.y}px)`)
+    refSVG.current.setAttribute('style', `transform: translate(${minX - padding}px, ${minY - padding}px)`)
 
     // set width and height for svg
     const maxX = Math.max(posLeft.x, posRight.x)
     const maxY = Math.max(posLeft.y, posRight.y)
     const width = maxX - minX + padding * 2
     const height = maxY - minY + padding * 2
-    // refSVG.current.setAttribute('width', `${width}px`)
-    // refSVG.current.setAttribute('height', `${height}px`)
+    refSVG.current.setAttribute('width', `${width}px`)
+    refSVG.current.setAttribute('height', `${height}px`)
 
     // update path https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths
     const isInvertedX = posLeft.x > posRight.x
@@ -177,10 +180,7 @@ export default function CurveConnection(props: CurveConnectionProps) {
       ref={refContainer}
       style={containerStyle}
     >
-      <svg
-        className={`${classes.svg} ${isDragging ? classes.aboveNodes : classes.belowNodes}`}
-        ref={refSVG}
-      >
+      <svg className={`${classes.svg} ${isDragging ? classes.aboveNodes : classes.belowNodes}`} ref={refSVG}>
         <rect width="100%" height="100%" fill="blue" opacity={0.2} />
         <path
           ref={refPath}

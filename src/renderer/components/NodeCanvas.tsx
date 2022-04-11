@@ -7,11 +7,22 @@ import gridSvg from '@/assets/gridSvg.svg';
 import CurveConnection from '@/components/CurveConnection';
 import { getNodeComponent, onNodesLoaded } from '@/components/NodeFactory';
 import { directstyled, useDirectStyle } from '@/lib/direct-styled'; // https://github.com/everweij/direct-styled
+import { Coord2D } from '@/types/util';
 
+
+// TODO: rename origin to offset or screenOffset
+//       rename originZoomed to?
+//       is originZoomed even needed?
 
 const zoomDelta = 0.8
 let isDragging = false;
 let prevDragPos = { x: 0, y: 0 };
+let screenOffset = { x: 0, y: 0 };
+
+
+export function screenToCanvas(coordinates: Coord2D) {
+  return { x: 42, y: 42 }
+}
 
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
@@ -30,7 +41,15 @@ const useStyles = makeStyles((theme: Theme) => ({
   draggable: {
     width: '100vw',
     height: '100vh',
-  }
+  },
+  marker: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    width: 10,
+    height: 10,
+    backgroundColor: 'red',
+  },
 }));
 
 export default function NodeCanvas() {
@@ -42,7 +61,7 @@ export default function NodeCanvas() {
   const [isLoaded, setIsLoaded] = useState(false);
   const zoom = useSelectorTyped(state => state.canvas.zoom);
   const origin = useSelectorTyped(state => state.canvas.origin);
-  const originZoomed = useSelectorTyped(state => state.canvas.originZoomed);
+  // const originZoomed = useSelectorTyped(state => state.canvas.originZoomed);
 
   const dispatch = useDispatchTyped();
 
@@ -54,15 +73,19 @@ export default function NodeCanvas() {
 
   function handleMouseMove(e: ReactMouseEvent<"div">) {
     e.preventDefault()
-    if (!isDragging)
+    if (!isDragging || !containerRef.current)
       return
+    const width = containerRef.current.offsetWidth
+    const height = containerRef.current.offsetHeight
+
+    // runs when the mouse is dragged while the mouse wheel is pressed
     const newOrigin = {
       x: origin.x + e.clientX - prevDragPos.x,
       y: origin.y + e.clientY - prevDragPos.y,
     }
     const newOriginZoomed = {
-      x: originZoomed.x + e.clientX - prevDragPos.x,
-      y: originZoomed.y + e.clientY - prevDragPos.y,
+      x: newOrigin.x - width * (zoom - 1) / 2,
+      y: newOrigin.y - height * (zoom - 1) / 2,
     }
     prevDragPos.x = e.clientX
     prevDragPos.y = e.clientY
@@ -91,6 +114,7 @@ export default function NodeCanvas() {
     }
 
     dispatch(setZoom(newZoom))
+    dispatch(setOrigin(origin))
     dispatch(setOriginZoomed(newOriginZoomed))
     setDragStyle({
       transform: `matrix(${newZoom}, 0, 0, ${newZoom}, ${origin.x}, ${origin.y})`,
@@ -128,6 +152,7 @@ export default function NodeCanvas() {
         className={classes.draggable}
         style={dragStyle}
       >
+        <div className={classes.marker}></div>
         <div className={classes.nodesContainer}>
           {nodes}
         </div>
