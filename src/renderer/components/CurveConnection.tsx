@@ -4,11 +4,12 @@ import { useEffect, useRef, useState } from 'react';
 import type { MouseEvent as ReactMouseEvent } from 'react';
 import Draggable, { DraggableEvent } from 'react-draggable';
 import { useSelectorTyped } from '@/redux/hooks';
-import { getScreenOffset, getCanvasZoom, screenToCanvas, canvasToScreen } from '@/components/NodeCanvas';
+import { getScreenOffset, getCanvasZoom, canvasToScreen } from '@/components/NodeCanvas';
 import { Coord2D } from '@/types/util';
 import type { Connector } from '@/redux/connectorsSlice';
 
 const handleSize = 40;
+let isDragging = false; // is true when user began to drag and(!) moved his mouse
 
 const useStyles = makeStyles((theme: Theme) => ({
   svg: {
@@ -21,7 +22,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     width: handleSize,
     height: handleSize,
     borderRadius: handleSize / 2,
-    opacity: 0.5,
+    opacity: 0,
     zIndex: 1000,
   },
   aboveNodes: { zIndex: 500 },
@@ -51,7 +52,8 @@ export default function CurveConnection(props: CurveConnectionProps) {
   const [mousePos, setMousePos] = useState<Coord2D>({ x: 0, y: 0 });
   const [connKeyLeft, setConnKeyLeft] = useState<string | undefined>(undefined);
   const [connKeyRight, setConnKeyRight] = useState<string | undefined>(undefined);
-  const [isDragging, setIsDragging] = useState<boolean>(props.defaultConnKeyLeft && props.defaultConnKeyRight ? false : true)
+  // is true when user began to drag, even if he didnt move his mouse yet
+  const [beganDragging, setBeganDragging] = useState<boolean>(props.defaultConnKeyLeft && props.defaultConnKeyRight ? false : true);
 
   useEffect(() => {
     setConnKeyLeft(props.defaultConnKeyLeft)
@@ -79,6 +81,7 @@ export default function CurveConnection(props: CurveConnectionProps) {
   }
 
   function handleDrag(isLeft: boolean, event: DraggableEvent) {
+    beganDragging && (isDragging = true);
     const e = event as ReactMouseEvent;
     const screenOffset = getScreenOffset()
     const canvasZoom = getCanvasZoom()
@@ -111,9 +114,9 @@ export default function CurveConnection(props: CurveConnectionProps) {
   }
 
   function getCurve() {
-    if (!refSVG.current)
+    if (!refSVG.current || !(isDragging || (connKeyLeft && connKeyRight)))
       return "M0 0 C 0 0, 0 0, 0 0"
-
+    console.log('now')
     // left and right anchor of bezier curve
     let posLeft: Coord2D;
     let posRight: Coord2D;
@@ -162,13 +165,13 @@ export default function CurveConnection(props: CurveConnectionProps) {
   }
   return (
     <>
-      <svg className={`${classes.svg} ${isDragging ? classes.aboveNodes : classes.belowNodes}`} ref={refSVG}>
+      <svg className={`${classes.svg} ${beganDragging ? classes.aboveNodes : classes.belowNodes}`} ref={refSVG}>
         {/* TODO: remove */}
         {/* <rect width="100%" height="100%" fill="blue" opacity={0.2} /> */}
         <path
           ref={refPath}
           d={getCurve()}
-          style={{ display: isDragging || (connKeyLeft && connKeyRight) ? '' : 'none' }}
+          style={{ display: beganDragging || (connKeyLeft && connKeyRight) ? '' : 'none' }}
           id={`svg_${props.curveID}`}
           strokeWidth="2"
           stroke="#fff"
@@ -180,8 +183,11 @@ export default function CurveConnection(props: CurveConnectionProps) {
         position={getHandlePos(true)}
         nodeRef={refLeft}
         disabled={true}
-        onStart={() => setIsDragging(true)}
-        onStop={() => setIsDragging(false)}
+        onStart={() => setBeganDragging(true)}
+        onStop={() => {
+          setBeganDragging(false);
+          isDragging = false;
+        }}
         onDrag={event => handleDrag(true, event)}
         scale={getCanvasZoom()}
       >
@@ -191,8 +197,11 @@ export default function CurveConnection(props: CurveConnectionProps) {
         handle={'.handleRight'}
         position={getHandlePos(false)}
         nodeRef={refRight}
-        onStart={() => setIsDragging(true)}
-        onStop={() => setIsDragging(false)}
+        onStart={() => setBeganDragging(true)}
+        onStop={() => {
+          setBeganDragging(false);
+          isDragging = false;
+        }}
         onDrag={event => handleDrag(false, event)}
         scale={getCanvasZoom()}
       >

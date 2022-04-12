@@ -7,13 +7,10 @@ import { getNodeComponent, onNodesLoaded } from '@/components/NodeFactory';
 import { directstyled, useDirectStyle } from '@/lib/direct-styled'; // https://github.com/everweij/direct-styled
 import { Coord2D } from '@/types/util';
 
-
-// TODO: rename origin to offset or screenOffset
-//       rename originZoomed to?
-//       is originZoomed even needed?
 // TODO: rename Coord2D to Vec2D and ...coords to pos(ition)
 
 const zoomDelta = 0.8;
+let onZoomCallbacks: ((newZoom: number) => void)[] = []; // functions that should be called when user zoomed in/out
 let isDragging = false;
 let prevDragPos: Coord2D = { x: 0, y: 0 };
 let screenOffset: Coord2D = { x: 0, y: 0 };
@@ -30,6 +27,9 @@ export const canvasToScreen = (coordinates: Coord2D) => ({
   x: coordinates.x + screenSize.width * (zoom - 1) / 2,
   y: coordinates.y + screenSize.height * (zoom - 1) / 2,
 })
+export const onZoomChanged = (callback: (newZoom: number) => void) => {
+  onZoomCallbacks.push(callback);
+}
 
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
@@ -83,9 +83,6 @@ export default function NodeCanvas() {
       backgroundPositionY: translatedOffset.y,
       backgroundSize: `${zoom * 100}px ${zoom * 100}px`,
     })
-    // TODO: call update on sub components?
-    // - on handle wheel event
-    console.log(screenOffset, translatedOffset, zoom)
   }
 
 
@@ -111,6 +108,7 @@ export default function NodeCanvas() {
   function handleWheel(e: ReactWheelEvent<"div">) {
     zoom *= zoomDelta ** Math.sign(e.deltaY)
     updateCanvasStyle()
+    onZoomCallbacks.forEach(callback => callback(zoom))
   }
 
   useEffect(() => {
@@ -140,7 +138,8 @@ export default function NodeCanvas() {
         className={classes.draggable}
         style={dragStyle}
       >
-        <div className={classes.marker}></div>
+        {/* TODO: remove */}
+        {/* <div className={classes.marker}></div> */}
         <div className={classes.nodesContainer}>
           {nodes}
         </div>

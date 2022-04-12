@@ -4,8 +4,7 @@ import { Theme } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { ReactNode, useRef, useState } from 'react';
 import Draggable, { DraggableData, DraggableEvent } from 'react-draggable';
-import { getCanvasZoom } from './NodeCanvas';
-import { Coord2D } from '@/types/util';
+import { getCanvasZoom, onZoomChanged } from './NodeCanvas';
 
 const gridSize = 20;
 
@@ -43,25 +42,29 @@ export type NodeProps = {
 export default function Node(props: NodeProps) {
   const classes = useStyles();
   const nodeRef = useRef(null);
-  // const [position, setPosition] = useState<Coord2D>({ x: props.x, y: props.y });
+  const [canvasZoom, setCanvasZoom] = useState<number>(getCanvasZoom()); // variable is mirrored from NodeCanvas to enable state updates
 
   const dispatch = useDispatchTyped();
 
+  onZoomChanged((newZoom: number) => {
+    setCanvasZoom(newZoom);
+  })
+
   function handleDrag(event: DraggableEvent, data: DraggableData) {
-    console.log({ x: data.deltaX, y: data.deltaY })
     dispatch(moveNode({
       nodeKey: props.nodeKey,
       by: { x: data.deltaX, y: data.deltaY }
     }))
   }
-  console.log('renewwww')
+
   return (
     <Draggable
       handle={'.' + classes.header}
       defaultPosition={{ x: props.x, y: props.y }}
-      grid={[gridSize, gridSize]}
+      grid={[gridSize * canvasZoom, gridSize * canvasZoom]}
       nodeRef={nodeRef}
       onDrag={handleDrag}
+      scale={canvasZoom}
     >
       <div className={classes.card} ref={nodeRef}>
         <div className={classes.header}>
