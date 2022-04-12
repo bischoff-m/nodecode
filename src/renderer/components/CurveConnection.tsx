@@ -116,7 +116,7 @@ export default function CurveConnection(props: CurveConnectionProps) {
   function getCurve() {
     if (!refSVG.current || !(isDragging || (connKeyLeft && connKeyRight)))
       return "M0 0 C 0 0, 0 0, 0 0"
-    console.log('now')
+
     // left and right anchor of bezier curve
     let posLeft: Coord2D;
     let posRight: Coord2D;
