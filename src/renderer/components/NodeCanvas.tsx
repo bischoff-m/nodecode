@@ -1,5 +1,3 @@
-import { useDispatchTyped, useSelectorTyped } from '@/redux/hooks';
-import { setOrigin, setOriginZoomed, setZoom } from '@/redux/canvasSlice';
 import { Theme } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { MouseEvent as ReactMouseEvent, WheelEvent as ReactWheelEvent, ReactElement, useEffect, useState, useRef } from 'react';
@@ -13,16 +11,25 @@ import { Coord2D } from '@/types/util';
 // TODO: rename origin to offset or screenOffset
 //       rename originZoomed to?
 //       is originZoomed even needed?
+// TODO: rename Coord2D to Vec2D and ...coords to pos(ition)
 
-const zoomDelta = 0.8
+const zoomDelta = 0.8;
 let isDragging = false;
-let prevDragPos = { x: 0, y: 0 };
-let screenOffset = { x: 0, y: 0 };
+let prevDragPos: Coord2D = { x: 0, y: 0 };
+let screenOffset: Coord2D = { x: 0, y: 0 };
+let zoom = 1;
+let screenSize = { width: 0, height: 0 };
 
-
-export function screenToCanvas(coordinates: Coord2D) {
-  return { x: 42, y: 42 }
-}
+export const getScreenOffset = () => screenOffset;
+export const getCanvasZoom = () => zoom;
+export const screenToCanvas = (coordinates: Coord2D) => ({
+  x: coordinates.x - screenSize.width * (zoom - 1) / 2,
+  y: coordinates.y - screenSize.height * (zoom - 1) / 2,
+})
+export const canvasToScreen = (coordinates: Coord2D) => ({
+  x: coordinates.x + screenSize.width * (zoom - 1) / 2,
+  y: coordinates.y + screenSize.height * (zoom - 1) / 2,
+})
 
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
@@ -59,11 +66,28 @@ export default function NodeCanvas() {
   const [dragStyle, setDragStyle] = useDirectStyle();
   const [nodes, setNodes] = useState<ReactElement[]>();
   const [isLoaded, setIsLoaded] = useState(false);
-  const zoom = useSelectorTyped(state => state.canvas.zoom);
-  const origin = useSelectorTyped(state => state.canvas.origin);
-  // const originZoomed = useSelectorTyped(state => state.canvas.originZoomed);
 
-  const dispatch = useDispatchTyped();
+  function updateCanvasStyle() {
+    if (!containerRef.current)
+      return
+    const width = containerRef.current.offsetWidth
+    const height = containerRef.current.offsetHeight
+    screenSize = { width: width, height: height }
+
+    const translatedOffset = screenToCanvas(screenOffset)
+    setDragStyle({
+      transform: `matrix(${zoom}, 0, 0, ${zoom}, ${screenOffset.x}, ${screenOffset.y})`,
+    })
+    setContainerStyle({
+      backgroundPositionX: translatedOffset.x,
+      backgroundPositionY: translatedOffset.y,
+      backgroundSize: `${zoom * 100}px ${zoom * 100}px`,
+    })
+    // TODO: call update on sub components?
+    // - on handle wheel event
+    console.log(screenOffset, translatedOffset, zoom)
+  }
+
 
   function handleMouseDown(e: ReactMouseEvent<"div">) {
     prevDragPos = { x: e.clientX, y: e.clientY }
@@ -73,57 +97,20 @@ export default function NodeCanvas() {
 
   function handleMouseMove(e: ReactMouseEvent<"div">) {
     e.preventDefault()
-    if (!isDragging || !containerRef.current)
+    if (!isDragging)
       return
-    const width = containerRef.current.offsetWidth
-    const height = containerRef.current.offsetHeight
 
     // runs when the mouse is dragged while the mouse wheel is pressed
-    const newOrigin = {
-      x: origin.x + e.clientX - prevDragPos.x,
-      y: origin.y + e.clientY - prevDragPos.y,
-    }
-    const newOriginZoomed = {
-      x: newOrigin.x - width * (zoom - 1) / 2,
-      y: newOrigin.y - height * (zoom - 1) / 2,
-    }
+    screenOffset.x += e.clientX - prevDragPos.x
+    screenOffset.y += e.clientY - prevDragPos.y
     prevDragPos.x = e.clientX
     prevDragPos.y = e.clientY
-    dispatch(setOrigin(newOrigin))
-    dispatch(setOriginZoomed(newOriginZoomed))
-    setDragStyle({
-      transform: `matrix(${zoom}, 0, 0, ${zoom}, ${newOrigin.x}, ${newOrigin.y})`,
-    })
-    setContainerStyle({
-      backgroundPositionX: newOriginZoomed.x,
-      backgroundPositionY: newOriginZoomed.y,
-      backgroundSize: `${zoom * 100}px ${zoom * 100}px`,
-    })
-    console.log(newOrigin, newOriginZoomed, zoom)
+    updateCanvasStyle()
   }
 
   function handleWheel(e: ReactWheelEvent<"div">) {
-    if (!containerRef.current)
-      return
-    const width = containerRef.current.offsetWidth
-    const height = containerRef.current.offsetHeight
-    const newZoom = zoom * (zoomDelta ** Math.sign(e.deltaY))
-    const newOriginZoomed = {
-      x: origin.x - width * (newZoom - 1) / 2,
-      y: origin.y - height * (newZoom - 1) / 2,
-    }
-
-    dispatch(setZoom(newZoom))
-    dispatch(setOrigin(origin))
-    dispatch(setOriginZoomed(newOriginZoomed))
-    setDragStyle({
-      transform: `matrix(${newZoom}, 0, 0, ${newZoom}, ${origin.x}, ${origin.y})`,
-    })
-    setContainerStyle({
-      backgroundPositionX: newOriginZoomed.x,
-      backgroundPositionY: newOriginZoomed.y,
-      backgroundSize: `${newZoom * 100}px ${newZoom * 100}px`,
-    })
+    zoom *= zoomDelta ** Math.sign(e.deltaY)
+    updateCanvasStyle()
   }
 
   useEffect(() => {
@@ -133,6 +120,7 @@ export default function NodeCanvas() {
         getNodeComponent('node2', 'output', { x: 500, y: 100 }),
       ])
       setIsLoaded(true)
+      updateCanvasStyle() // remove, if you want to keep the offset and zoom of screen after refresh
       // setNodes(Array(1).fill(0).map((_, i) => getNodeComponent('node' + i, 'input_list', { x: 40, y: 100 })))
     })
   }, [])

@@ -1,9 +1,11 @@
-import { useDispatchTyped, useSelectorTyped } from '@/redux/hooks';
+import { useDispatchTyped } from '@/redux/hooks';
 import { moveNode } from '@/redux/connectorsSlice';
 import { Theme } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-import { ReactNode, useRef } from 'react';
+import { ReactNode, useRef, useState } from 'react';
 import Draggable, { DraggableData, DraggableEvent } from 'react-draggable';
+import { getCanvasZoom } from './NodeCanvas';
+import { Coord2D } from '@/types/util';
 
 const gridSize = 20;
 
@@ -41,22 +43,22 @@ export type NodeProps = {
 export default function Node(props: NodeProps) {
   const classes = useStyles();
   const nodeRef = useRef(null);
-  const canvasZoom = useSelectorTyped(state => state.canvas.zoom);
+  // const [position, setPosition] = useState<Coord2D>({ x: props.x, y: props.y });
 
   const dispatch = useDispatchTyped();
 
   function handleDrag(event: DraggableEvent, data: DraggableData) {
+    console.log({ x: data.deltaX, y: data.deltaY })
     dispatch(moveNode({
       nodeKey: props.nodeKey,
       by: { x: data.deltaX, y: data.deltaY }
     }))
   }
-
+  console.log('renewwww')
   return (
     <Draggable
       handle={'.' + classes.header}
       defaultPosition={{ x: props.x, y: props.y }}
-      scale={((canvasZoom) - 1) * 0.972 + 1}
       grid={[gridSize, gridSize]}
       nodeRef={nodeRef}
       onDrag={handleDrag}
