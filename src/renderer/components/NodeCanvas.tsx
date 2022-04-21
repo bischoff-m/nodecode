@@ -49,16 +49,24 @@ const useStyles = makeStyles((theme: Theme) => ({
   draggable: {
     width: '100vw',
     height: '100vh',
-    // transition: 'transform .3s',
   },
-  marker: {
-    position: 'absolute',
-    left: 500,
-    top: 300,
-    width: 10,
-    height: 10,
-    backgroundColor: 'red',
-    zIndex: 2000,
+  // marker: { // TODO: remove
+  //   position: 'absolute',
+  //   left: 500,
+  //   top: 300,
+  //   width: 10,
+  //   height: 10,
+  //   backgroundColor: 'red',
+  //   zIndex: 2000,
+  // },
+  dragging: {
+    cursor: 'grabbing',
+  },
+  animatedTransition: {
+    transition: 'transform .3s',
+  },
+  animatedBackground: {
+    transition: 'background-position .3s, background-size .3s',
   },
 }));
 
@@ -70,7 +78,8 @@ export default function NodeCanvas() {
 
   // Refs
   const containerRef = useRef<HTMLDivElement>(null);
-  const markerRef = useRef<HTMLDivElement>(null);
+  const draggableRef = useRef<HTMLDivElement>(null);
+  // const markerRef = useRef<HTMLDivElement>(null); // TODO: remove
 
   // React state
   const [nodes, setNodes] = useState<ReactElement[]>();
@@ -101,8 +110,21 @@ export default function NodeCanvas() {
 
   function handleMouseDown(e: ReactMouseEvent<"div">) {
     prevDragPos = { x: e.clientX, y: e.clientY }
+    // if wheel was pressed
     isDragging = e.button === 1
-    isDragging && e.preventDefault()
+    if (isDragging) {
+      e.preventDefault()
+      containerRef.current && containerRef.current.classList.add(classes.dragging)
+      containerRef.current && containerRef.current.classList.remove(classes.animatedBackground)
+      draggableRef.current && draggableRef.current.classList.remove(classes.animatedTransition)
+    }
+  }
+
+  function handleMouseUp(e: ReactMouseEvent<"div">) {
+    isDragging = false
+    containerRef.current && containerRef.current.classList.remove(classes.dragging)
+    containerRef.current && containerRef.current.classList.add(classes.animatedBackground)
+    draggableRef.current && draggableRef.current.classList.add(classes.animatedTransition)
   }
 
   function handleMouseMove(e: ReactMouseEvent<"div">) {
@@ -120,8 +142,8 @@ export default function NodeCanvas() {
 
   function handleWheel(e: ReactWheelEvent<"div">) {
     // TODO: min und max für zoom und zoomDelta zu zoomFactor umbenennen
-    // Zeige Hand beim bewegen
-
+    
+    // Calculations from https://stackoverflow.com/a/46833254/16953263
     // position of cursor relative to the center point of the container
     let zoomPoint = {
       x: e.clientX - screenSize.width / 2,
@@ -135,6 +157,10 @@ export default function NodeCanvas() {
 
     screenOffset.x = zoomPoint.x - zoomTarget.x * zoom
     screenOffset.y = zoomPoint.y - zoomTarget.y * zoom
+
+    let drag = draggableRef.current
+    if (drag && !drag.classList.contains(classes.animatedTransition))
+      drag.classList.add(classes.animatedTransition)
 
     // update this component
     updateCanvasStyle()
@@ -156,17 +182,18 @@ export default function NodeCanvas() {
 
   return (
     <directstyled.div
-      className={classes.container}
+      className={`${classes.container} ${classes.animatedBackground}`}
       ref={containerRef}
-      onMouseUp={() => { isDragging = false }}
       onMouseDown={handleMouseDown}
+      onMouseUp={handleMouseUp}
       onMouseMove={handleMouseMove}
       onMouseEnter={(e) => { if (e.buttons !== 4) isDragging = false }}
       onWheel={handleWheel}
       style={containerStyle}
     >
       <directstyled.div
-        className={classes.draggable}
+        className={`${classes.draggable} ${classes.animatedTransition}`}
+        ref={draggableRef}
         style={dragStyle}
       >
         {/* TODO: remove */}
