@@ -5,22 +5,7 @@ import { ThemeProvider } from '@mui/material/styles';
 import { Provider } from 'react-redux';
 import store from '@/redux/store';
 
-
-
-
-// import WebSocket from 'ws';
-// console.log(WebSocket);
-
-// // from https://www.npmjs.com/package/ws - Simple Server
-// const wss = new WebSocket.Server({ port: 8080 });
-
-// wss.on('connection', (ws) => {
-//   ws.on('message', (data) => {
-//     console.log('received: %s', data);
-//   });
-
-//   ws.send('something');
-// });
+// TODO: connect http server and socket.io to frontend via ipc
 
 export default function App() {
   return (
