@@ -6,7 +6,6 @@ import CurveConnection from '@/components/CurveConnection';
 import { getNodeComponent, onNodesLoaded } from '@/components/NodeFactory';
 import { directstyled, useDirectStyle } from '@/lib/direct-styled'; // https://github.com/everweij/direct-styled
 import { Coord2D } from '@/types/util';
-import { height } from '@mui/system';
 
 // TODO: rename Coord2D to Vec2D and ...coords to pos(ition)
 // TODO: add offset in handleWheelto always zoom into the center of the screen instead of the canvas
@@ -50,6 +49,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   draggable: {
     width: '100vw',
     height: '100vh',
+    // transition: 'transform .3s',
   },
   marker: {
     position: 'absolute',
@@ -77,35 +77,19 @@ export default function NodeCanvas() {
   const [isLoaded, setIsLoaded] = useState(false);
 
   function updateCanvasStyle() {
-    if (!containerRef.current || !markerRef.current)
+    if (!containerRef.current)
       return
+
     const width = containerRef.current.offsetWidth
     const height = containerRef.current.offsetHeight
     screenSize = { width: width, height: height }
-
     const translatedOffset = screenToCanvas(screenOffset)
-    const zoomedOffset = screenToCanvas({
-      x: screenOffset.x + width / 2,
-      y: screenOffset.y + height / 2,
-    })
-    // fuer zoom = 1.25 = 5/4 ist (1 - zoom / 2) = 3/8
-    // 3/8 * 4/5 = 3/10
-    const zoomedOffset2 = {
-      x: screenOffset.x + width * (1 - zoom / 2),
-      y: screenOffset.y + height * (1 - zoom / 2),
-    }
-    const translateBy = {
-      x: width / 2 / zoom - zoomedOffset2.x / zoom, // fuer zoom = 5/4: 1/2 * 4/5 - 3/8 * 4/5 = 4/10 - 3/10 = 1/10
-      y: height / 2 / zoom - zoomedOffset2.y / zoom,
-    }
-    console.log(translateBy, screenOffset, translatedOffset)
 
-    markerRef.current.style.setProperty('transform', `translate(${translateBy.x}px, ${translateBy.y}px)`)
-    // Das hatte funktioniert
-    // markerRef.current.style.setProperty('transform', `translate(${(width - zoomedOffset.x) / zoom}px, ${(height - zoomedOffset.y) / zoom}px)`)
+    // TODO: remove
+    // markerRef.current.style.setProperty('transform', `translate(${-screenOffset.x / zoom}px, ${-screenOffset.y / zoom}px)`)
 
     setDragStyle({
-      transform: `matrix(${zoom}, 0, 0, ${zoom}, ${screenOffset.x}, ${screenOffset.y})`,
+      transform: `translate(${screenOffset.x}px, ${screenOffset.y}px) scale(${zoom}, ${zoom})`,
     })
     setContainerStyle({
       backgroundPositionX: translatedOffset.x,
@@ -135,34 +119,22 @@ export default function NodeCanvas() {
   }
 
   function handleWheel(e: ReactWheelEvent<"div">) {
+    // TODO: min und max für zoom und zoomDelta zu zoomFactor umbenennen
+    // Zeige Hand beim bewegen
+
+    // position of cursor relative to the center point of the container
+    let zoomPoint = {
+      x: e.clientX - screenSize.width / 2,
+      y: e.clientY - screenSize.height / 2,
+    }
+    let zoomTarget = {
+      x: (zoomPoint.x - screenOffset.x) / zoom,
+      y: (zoomPoint.y - screenOffset.y) / zoom,
+    }
     zoom *= zoomDelta ** Math.sign(e.deltaY)
 
-    // beim rauszoomen, canvas in + richtung verschieben
-    // beim reinzoomen, canvas in - richtung verschieben
-    // let zoomedOffset = canvasToScreen({ x: screenSize.width / 2, y: screenSize.height / 2 })
-    const zoomedOffset = screenToCanvas({
-      x: screenOffset.x + screenSize.width / 2,
-      y: screenOffset.y + screenSize.height / 2,
-    })
-    let translate = (getter: (coords: Coord2D) => number) => getter(screenOffset) - (getter(zoomedOffset) - getter(screenOffset))
-
-    if (e.deltaY >= 0) {
-      // zoom out
-      // screenOffset.x -= (screenSize.width / 2 - zoomedOffset.x) / zoom - screenOffset.x
-      // screenOffset.y -= (screenSize.height / 2 - zoomedOffset.y) / zoom - screenOffset.y
-      // screenOffset.x = translate((coords: Coord2D) => coords.x)
-      // screenOffset.y = translate((coords: Coord2D) => coords.y)
-      // screenOffset = {
-      //   x: screenOffset.x *
-      // }
-      console.log("rauszoomen", screenOffset, zoom)
-    }
-    else {
-      console.log("reinzoomen", screenOffset, zoom)
-      // zoom in
-      // screenOffset.x += screenOffset.x * zoom
-      // screenOffset.y += screenOffset.y * zoom
-    }
+    screenOffset.x = zoomPoint.x - zoomTarget.x * zoom
+    screenOffset.y = zoomPoint.y - zoomTarget.y * zoom
 
     // update this component
     updateCanvasStyle()
@@ -198,7 +170,7 @@ export default function NodeCanvas() {
         style={dragStyle}
       >
         {/* TODO: remove */}
-        <div className={classes.marker} ref={markerRef}></div>
+        {/* <div className={classes.marker} ref={markerRef}></div> */}
         <div className={classes.nodesContainer}>
           {nodes}
         </div>
