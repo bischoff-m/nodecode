@@ -16,3 +16,6 @@ data_old/
 
 # Python cache
 __pycache__/
+
+# Python file for prototyping
+playground.py
