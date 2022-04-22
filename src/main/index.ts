@@ -4,11 +4,6 @@ import isDev from 'electron-is-dev';
 import fs from 'fs';
 import path from 'path';
 
-// import express from 'express';
-// import { createServer } from "http";
-// import { Server } from "socket.io";
-// import { ServerToClientEvents, ClientToServerEvents, InterServerEvents, SocketData } from '@/types/server';
-
 if (isDev)
   app.disableHardwareAcceleration();
 
@@ -17,22 +12,32 @@ if (!app.requestSingleInstanceLock()) {
   process.exit(0)
 }
 
+// const express = require('express');
+import express from 'express';
+import { createServer } from "http";
+import { Server } from "socket.io";
+import { ServerToClientEvents, ClientToServerEvents, InterServerEvents, SocketData } from '@/types/server';
 
 // Doc: https://stackoverflow.com/questions/66686377/how-to-tie-socket-io-width-express-an-typescript
-// const expressApp = express();
-// const httpServer = createServer(expressApp);
-// const io = new Server<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData>(httpServer);
 
-// expressApp.get("/", (req, res) => {
-//   console.log('get /');
-//   res.send({ uptime: process.uptime() });
-// });
+// Express server
+const expressApp = express();
+const httpServer = createServer(expressApp);
 
-// io.on("connection", (socket) => {
-//   console.log('connected!', socket)
-// });
+expressApp.get("/", (req, res) => {
+  console.log('get /');
+  res.send({ uptime: process.uptime() });
+});
 
-// httpServer.listen(5000);
+// Socket.io server
+const io = new Server<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData>(httpServer);
+
+io.on("connection", (socket) => {
+  console.log('connected!', socket)
+});
+
+// start express server
+httpServer.listen(5000);
 
 
 
