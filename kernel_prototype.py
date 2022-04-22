@@ -26,10 +26,10 @@ async def connect():
     print('connection established')
 
 
-@sio.event
-async def my_message(data):
+@sio.on('test')
+async def on_test(data):
     print('message received with ', data)
-    await sio.emit('my response', {'response': 'my response'})
+    await sio.emit('test', {'response': 'my response'})
 
 
 @sio.event
