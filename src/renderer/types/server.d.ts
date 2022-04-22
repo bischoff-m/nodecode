@@ -2,10 +2,11 @@ export interface ServerToClientEvents {
   noArg: () => void;
   basicEmit: (a: number, b: string, c: Buffer) => void;
   withAck: (d: string, callback: (e: number) => void) => void;
+  test: (msg: any) => void
 }
 
 export interface ClientToServerEvents {
-  hello: () => void;
+  test: (msg: any) => void;
 }
 
 export interface InterServerEvents {
@@ -13,6 +14,5 @@ export interface InterServerEvents {
 }
 
 export interface SocketData {
-  name: string;
-  age: number;
+  example: any
 }

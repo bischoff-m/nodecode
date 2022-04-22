@@ -3,6 +3,7 @@ import { app, BrowserWindow, ipcMain } from 'electron'
 import isDev from 'electron-is-dev';
 import fs from 'fs';
 import path from 'path';
+import startServer from './server';
 
 if (isDev)
   app.disableHardwareAcceleration();
@@ -11,34 +12,6 @@ if (!app.requestSingleInstanceLock()) {
   app.quit()
   process.exit(0)
 }
-
-// const express = require('express');
-import express from 'express';
-import { createServer } from "http";
-import { Server } from "socket.io";
-import { ServerToClientEvents, ClientToServerEvents, InterServerEvents, SocketData } from '@/types/server';
-
-// Doc: https://stackoverflow.com/questions/66686377/how-to-tie-socket-io-width-express-an-typescript
-
-// Express server
-const expressApp = express();
-const httpServer = createServer(expressApp);
-
-expressApp.get("/", (req, res) => {
-  console.log('get /');
-  res.send({ uptime: process.uptime() });
-});
-
-// Socket.io server
-const io = new Server<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData>(httpServer);
-
-io.on("connection", (socket) => {
-  console.log('connected!', socket)
-});
-
-// start express server
-httpServer.listen(5000);
-
 
 
 let win: BrowserWindow | null = null
@@ -68,6 +41,8 @@ async function createWindow() {
     win?.show();
     if (!isDev)
       win?.maximize();
+
+    startServer();
   })
 }
 
