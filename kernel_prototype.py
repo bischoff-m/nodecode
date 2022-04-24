@@ -1,45 +1,42 @@
 
-# import json
-# from pyknotflow.core import NodeProgram
-# import pyknotflow.nodes as nodes
-
-# nodes.register_all()
-
-# with open('./config/programs/example_program.json', 'r') as f:
-#     programDef = json.load(f)
-
-# program = NodeProgram(programDef)
-# output = program.run()
-
-# for outputID, data in output.items():
-#     print(f'Output Node {outputID}:')
-#     print(data)
-
-import asyncio
+import json
+from pyknotflow.core import NodeProgram
+import pyknotflow.nodes as nodes
 import socketio
 
-sio = socketio.AsyncClient()
+# TODO: check if non-async client can process multiple requests at the same time
+#       if async client is needed, uninstall requests and websocket dependencies
+
+nodes.register_all()
+sio = socketio.Client()
 
 
 @sio.event
-async def connect():
+def connect():
     print('connection established')
 
 
-@sio.on('test')
-async def on_test(data):
+@sio.on('run')
+def on_run(data):
     print('message received with ', data)
-    await sio.emit('test', {'response': 'my response'})
+
+    # load and run example program and send back its output
+    with open('./config/programs/example_program.json', 'r') as f:
+        programDef = json.load(f)
+    program = NodeProgram(programDef)
+    output = program.run()
+    sio.emit('output', output)
+
+
+@sio.on('quit')
+def on_quit():
+    sio.disconnect()
 
 
 @sio.event
-async def disconnect():
+def disconnect():
     print('disconnected from server')
 
 
-async def main():
-    await sio.connect('http://localhost:5000')
-    await sio.wait()
-
-if __name__ == '__main__':
-    asyncio.run(main())
+sio.connect('http://localhost:5000')
+sio.wait()
