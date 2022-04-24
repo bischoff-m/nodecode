@@ -25,11 +25,12 @@ export default function startServer() {
     socket.on('disconnect', () => {
       console.log('user disconnected');
     });
-    socket.on('test', (msg) => {
+    socket.on('output', (msg) => {
       console.log('received: ', msg);
+      socket.emit('quit')
     })
 
-    socket.emit('test', { 'message': 'hello' })
+    socket.emit('run', 'ja moin')
   });
 
   // start express server
