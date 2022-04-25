@@ -7,6 +7,10 @@ import store from '@/redux/store';
 
 // TODO: connect http server and socket.io to frontend via ipc
 
+window.api.on('hello', (args) => {
+  console.log('sent from main to renderer:', args)
+})
+
 export default function App() {
   return (
     <div style={{ overflow: 'hidden' }}>

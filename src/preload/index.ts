@@ -12,39 +12,29 @@ const { appendLoading, removeLoading } = useLoading();
 
 
 const toMainChannels: string[] = [
-  'requestPublicFile'
+  'requestPublicFile',
+  'quitBackend',
 ]
 
 const fromMainChannels: string[] = [
-  'responsePublicFile'
+  'hello',
 ]
 
+
+const channelExists = (channels: string[], channel: string) => {
+  if (!channels.includes(channel))
+    throw Error('IPC Channel does not exist.')
+  return true
+}
 // https://www.electronjs.org/de/docs/latest/api/ipc-renderer
 const api: Window['api'] = {
-  send: (channel, ...args) => {
-    if (toMainChannels.includes(channel))
-      ipcRenderer.send(channel, ...args);
-    else
-      throw Error('IPC Channel does not exist.');
-  },
   invoke: (channel, ...args) => {
-    if (toMainChannels.includes(channel))
-      return ipcRenderer.invoke(channel, ...args);
-    else
-      throw Error('IPC Channel does not exist.');
+    channelExists(toMainChannels, channel)
+    return ipcRenderer.invoke(channel, ...args)
   },
-  on: (channel, func) => {
-    if (fromMainChannels.includes(channel))
-      ipcRenderer.on(channel, (event, ...args) => func(...args));
-    else
-      throw Error('IPC Channel does not exist.');
-  },
-  once: (channel, func) => {
-    if (fromMainChannels.includes(channel))
-      ipcRenderer.once(channel, (event, ...args) => func(...args));
-    else
-      throw Error('IPC Channel does not exist.');
-  },
+  send: (channel, ...args) => channelExists(toMainChannels, channel) && ipcRenderer.send(channel, ...args),
+  on: (channel, func) => channelExists(fromMainChannels, channel) && ipcRenderer.on(channel, (event, ...args) => func(...args)),
+  once: (channel, func) => channelExists(fromMainChannels, channel) && ipcRenderer.once(channel, (event, ...args) => func(...args)),
   appendLoading,
   removeLoading,
 }

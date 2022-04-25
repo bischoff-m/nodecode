@@ -42,6 +42,7 @@ async function createWindow() {
     if (!isDev)
       win?.maximize();
 
+    win?.webContents.send('hello', { 'mymessage': 42 })
     startServer();
   })
 }
