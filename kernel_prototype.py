@@ -25,7 +25,7 @@ def on_run(data):
         programDef = json.load(f)
     program = NodeProgram(programDef)
     output = program.run()
-    sio.emit('output', output)
+    return output
 
 
 @sio.on('quit')
