@@ -4,11 +4,12 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider } from '@mui/material/styles';
 import { Provider } from 'react-redux';
 import store from '@/redux/store';
+import { Button } from '@mui/material';
 
 // TODO: connect http server and socket.io to frontend via ipc
 
-window.api.on('hello', (args) => {
-  console.log('sent from main to renderer:', args)
+window.api.on('fromBackend', (data) => {
+  console.log('sent from backend to renderer:', data)
 })
 
 export default function App() {
@@ -17,6 +18,15 @@ export default function App() {
       <Provider store={store}>
         <ThemeProvider theme={theme}>
           <CssBaseline enableColorScheme />
+          <div style={{
+            position: 'absolute',
+            zIndex: 10000,
+            right: 0,
+            backgroundColor: '#202020',
+          }}>
+            <Button onClick={() => window.api.send('runBackend')}>RUN</Button>
+            <Button onClick={() => window.api.send('quitBackend')}>QUIT</Button>
+          </div>
           <NodeCanvas />
         </ThemeProvider>
       </Provider>

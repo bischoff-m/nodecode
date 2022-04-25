@@ -14,10 +14,11 @@ const { appendLoading, removeLoading } = useLoading();
 const toMainChannels: string[] = [
   'requestPublicFile',
   'quitBackend',
+  'runBackend',
 ]
 
 const fromMainChannels: string[] = [
-  'hello',
+  'fromBackend',
 ]
 
 

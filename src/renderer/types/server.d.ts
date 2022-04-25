@@ -1,6 +1,6 @@
 export interface ServerToClientEvents {
   quit: () => void,
-  run: (program: any) => void,
+  run: (program: any, callback: (data: any) => void) => void,
 }
 
 export interface ClientToServerEvents {

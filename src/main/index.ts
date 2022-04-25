@@ -42,8 +42,8 @@ async function createWindow() {
     if (!isDev)
       win?.maximize();
 
-    win?.webContents.send('hello', { 'mymessage': 42 })
-    startServer();
+    // TODO: only start server, if not already created (reload throws error)
+    win && startServer(win);
   })
 }
 
