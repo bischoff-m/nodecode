@@ -18,5 +18,6 @@ interface Window {
     once: (channel: string, func: (...args: any[]) => void) => void
     appendLoading: () => void
     removeLoading: () => void
+    listenerCount: (eventName: string | symbol) => number
   }
 }

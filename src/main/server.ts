@@ -25,16 +25,54 @@ export default function startServer(win: BrowserWindow) {
 
     socket.on('disconnect', () => {
       console.log('user disconnected');
-      ipcMain.removeHandler('quitBackend')
-      ipcMain.removeHandler('runBackend')
+      ipcMain.removeAllListeners('toBackend')
+      ipcMain.removeHandler('toBackend')
     });
-    ipcMain.on('quitBackend', () => socket.emit('quit'))
-    // TODO: how does this 'callback' argument work? the backend doesnt use it
-    ipcMain.on('runBackend', () => socket.emit(
-      'run',
-      '...program to run...',
-      data => win.webContents.send('fromBackend', data)
-    ))
+
+    socket.onAny((eventName, ...args) => {
+      win.webContents.send('fromBackend', ...args)
+      console.log('event from backend: ', args)
+    })
+
+    // TODO: check if toBackend handler has already been registered and never unregister
+    //       check if backend is connected before socket.emit
+
+    // SEND WITHOUT RETURN VALUE
+    // relay event from renderer process to backend without expecting a response
+    ipcMain.on('toBackend', (ipcEvent, backendEvent) => {
+      // check if object given by the renderer process has needed properties 
+      if (!backendEvent.hasOwnProperty('name'))
+        throw new Error('Did not provide name property in toBackend event.')
+      let args = backendEvent.hasOwnProperty('args') ? backendEvent.args : []
+
+      // send event to backend without callback
+      socket.emit(
+        backendEvent.name,
+        ...args
+      )
+    })
+
+    // SEND WITH RETURN VALUE
+    // relay event from renderer process to backend and pass response from backend back to renderer
+    ipcMain.handle('toBackend', (ipcEvent, backendEvent) => {
+      // return a promise that resolves to the data returned by the backend on success
+      return new Promise((resolve, reject) => {
+        // check if object given by the renderer process has needed properties 
+        if (!backendEvent.hasOwnProperty('name'))
+          reject(new Error('Did not provide name property in toBackend event.'))
+        let args = backendEvent.hasOwnProperty('args') ? backendEvent.args : []
+
+        // send event to backend and resolve using the data returned by the backend
+        socket.emit(
+          backendEvent.name,
+          ...args,
+          (data: any) => resolve(data)
+        )
+        // if the given timeout expires, reject the promise
+        if (backendEvent.hasOwnProperty('timeout'))
+          setTimeout(() => reject(new Error('Timeout when sending event from main to backend.')), backendEvent.timeout)
+      })
+    })
   });
 
   // start express server
