@@ -19,6 +19,7 @@ def connect():
 @sio.on('run')
 def on_run(data):
     print('message received with ', data)
+    sio.emit('output', 'hier meine daten')
 
     # load and run example program and send back its output
     with open('./config/programs/example_program.json', 'r') as f:
