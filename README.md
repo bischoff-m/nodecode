@@ -1,4 +1,4 @@
-# knotflow
+# nodecode
 Graphical Node Editor
 
 
@@ -46,3 +46,15 @@ Graphical Node Editor
 
 		// For message to renderer
     	win?.webContents.send('mymessage', ...args)
+
+## Name??
+
+- NodeLoom (noch nicht vergeben)
+- NodeCode (noch nicht wirklich vergeben)
+- NodePad
+- NodeBook
+- NodeWise
+- NodeFolio
+- NodeTweaker
+- Nodex
+- (Node)Weaver

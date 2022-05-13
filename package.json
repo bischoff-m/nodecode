@@ -1,13 +1,13 @@
 {
-  "name": "knotflow",
-  "productName": "KnotFlow",
+  "name": "nodecode",
+  "productName": "NodeCode",
   "version": "0.1.0",
   "description": "Graphical Node Editor",
   "author": "Marco Bischoff <bischoff_m@aim.com>",
   "license": "GPL-3.0-or-later",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bischoff-m/knotflow.git"
+    "url": "git+https://github.com/bischoff-m/nodecode.git"
   },
   "engines": {
     "node": ">=17.0.0",

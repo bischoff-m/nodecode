@@ -1,5 +1,5 @@
 {
-  "appId": "de.kohlo.knotflow",
+  "appId": "de.kohlo.nodecode",
   "asar": true,
   "directories": {
     "output": "release/${version}"
