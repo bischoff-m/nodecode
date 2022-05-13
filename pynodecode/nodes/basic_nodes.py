@@ -1,5 +1,5 @@
-from pyknotflow.core import Node
-from pyknotflow.util import register_node
+from pynodecode.core import Node
+from pynodecode.util import register_node
 
 
 @register_node('input_list')

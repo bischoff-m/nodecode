@@ -1,7 +1,7 @@
 
 import json
-from pyknotflow.core import NodeProgram
-import pyknotflow.nodes as nodes
+from pynodecode.core import NodeProgram
+import pynodecode.nodes as nodes
 import socketio
 
 # TODO: check if non-async client can process multiple requests at the same time
