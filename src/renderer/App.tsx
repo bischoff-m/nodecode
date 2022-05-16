@@ -5,6 +5,7 @@ import { ThemeProvider } from '@mui/material/styles';
 import { Provider } from 'react-redux';
 import store from '@/redux/store';
 import { Button } from '@mui/material';
+import { AppShell, Navbar, Header, useMantineTheme } from '@mantine/core';
 
 type ToBackendEvent = {
   name: string,
@@ -28,28 +29,49 @@ function invokeBackend(event: ToBackendEvent): Promise<any> {
 }
 
 export default function App() {
+  // const theme = useMantineTheme();
+
+  function Nav() {
+    return (
+      <Navbar width={{ base: 60 }} p="xs">
+      </Navbar>
+    )
+  }
+
+  function Head() {
+    return (
+      <Header height={60} p="xs">
+        <Button
+          color="primary"
+          onClick={() => {
+            invokeBackend({
+              'name': 'run',
+              'args': ['hallo hier mein programm'],
+            }).then((data) => {
+              console.log('antwort ist zurück: ', data)
+            })
+          }}>RUN</Button>
+        <Button
+          color="primary"
+          onClick={() => sendBackend({ 'name': 'quit' })}
+        >QUIT</Button>
+      </Header>
+    )
+  }
+
+  const appShellStyle = {
+    backgroundColor: '#202020',
+    zIndex: 10000,
+  }
+
   return (
     <div style={{ overflow: 'hidden' }}>
       <Provider store={store}>
         <ThemeProvider theme={theme}>
           <CssBaseline enableColorScheme />
-          <div style={{
-            position: 'absolute',
-            zIndex: 10000,
-            right: 0,
-            backgroundColor: '#202020',
-          }}>
-            <Button onClick={() => {
-              invokeBackend({
-                'name': 'run',
-                'args': ['hallo hier mein programm'],
-              }).then((data) => {
-                console.log('antwort ist zurück: ', data)
-              })
-            }}>RUN</Button>
-            <Button onClick={() => sendBackend({ 'name': 'quit' })}>QUIT</Button>
-          </div>
+          <AppShell padding={0} navbar={Nav()} header={Head()} sx={appShellStyle}>
           <NodeCanvas />
+          </AppShell>
         </ThemeProvider>
       </Provider>
     </div>
