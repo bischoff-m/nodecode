@@ -1,4 +1,4 @@
-import { createStyles } from '@mantine/core';
+import { createStyles, Paper, MantineSize, Stack } from '@mantine/core';
 import { useDispatchTyped } from '@/redux/hooks';
 import { moveNode } from '@/redux/connectorsSlice';
 import { ReactNode, useRef, useState } from 'react';
@@ -7,28 +7,25 @@ import { getCanvasZoom, onZoomChanged } from './NodeCanvas';
 
 const gridSize = 20;
 
-const useStyles = createStyles((theme) => ({
-  card: {
-    position: 'absolute',
-    width: 300,
-    // backgroundColor: theme.palette.background.paper,
-    // borderRadius: theme.shape.borderRadius,
-    boxShadow: '0px 0px 5px rgb(0 0 0 / 60%)',
-  },
-  header: {
-    padding: 8,
-    paddingLeft: 14,
-    // backgroundColor: theme.palette.primary.main,
-    // borderTopLeftRadius: theme.shape.borderRadius,
-    // borderTopRightRadius: theme.shape.borderRadius,
-  },
-  content: {
-    padding: '10px 15px 10px 15px',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '10px',
-  },
-}));
+const useStyles = createStyles((theme) => {
+  const borderRadius = theme.defaultRadius as MantineSize;
+  return ({
+    card: {
+      position: 'absolute',
+      width: 300,
+    },
+    header: {
+      padding: 8,
+      paddingLeft: 14, // TODO: use mantine padding instead (sm, lg, xl, ...)
+      backgroundColor: theme.colors.blue[9],
+      borderTopLeftRadius: theme.radius[borderRadius],
+      borderTopRightRadius: theme.radius[borderRadius],
+    },
+    content: {
+      padding: theme.other.nodePadding,
+    },
+  })
+});
 
 export type NodeProps = {
   children?: ReactNode
@@ -65,14 +62,14 @@ export default function Node(props: NodeProps) {
       onDrag={handleDrag}
       scale={canvasZoom}
     >
-      <div className={classes.card} ref={nodeRef}>
+      <Paper className={classes.card} ref={nodeRef}>
         <div className={classes.header}>
           {props.title}
         </div>
-        <div className={classes.content}>
+        <Stack className={classes.content} justify="flex-start" spacing="sm">
           {props.children}
-        </div>
-      </div>
+        </Stack>
+      </Paper>
     </Draggable>
   )
 }

@@ -8,7 +8,6 @@ import Header from '@/components/Header';
 
 
 export default function App() {
-
   return (
     <div style={{ overflow: 'hidden' }}>
       <Provider store={store}>

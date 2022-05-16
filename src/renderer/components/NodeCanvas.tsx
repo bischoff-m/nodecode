@@ -1,5 +1,5 @@
 import { createStyles, MantineProvider } from '@mantine/core';
-import theme from '@/styles/theme_canvas';
+import { theme, styleOverrides } from '@/styles/theme_canvas';
 import { MouseEvent as ReactMouseEvent, WheelEvent as ReactWheelEvent, ReactElement, useEffect, useState, useRef } from 'react';
 import gridSvg from '@/assets/gridSvg.svg';
 import CurveConnection from '@/components/CurveConnection';
@@ -36,7 +36,6 @@ const useStyles = createStyles((theme) => ({
   container: {
     width: '100%',
     height: '100%',
-    // position: 'absolute', // to stop the parent container from clipping
     backgroundColor: theme.colors.dark[7],
     backgroundImage: `url(${gridSvg})`,
     backgroundRepeat: 'repeat',
@@ -47,8 +46,8 @@ const useStyles = createStyles((theme) => ({
     zIndex: 100,
   },
   draggable: {
-    // width: '100%',
-    // height: '100%',
+    width: '100%',
+    height: '100%',
   },
   // marker: { // TODO: remove
   //   position: 'absolute',
@@ -181,7 +180,7 @@ export default function NodeCanvas() {
   }, [])
 
   return (
-    <MantineProvider theme={theme} withNormalizeCSS withGlobalStyles>
+    <MantineProvider theme={theme} styles={styleOverrides} withNormalizeCSS withGlobalStyles>
       <directstyled.div
         className={`${classes.container} ${classes.animatedBackground} test`}
         ref={containerRef}

@@ -1,4 +1,4 @@
-import { createStyles } from '@mantine/core';
+import { createStyles, useMantineTheme } from '@mantine/core';
 import { registerConnector } from '@/redux/connectorsSlice';
 import { useDispatchTyped, useSelectorTyped } from '@/redux/hooks';
 import { useEffect, useRef } from 'react';
@@ -6,7 +6,6 @@ import type { FieldProps } from '@/types/util';
 
 // TODO: implement multiple connections on the same connector and datatypes
 // TODO: add aditional checks for properties
-const handleSize = 14;
 
 const useStyles = createStyles((theme) => ({
   container: {
@@ -14,10 +13,10 @@ const useStyles = createStyles((theme) => ({
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: '100%',
-    height: 40,
+    height: theme.other.fieldHeight,
     alignItems: 'center',
-    paddingLeft: 3,
-    paddingRight: 3,
+    paddingLeft: 5,
+    paddingRight: 5,
   },
   connContainer: {
     display: 'flex',
@@ -25,21 +24,20 @@ const useStyles = createStyles((theme) => ({
     justifyContent: 'space-between',
     position: 'absolute',
     width: '100%',
-    height: 40,
-    transform: 'translate(-18px, 0)',
+    height: theme.other.fieldHeight,
+    transform: `translate(-${theme.other.nodePadding + 5}px, 0)`,
     '& :first-of-type': {
-      transform: 'translate(-7px, 13px)',
+      transform: `translate(-${theme.other.handleSize / 2}px, ${(theme.other.fieldHeight - theme.other.handleSize) / 2}px)`,
     },
-    '& :nth-of-type(2)': {
-      transform: 'translate(7px, 13px)',
+    '& :last-of-type': {
+      transform: `translate(${theme.other.handleSize / 2}px, ${(theme.other.fieldHeight - theme.other.handleSize) / 2}px)`,
     }
   },
   connector: {
-    width: handleSize,
-    height: handleSize,
-    // backgroundColor: theme.palette.primary.main,
-    backgroundColor: 'red',
-    borderRadius: handleSize / 2,
+    width: theme.other.handleSize,
+    height: theme.other.handleSize,
+    backgroundColor: theme.colors.blue[9],
+    borderRadius: theme.other.handleSize / 2,
   },
 }));
 
@@ -54,6 +52,7 @@ export default function InputOutputField(props: InputOutputFieldProps) {
     throw Error('No inputLabel and no outputLabel given to InputOutputField. It needs at least one of them.')
 
   const { classes } = useStyles();
+  const theme = useMantineTheme();
   const leftHandleRef = useRef<HTMLDivElement>(null);
   const rightHandleRef = useRef<HTMLDivElement>(null);
   const canvasOrigin = useSelectorTyped(state => state.canvas.origin);
@@ -75,8 +74,8 @@ export default function InputOutputField(props: InputOutputFieldProps) {
           nodeKey: props.nodeKey,
           fieldKey: props.fieldKey,
           pos: {
-            x: pos.x - canvasOrigin.x + handleSize / 2,
-            y: pos.y - canvasOrigin.y + handleSize / 2,
+            x: pos.x - canvasOrigin.x + theme.other.handleSize / 2,
+            y: pos.y - canvasOrigin.y + theme.other.handleSize / 2,
           },
           isInput: isLeft,
         }))
