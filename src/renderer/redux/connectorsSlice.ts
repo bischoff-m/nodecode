@@ -1,27 +1,27 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import type { Coord2D } from '@/types/util';
+import type { Vec2D } from '@/types/util';
 
 export type Connector = {
   connKey: string,
   nodeKey: string,
   fieldKey: string,
-  coords: Coord2D,
+  pos: Vec2D,
   isInput: boolean,
 }
 
 type NodeUpdate = {
   nodeKey: string,
-  by: Coord2D,
+  by: Vec2D,
 }
 
 // Define a type for the slice state
 interface ConnectorsState {
-  coordinates: Connector[], // TODO: change name
+  position: Connector[], // TODO: change name
 }
 
 // Define the initial state using that type
 const initialState: ConnectorsState = {
-  coordinates: [],
+  position: [],
 }
 
 export const connectorSlice = createSlice({
@@ -30,19 +30,19 @@ export const connectorSlice = createSlice({
   reducers: {
     registerConnector: (state, action: PayloadAction<Connector>) => {
       const key = action.payload.connKey;
-      const connKeys = state.coordinates.map(item => item.connKey)
+      const connKeys = state.position.map(item => item.connKey)
       const index = connKeys.indexOf(key)
       if (index !== -1)
-        state.coordinates[index] = action.payload
+        state.position[index] = action.payload
       else
-        state.coordinates.push(action.payload)
+        state.position.push(action.payload)
     },
     moveNode: (state, action: PayloadAction<NodeUpdate>) => {
       const p = action.payload
-      state.coordinates.forEach(conn => {
+      state.position.forEach(conn => {
         if (conn.nodeKey === p.nodeKey) {
-          conn.coords.x += p.by.x
-          conn.coords.y += p.by.y
+          conn.pos.x += p.by.x
+          conn.pos.y += p.by.y
         }
       })
     },

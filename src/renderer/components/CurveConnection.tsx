@@ -4,7 +4,7 @@ import type { MouseEvent as ReactMouseEvent } from 'react';
 import Draggable, { DraggableEvent } from 'react-draggable';
 import { useSelectorTyped } from '@/redux/hooks';
 import { getScreenOffset, getCanvasZoom, canvasToScreen } from '@/components/NodeCanvas';
-import { Coord2D } from '@/types/util';
+import { Vec2D } from '@/types/util';
 import type { Connector } from '@/redux/connectorsSlice';
 
 const handleSize = 40;
@@ -45,10 +45,10 @@ export default function CurveConnection(props: CurveConnectionProps) {
   const refSVG = useRef<SVGSVGElement>(null);
 
   // Redux state
-  const connectCoords = useSelectorTyped(state => state.connectors.coordinates);
+  const connectPos = useSelectorTyped(state => state.connectors.position);
 
   // React state
-  const [mousePos, setMousePos] = useState<Coord2D>({ x: 0, y: 0 });
+  const [mousePos, setMousePos] = useState<Vec2D>({ x: 0, y: 0 });
   const [connKeyLeft, setConnKeyLeft] = useState<string | undefined>(undefined);
   const [connKeyRight, setConnKeyRight] = useState<string | undefined>(undefined);
   // is true when user began to drag, even if he didnt move his mouse yet
@@ -59,22 +59,22 @@ export default function CurveConnection(props: CurveConnectionProps) {
     setConnKeyRight(props.defaultConnKeyRight)
   }, [props])
 
-  function coordsFromConnKey(connKey: string) {
-    // Takes a unique id for a connector and looks up the coordinates
-    let conn = connectCoords.find(conn => conn.connKey === connKey)
+  function posFromConnKey(connKey: string) {
+    // Takes a unique id for a connector and looks up the position
+    let conn = connectPos.find(conn => conn.connKey === connKey)
     if (conn)
-      return conn.coords
+      return conn.pos
     else throw Error(`Connector key not found: ${connKey}`)
   }
 
-  function snapsToConn(handlePos: Coord2D): Connector | undefined {
+  function snapsToConn(handlePos: Vec2D): Connector | undefined {
     // calculates the distance to all connectors
-    // then returns the coordinates of the closest connector if its distance is below the snap threshold
+    // then returns the position of the closest connector if its distance is below the snap threshold
     // and returns undefined otherwise
-    const connectDistances = connectCoords.map(conn => Math.sqrt((conn.coords.x - handlePos.x) ** 2 + (conn.coords.y - handlePos.y) ** 2))
+    const connectDistances = connectPos.map(conn => Math.sqrt((conn.pos.x - handlePos.x) ** 2 + (conn.pos.y - handlePos.y) ** 2))
     const minDistance = Math.min(...connectDistances)
     if (minDistance <= handleSize / 2)
-      return connectCoords[connectDistances.indexOf(minDistance)]
+      return connectPos[connectDistances.indexOf(minDistance)]
     else
       return undefined
   }
@@ -106,9 +106,9 @@ export default function CurveConnection(props: CurveConnectionProps) {
     const oppositeConnKey = isLeft ? connKeyRight : connKeyLeft
     let handlePos = mousePos;
     if (connKey)
-      handlePos = coordsFromConnKey(connKey)
+      handlePos = posFromConnKey(connKey)
     else if (oppositeConnKey)
-      handlePos = coordsFromConnKey(oppositeConnKey)
+      handlePos = posFromConnKey(oppositeConnKey)
     return { x: handlePos.x - handleSize / 2, y: handlePos.y - handleSize / 2 }
   }
 
@@ -117,17 +117,17 @@ export default function CurveConnection(props: CurveConnectionProps) {
       return "M0 0 C 0 0, 0 0, 0 0"
 
     // left and right anchor of bezier curve
-    let posLeft: Coord2D;
-    let posRight: Coord2D;
+    let posLeft: Vec2D;
+    let posRight: Vec2D;
 
     if (connKeyLeft) {
-      let connPos = coordsFromConnKey(connKeyLeft)
+      let connPos = posFromConnKey(connKeyLeft)
       posLeft = { x: connPos.x + 7, y: connPos.y }
     } else {
       posLeft = mousePos
     }
     if (connKeyRight) {
-      let connPos = coordsFromConnKey(connKeyRight)
+      let connPos = posFromConnKey(connKeyRight)
       posRight = { x: connPos.x - 7, y: connPos.y }
     } else {
       posRight = mousePos

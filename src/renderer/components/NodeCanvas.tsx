@@ -1,30 +1,29 @@
-import { createStyles } from '@mantine/core';
+import { createStyles, MantineProvider } from '@mantine/core';
+import theme from '@/styles/theme_canvas';
 import { MouseEvent as ReactMouseEvent, WheelEvent as ReactWheelEvent, ReactElement, useEffect, useState, useRef } from 'react';
 import gridSvg from '@/assets/gridSvg.svg';
 import CurveConnection from '@/components/CurveConnection';
 import { getNodeComponent, onNodesLoaded } from '@/components/NodeFactory';
 import { directstyled, useDirectStyle } from '@/lib/direct-styled'; // https://github.com/everweij/direct-styled
-import { Coord2D } from '@/types/util';
-
-// TODO: rename Coord2D to Vec2D and ...coords to pos(ition)
+import { Vec2D } from '@/types/util';
 
 const zoomDelta = 0.8;
 let onZoomCallbacks: ((newZoom: number) => void)[] = []; // functions that should be called when user zoomed in/out
 let isDragging = false;
-let prevDragPos: Coord2D = { x: 0, y: 0 };
-let screenOffset: Coord2D = { x: 0, y: 0 };
+let prevDragPos: Vec2D = { x: 0, y: 0 };
+let screenOffset: Vec2D = { x: 0, y: 0 };
 let zoom = 1;
 let screenSize = { width: 0, height: 0 };
 
 export const getScreenOffset = () => screenOffset;
 export const getCanvasZoom = () => zoom;
-export const screenToCanvas = (coordinates: Coord2D) => ({
-  x: coordinates.x - screenSize.width * (zoom - 1) / 2,
-  y: coordinates.y - screenSize.height * (zoom - 1) / 2,
+export const screenToCanvas = (position: Vec2D) => ({
+  x: position.x - screenSize.width * (zoom - 1) / 2,
+  y: position.y - screenSize.height * (zoom - 1) / 2,
 })
-export const canvasToScreen = (coordinates: Coord2D) => ({
-  x: coordinates.x + screenSize.width * (zoom - 1) / 2,
-  y: coordinates.y + screenSize.height * (zoom - 1) / 2,
+export const canvasToScreen = (position: Vec2D) => ({
+  x: position.x + screenSize.width * (zoom - 1) / 2,
+  y: position.y + screenSize.height * (zoom - 1) / 2,
 })
 export const onZoomChanged = (callback: (newZoom: number) => void) => {
   onZoomCallbacks.push(callback);
@@ -184,36 +183,38 @@ export default function NodeCanvas() {
   }, [])
 
   return (
-    <directstyled.div
-      className={`${classes.container} ${classes.animatedBackground}`}
-      ref={containerRef}
-      onMouseDown={handleMouseDown}
-      onMouseUp={handleMouseUp}
-      onMouseMove={handleMouseMove}
-      onMouseEnter={(e) => { if (e.buttons !== 4) isDragging = false }}
-      onWheel={handleWheel}
-      style={containerStyle}
-    >
+    <MantineProvider theme={theme} withNormalizeCSS withGlobalStyles>
       <directstyled.div
-        className={`${classes.draggable} ${classes.animatedTransition}`}
-        ref={draggableRef}
-        style={dragStyle}
+        className={`${classes.container} ${classes.animatedBackground}`}
+        ref={containerRef}
+        onMouseDown={handleMouseDown}
+        onMouseUp={handleMouseUp}
+        onMouseMove={handleMouseMove}
+        onMouseEnter={(e) => { if (e.buttons !== 4) isDragging = false }}
+        onWheel={handleWheel}
+        style={containerStyle}
       >
-        {/* TODO: remove */}
-        {/* <div className={classes.marker} ref={markerRef}></div> */}
-        <div className={classes.nodesContainer}>
-          {nodes}
-        </div>
-        {
-          isLoaded &&
-          <CurveConnection
-            defaultConnKeyLeft='node1.output.right'
-            defaultConnKeyRight='node2.input.left'
-            key={0}
-            curveID='0'
-          />
-        }
+        <directstyled.div
+          className={`${classes.draggable} ${classes.animatedTransition}`}
+          ref={draggableRef}
+          style={dragStyle}
+        >
+          {/* TODO: remove */}
+          {/* <div className={classes.marker} ref={markerRef}></div> */}
+          <div className={classes.nodesContainer}>
+            {nodes}
+          </div>
+          {
+            isLoaded &&
+            <CurveConnection
+              defaultConnKeyLeft='node1.output.right'
+              defaultConnKeyRight='node2.input.left'
+              key={0}
+              curveID='0'
+            />
+          }
+        </directstyled.div>
       </directstyled.div>
-    </directstyled.div>
+    </MantineProvider>
   )
 }

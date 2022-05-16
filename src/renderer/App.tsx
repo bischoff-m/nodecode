@@ -1,5 +1,5 @@
 import NodeCanvas from '@/components/NodeCanvas';
-import theme from '@/styles/theme';
+import theme from '@/styles/theme_app';
 import { Provider } from 'react-redux';
 import store from '@/redux/store';
 import {
