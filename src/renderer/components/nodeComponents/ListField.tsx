@@ -1,6 +1,6 @@
 import type { FieldProps } from '@/types/util';
 import AddIcon from '@mui/icons-material/Add';
-import CloseIcon from '@mui/icons-material/Close';
+import CloseIcon from '@mui/icons-material/Close'; // TODO: switch to https://mantine.dev/core/action-icon/ with tabler icons
 import { Theme } from '@mui/material';
 import FormControl from '@mui/material/FormControl';
 import IconButton from '@mui/material/IconButton';

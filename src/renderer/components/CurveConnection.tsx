@@ -1,5 +1,4 @@
-import { Theme } from '@mui/material';
-import { makeStyles } from '@mui/styles';
+import { createStyles } from '@mantine/core';
 import { useEffect, useRef, useState } from 'react';
 import type { MouseEvent as ReactMouseEvent } from 'react';
 import Draggable, { DraggableEvent } from 'react-draggable';
@@ -11,7 +10,7 @@ import type { Connector } from '@/redux/connectorsSlice';
 const handleSize = 40;
 let isDragging = false; // is true when user began to drag and(!) moved his mouse
 
-const useStyles = makeStyles((theme: Theme) => ({
+const useStyles = createStyles({
   svg: {
     position: 'absolute',
     pointerEvents: 'none',
@@ -27,7 +26,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   aboveNodes: { zIndex: 500 },
   belowNodes: { zIndex: 10 },
-}));
+});
 
 type CurveConnectionProps = {
   defaultConnKeyLeft: string,
@@ -37,7 +36,7 @@ type CurveConnectionProps = {
 
 export default function CurveConnection(props: CurveConnectionProps) {
   // Styles
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   // Refs
   const refLeft = useRef<HTMLDivElement>(null);

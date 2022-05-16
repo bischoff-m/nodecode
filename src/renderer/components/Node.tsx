@@ -1,27 +1,27 @@
+import { createStyles } from '@mantine/core';
 import { useDispatchTyped } from '@/redux/hooks';
 import { moveNode } from '@/redux/connectorsSlice';
-import { Theme } from '@mui/material';
-import { makeStyles } from '@mui/styles';
 import { ReactNode, useRef, useState } from 'react';
 import Draggable, { DraggableData, DraggableEvent } from 'react-draggable';
 import { getCanvasZoom, onZoomChanged } from './NodeCanvas';
 
 const gridSize = 20;
 
-const useStyles = makeStyles((theme: Theme) => ({
+// TODO: switch to mantine
+const useStyles = createStyles((theme) => ({
   card: {
     position: 'absolute',
     width: 300,
-    backgroundColor: theme.palette.background.paper,
-    borderRadius: theme.shape.borderRadius,
+    // backgroundColor: theme.palette.background.paper,
+    // borderRadius: theme.shape.borderRadius,
     boxShadow: '0px 0px 5px rgb(0 0 0 / 60%)',
   },
   header: {
     padding: 8,
     paddingLeft: 14,
-    backgroundColor: theme.palette.primary.main,
-    borderTopLeftRadius: theme.shape.borderRadius,
-    borderTopRightRadius: theme.shape.borderRadius,
+    // backgroundColor: theme.palette.primary.main,
+    // borderTopLeftRadius: theme.shape.borderRadius,
+    // borderTopRightRadius: theme.shape.borderRadius,
   },
   content: {
     padding: '10px 15px 10px 15px',
@@ -40,7 +40,7 @@ export type NodeProps = {
 }
 
 export default function Node(props: NodeProps) {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const nodeRef = useRef(null);
   const [canvasZoom, setCanvasZoom] = useState<number>(getCanvasZoom()); // variable is mirrored from NodeCanvas to enable state updates
 

@@ -1,11 +1,16 @@
 import NodeCanvas from '@/components/NodeCanvas';
 import theme from '@/styles/theme';
-import CssBaseline from '@mui/material/CssBaseline';
-import { ThemeProvider } from '@mui/material/styles';
 import { Provider } from 'react-redux';
 import store from '@/redux/store';
-import { Button } from '@mui/material';
-import { AppShell, Navbar, Header, useMantineTheme } from '@mantine/core';
+import {
+  MantineProvider,
+  AppShell,
+  Navbar,
+  Header,
+  Button,
+  Group
+} from '@mantine/core';
+
 
 type ToBackendEvent = {
   name: string,
@@ -33,28 +38,29 @@ export default function App() {
 
   function Nav() {
     return (
-      <Navbar width={{ base: 60 }} p="xs">
+      <Navbar width={{ base: 60 }}>
       </Navbar>
     )
   }
 
   function Head() {
     return (
-      <Header height={60} p="xs">
-        <Button
-          color="primary"
-          onClick={() => {
-            invokeBackend({
+      <Header height={60} p='sm'>
+        <Group position='right'>
+          <Button
+            color="primary"
+            onClick={() => invokeBackend({
               'name': 'run',
               'args': ['hallo hier mein programm'],
             }).then((data) => {
               console.log('antwort ist zurück: ', data)
-            })
-          }}>RUN</Button>
-        <Button
-          color="primary"
-          onClick={() => sendBackend({ 'name': 'quit' })}
-        >QUIT</Button>
+            })}
+          >RUN</Button>
+          <Button
+            color="primary"
+            onClick={() => sendBackend({ 'name': 'quit' })}
+          >QUIT</Button>
+        </Group>
       </Header>
     )
   }
@@ -67,12 +73,11 @@ export default function App() {
   return (
     <div style={{ overflow: 'hidden' }}>
       <Provider store={store}>
-        <ThemeProvider theme={theme}>
-          <CssBaseline enableColorScheme />
+        <MantineProvider theme={theme} withNormalizeCSS withGlobalStyles>
           <AppShell padding={0} navbar={Nav()} header={Head()} sx={appShellStyle}>
-          <NodeCanvas />
+            <NodeCanvas />
           </AppShell>
-        </ThemeProvider>
+        </MantineProvider>
       </Provider>
     </div>
   )

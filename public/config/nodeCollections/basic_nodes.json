@@ -26,6 +26,34 @@
                         ],
                         "default": "String"
                     }
+                }
+            ]
+        },
+        {
+            "id": "input_list_old",
+            "title": "List Input",
+            "fields": [
+                {
+                    "id": "output",
+                    "type": "InputOutputField",
+                    "arguments": {
+                        "outputLabel": "List",
+                        "outputDatatype": "array"
+                    }
+                },
+                {
+                    "id": "datatype",
+                    "type": "SelectField",
+                    "arguments": {
+                        "label": "Datatype",
+                        "values": [
+                            "String",
+                            "Int",
+                            "Float",
+                            "Boolean"
+                        ],
+                        "default": "String"
+                    }
                 },
                 {
                     "id": "item_list",

@@ -1,15 +1,14 @@
-import { Theme } from '@mui/material';
-import { makeStyles } from '@mui/styles';
+import { createStyles } from '@mantine/core';
 import { registerConnector } from '@/redux/connectorsSlice';
 import { useDispatchTyped, useSelectorTyped } from '@/redux/hooks';
 import { useEffect, useRef } from 'react';
 import type { FieldProps } from '@/types/util';
 
-// TODO: implement MultiInput and datatypes
+// TODO: implement multiple connections on the same connector and datatypes
 // TODO: add aditional checks for properties
 const handleSize = 14;
 
-const useStyles = makeStyles((theme: Theme) => ({
+const useStyles = createStyles((theme) => ({
   container: {
     display: 'flex',
     flexDirection: 'row',
@@ -28,17 +27,18 @@ const useStyles = makeStyles((theme: Theme) => ({
     width: '100%',
     height: 40,
     transform: 'translate(-18px, 0)',
-    '& :first-child': {
+    '& :first-of-type': {
       transform: 'translate(-7px, 13px)',
     },
-    '& :nth-child(2)': {
+    '& :nth-of-type(2)': {
       transform: 'translate(7px, 13px)',
     }
   },
   connector: {
     width: handleSize,
     height: handleSize,
-    backgroundColor: theme.palette.primary.main,
+    // backgroundColor: theme.palette.primary.main,
+    backgroundColor: 'red',
     borderRadius: handleSize / 2,
   },
 }));
@@ -53,7 +53,7 @@ export default function InputOutputField(props: InputOutputFieldProps) {
   if (!props.inputLabel && !props.outputLabel)
     throw Error('No inputLabel and no outputLabel given to InputOutputField. It needs at least one of them.')
 
-  const classes = useStyles();
+  const { classes } = useStyles();
   const leftHandleRef = useRef<HTMLDivElement>(null);
   const rightHandleRef = useRef<HTMLDivElement>(null);
   const canvasOrigin = useSelectorTyped(state => state.canvas.origin);

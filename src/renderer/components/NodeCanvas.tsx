@@ -1,5 +1,4 @@
-import { Theme } from '@mui/material';
-import { makeStyles } from '@mui/styles';
+import { createStyles } from '@mantine/core';
 import { MouseEvent as ReactMouseEvent, WheelEvent as ReactWheelEvent, ReactElement, useEffect, useState, useRef } from 'react';
 import gridSvg from '@/assets/gridSvg.svg';
 import CurveConnection from '@/components/CurveConnection';
@@ -8,7 +7,6 @@ import { directstyled, useDirectStyle } from '@/lib/direct-styled'; // https://g
 import { Coord2D } from '@/types/util';
 
 // TODO: rename Coord2D to Vec2D and ...coords to pos(ition)
-// TODO: add offset in handleWheelto always zoom into the center of the screen instead of the canvas
 
 const zoomDelta = 0.8;
 let onZoomCallbacks: ((newZoom: number) => void)[] = []; // functions that should be called when user zoomed in/out
@@ -32,12 +30,17 @@ export const onZoomChanged = (callback: (newZoom: number) => void) => {
   onZoomCallbacks.push(callback);
 }
 
-const useStyles = makeStyles((theme: Theme) => ({
+// TODO: switch to mantine
+// TODO: use secondary ThemeProvider for the canvas
+// TODO: alles, was möglich ist an konkreten werten durch mantine properties ersetzen
+
+// const useStyles = createStyles((theme) => ({
+const useStyles = createStyles({
   container: {
     width: '100%',
     height: '100%',
     position: 'absolute', // to stop the parent container from clipping
-    backgroundColor: theme.palette.background.default,
+    // backgroundColor: theme.palette.background.default,
     backgroundImage: `url(${gridSvg})`,
     backgroundRepeat: 'repeat',
     backgroundPosition: '0px 0px',
@@ -68,11 +71,11 @@ const useStyles = makeStyles((theme: Theme) => ({
   animatedBackground: {
     transition: 'background-position .3s, background-size .3s',
   },
-}));
+});
 
 export default function NodeCanvas() {
   // Styles
-  const classes = useStyles();
+  const { classes } = useStyles();
   const [containerStyle, setContainerStyle] = useDirectStyle();
   const [dragStyle, setDragStyle] = useDirectStyle();
 

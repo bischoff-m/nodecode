@@ -1,10 +1,9 @@
 import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
 import { useState } from 'react';
 import type { FieldProps } from '@/types/util';
-import { makeStyles } from '@mui/styles';
-import { Theme } from '@mui/material';
+import { createStyles } from '@mantine/core';
 
-const useStyles = makeStyles((theme: Theme) => ({
+const useStyles = createStyles((theme) => ({
   container: {
     height: 40,
     paddingTop: 5,
@@ -15,6 +14,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
+// TODO: close dropdown when canvas is moved or scaled (or move and scale dropdown as well?)
 // TODO: These props should be required. Is there a way to define is in nodeCollection.schema.json?
 type SelectFieldProps = {
   values?: string[],
@@ -23,7 +23,7 @@ type SelectFieldProps = {
 } & FieldProps
 
 export default function SelectField(props: SelectFieldProps) {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const [value, setValue] = useState(props.default);
 
   const handleChange = (event: SelectChangeEvent) => {
