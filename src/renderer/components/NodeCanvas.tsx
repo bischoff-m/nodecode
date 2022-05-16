@@ -7,7 +7,7 @@ import { getNodeComponent, onNodesLoaded } from '@/components/NodeFactory';
 import { directstyled, useDirectStyle } from '@/lib/direct-styled'; // https://github.com/everweij/direct-styled
 import { Vec2D } from '@/types/util';
 
-const zoomDelta = 0.8;
+const zoomFactor = 0.8;
 let onZoomCallbacks: ((newZoom: number) => void)[] = []; // functions that should be called when user zoomed in/out
 let isDragging = false;
 let prevDragPos: Vec2D = { x: 0, y: 0 };
@@ -29,17 +29,15 @@ export const onZoomChanged = (callback: (newZoom: number) => void) => {
   onZoomCallbacks.push(callback);
 }
 
-// TODO: switch to mantine
-// TODO: use secondary ThemeProvider for the canvas
 // TODO: alles, was möglich ist an konkreten werten durch mantine properties ersetzen
 
 // const useStyles = createStyles((theme) => ({
-const useStyles = createStyles({
+const useStyles = createStyles((theme) => ({
   container: {
     width: '100%',
     height: '100%',
-    position: 'absolute', // to stop the parent container from clipping
-    // backgroundColor: theme.palette.background.default,
+    // position: 'absolute', // to stop the parent container from clipping
+    backgroundColor: theme.colors.dark[7],
     backgroundImage: `url(${gridSvg})`,
     backgroundRepeat: 'repeat',
     backgroundPosition: '0px 0px',
@@ -49,8 +47,8 @@ const useStyles = createStyles({
     zIndex: 100,
   },
   draggable: {
-    width: '100vw',
-    height: '100vh',
+    // width: '100%',
+    // height: '100%',
   },
   // marker: { // TODO: remove
   //   position: 'absolute',
@@ -70,7 +68,7 @@ const useStyles = createStyles({
   animatedBackground: {
     transition: 'background-position .3s, background-size .3s',
   },
-});
+}));
 
 export default function NodeCanvas() {
   // Styles
@@ -143,7 +141,7 @@ export default function NodeCanvas() {
   }
 
   function handleWheel(e: ReactWheelEvent<"div">) {
-    // TODO: min und max für zoom und zoomDelta zu zoomFactor umbenennen
+    // TODO: min und max für zoom
     
     // Calculations from https://stackoverflow.com/a/46833254/16953263
     // position of cursor relative to the center point of the container
@@ -155,7 +153,7 @@ export default function NodeCanvas() {
       x: (zoomPoint.x - screenOffset.x) / zoom,
       y: (zoomPoint.y - screenOffset.y) / zoom,
     }
-    zoom *= zoomDelta ** Math.sign(e.deltaY)
+    zoom *= zoomFactor ** Math.sign(e.deltaY)
 
     screenOffset.x = zoomPoint.x - zoomTarget.x * zoom
     screenOffset.y = zoomPoint.y - zoomTarget.y * zoom
@@ -185,7 +183,7 @@ export default function NodeCanvas() {
   return (
     <MantineProvider theme={theme} withNormalizeCSS withGlobalStyles>
       <directstyled.div
-        className={`${classes.container} ${classes.animatedBackground}`}
+        className={`${classes.container} ${classes.animatedBackground} test`}
         ref={containerRef}
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}

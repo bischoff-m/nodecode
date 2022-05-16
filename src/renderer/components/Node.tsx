@@ -7,7 +7,6 @@ import { getCanvasZoom, onZoomChanged } from './NodeCanvas';
 
 const gridSize = 20;
 
-// TODO: switch to mantine
 const useStyles = createStyles((theme) => ({
   card: {
     position: 'absolute',
