@@ -9,22 +9,24 @@ import { Vec2D } from '@/types/util';
 
 const zoomFactor = 0.8;
 let onZoomCallbacks: ((newZoom: number) => void)[] = []; // functions that should be called when user zoomed in/out
-let isDragging = false;
-let prevDragPos: Vec2D = { x: 0, y: 0 };
-let screenOffset: Vec2D = { x: 0, y: 0 };
-let zoom = 1;
-let screenSize = { width: 0, height: 0 };
+let isDragging = false; // whether the user is currently dragging
+let prevDragPos: Vec2D = { x: 0, y: 0 }; // screen position of mouse, updated while dragging
+let innerOffset: Vec2D = { x: 0, y: 0 }; // offset of canvas relative to its parent component in pixels, can be changed by dragging
+let zoom = 1; // relative size of elements on canvas in percent
 
-export const getScreenOffset = () => screenOffset;
+let outerOffset: Vec2D = { x: 0, y: 0 }; // position of container of canvas, is set when DOM is updated
+let canvasSize = { width: 0, height: 0 }; // size of canvas in pixels, is set when DOM is updated
+
+export const getScreenOffset = () => innerOffset;
 export const getCanvasZoom = () => zoom;
 export const screenToCanvas = (position: Vec2D) => ({
-  x: position.x - screenSize.width * (zoom - 1) / 2,
-  y: position.y - screenSize.height * (zoom - 1) / 2,
+  x: (position.x + canvasSize.width * (zoom - 1) / 2 - outerOffset.x - innerOffset.x) / zoom,
+  y: (position.y + canvasSize.height * (zoom - 1) / 2 - outerOffset.y - innerOffset.y) / zoom,
 })
-export const canvasToScreen = (position: Vec2D) => ({
-  x: position.x + screenSize.width * (zoom - 1) / 2,
-  y: position.y + screenSize.height * (zoom - 1) / 2,
-})
+// export const screenToCanvas = (position: Vec2D) => ({
+//   x: position.x + canvasSize.width * (zoom - 1) / 2 - outerOffset.x - innerOffset.x,
+//   y: position.y + canvasSize.height * (zoom - 1) / 2 - outerOffset.y - innerOffset.y,
+// })
 export const onZoomChanged = (callback: (newZoom: number) => void) => {
   onZoomCallbacks.push(callback);
 }
@@ -90,14 +92,19 @@ export default function NodeCanvas() {
 
     const width = containerRef.current.offsetWidth
     const height = containerRef.current.offsetHeight
-    screenSize = { width: width, height: height }
-    const translatedOffset = screenToCanvas(screenOffset)
+    canvasSize = { width: width, height: height }
+    outerOffset = { x: containerRef.current.offsetLeft, y: containerRef.current.offsetTop }
+
+    const translatedOffset = {
+      x: innerOffset.x - canvasSize.width * (zoom - 1) / 2,
+      y: innerOffset.y - canvasSize.height * (zoom - 1) / 2,
+    }
 
     // TODO: remove
-    // markerRef.current.style.setProperty('transform', `translate(${-screenOffset.x / zoom}px, ${-screenOffset.y / zoom}px)`)
+    // markerRef.current.style.setProperty('transform', `translate(${-innerOffset.x / zoom}px, ${-innerOffset.y / zoom}px)`)
 
     setDragStyle({
-      transform: `translate(${screenOffset.x}px, ${screenOffset.y}px) scale(${zoom}, ${zoom})`,
+      transform: `translate(${innerOffset.x}px, ${innerOffset.y}px) scale(${zoom}, ${zoom})`,
     })
     setContainerStyle({
       backgroundPositionX: translatedOffset.x,
@@ -132,8 +139,8 @@ export default function NodeCanvas() {
       return
 
     // runs when the mouse is dragged while the mouse wheel is pressed
-    screenOffset.x += e.clientX - prevDragPos.x
-    screenOffset.y += e.clientY - prevDragPos.y
+    innerOffset.x += e.clientX - prevDragPos.x
+    innerOffset.y += e.clientY - prevDragPos.y
     prevDragPos.x = e.clientX
     prevDragPos.y = e.clientY
     updateCanvasStyle()
@@ -141,21 +148,23 @@ export default function NodeCanvas() {
 
   function handleWheel(e: ReactWheelEvent<"div">) {
     // TODO: min und max für zoom
+    if (containerRef.current == null) return
+    const canvasOffset = containerRef.current.getBoundingClientRect()
     
     // Calculations from https://stackoverflow.com/a/46833254/16953263
     // position of cursor relative to the center point of the container
     let zoomPoint = {
-      x: e.clientX - screenSize.width / 2,
-      y: e.clientY - screenSize.height / 2,
+      x: e.clientX - canvasOffset.left - canvasSize.width / 2,
+      y: e.clientY - canvasOffset.top - canvasSize.height / 2,
     }
     let zoomTarget = {
-      x: (zoomPoint.x - screenOffset.x) / zoom,
-      y: (zoomPoint.y - screenOffset.y) / zoom,
+      x: (zoomPoint.x - innerOffset.x) / zoom,
+      y: (zoomPoint.y - innerOffset.y) / zoom,
     }
     zoom *= zoomFactor ** Math.sign(e.deltaY)
 
-    screenOffset.x = zoomPoint.x - zoomTarget.x * zoom
-    screenOffset.y = zoomPoint.y - zoomTarget.y * zoom
+    innerOffset.x = zoomPoint.x - zoomTarget.x * zoom
+    innerOffset.y = zoomPoint.y - zoomTarget.y * zoom
 
     let drag = draggableRef.current
     if (drag && !drag.classList.contains(classes.animatedTransition))
@@ -174,7 +183,7 @@ export default function NodeCanvas() {
         getNodeComponent('node2', 'output', { x: 500, y: 100 }),
       ])
       setIsLoaded(true)
-      updateCanvasStyle() // remove, if you want to keep the offset and zoom of screen after refresh
+      updateCanvasStyle()
       // setNodes(Array(1).fill(0).map((_, i) => getNodeComponent('node' + i, 'input_list', { x: 40, y: 100 })))
     })
   }, [])
@@ -182,7 +191,7 @@ export default function NodeCanvas() {
   return (
     <MantineProvider theme={theme} styles={styleOverrides} withNormalizeCSS withGlobalStyles>
       <directstyled.div
-        className={`${classes.container} ${classes.animatedBackground} test`}
+        className={`${classes.container} ${classes.animatedBackground}`}
         ref={containerRef}
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}

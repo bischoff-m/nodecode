@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import type { MouseEvent as ReactMouseEvent } from 'react';
 import Draggable, { DraggableEvent } from 'react-draggable';
 import { useSelectorTyped } from '@/redux/hooks';
-import { getScreenOffset, getCanvasZoom, canvasToScreen } from '@/components/NodeCanvas';
+import { getScreenOffset, getCanvasZoom, screenToCanvas } from '@/components/NodeCanvas';
 import { Vec2D } from '@/types/util';
 import type { Connector } from '@/redux/connectorsSlice';
 
@@ -21,7 +21,7 @@ const useStyles = createStyles({
     width: handleSize,
     height: handleSize,
     borderRadius: handleSize / 2,
-    opacity: 0,
+    opacity: 0.5,
     zIndex: 1000,
   },
   aboveNodes: { zIndex: 500 },
@@ -82,10 +82,10 @@ export default function CurveConnection(props: CurveConnectionProps) {
   function handleDrag(isLeft: boolean, event: DraggableEvent) {
     beganDragging && (isDragging = true);
     const e = event as ReactMouseEvent;
+
     const screenOffset = getScreenOffset()
     const canvasZoom = getCanvasZoom()
-    const clientPos = canvasToScreen({ x: e.clientX, y: e.clientY })
-    const newMousePos = { x: (clientPos.x - screenOffset.x) / canvasZoom, y: (clientPos.y - screenOffset.y) / canvasZoom }
+    const newMousePos = screenToCanvas({ x: e.clientX, y: e.clientY })
 
     const setConnKey = isLeft ? setConnKeyLeft : setConnKeyRight
     const snapConn = snapsToConn(newMousePos)

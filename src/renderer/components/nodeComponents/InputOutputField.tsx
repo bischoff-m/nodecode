@@ -3,9 +3,11 @@ import { registerConnector } from '@/redux/connectorsSlice';
 import { useDispatchTyped, useSelectorTyped } from '@/redux/hooks';
 import { useEffect, useRef } from 'react';
 import type { FieldProps } from '@/types/util';
+import { screenToCanvas } from '@/components/NodeCanvas';
 
 // TODO: implement multiple connections on the same connector and datatypes
 // TODO: add aditional checks for properties
+// TODO: handle position needs to updated when node is updated (for example a list is expanded)
 
 const useStyles = createStyles((theme) => ({
   container: {
@@ -65,17 +67,19 @@ export default function InputOutputField(props: InputOutputFieldProps) {
 
     const leftPos = leftHandleRef.current.getBoundingClientRect()
     const rightPos = rightHandleRef.current.getBoundingClientRect()
+    // props.inputLabel == 'Output' && console.log(leftPos.left, leftPos.top)
 
     Array(true, false).forEach(isLeft => {
-      const pos = isLeft ? leftPos : rightPos;
+      const pos = screenToCanvas(isLeft ? leftPos : rightPos);
+      props.inputLabel == 'Output' && isLeft && console.log(pos.x + theme.other.handleSize / 2)
       if (isLeft ? props.inputLabel : props.outputLabel)
         dispatch(registerConnector({
           connKey: `${props.nodeKey}.${props.fieldKey}.${isLeft ? 'left' : 'right'}`,
           nodeKey: props.nodeKey,
           fieldKey: props.fieldKey,
           pos: {
-            x: pos.x - canvasOrigin.x + theme.other.handleSize / 2,
-            y: pos.y - canvasOrigin.y + theme.other.handleSize / 2,
+            x: pos.x + theme.other.handleSize / 2, // TODO: this needs an additional "- outerOffset", but why? answer: outerOffset is not initialized yet when screenToCanvas is called
+            y: pos.y + theme.other.handleSize / 2,
           },
           isInput: isLeft,
         }))
