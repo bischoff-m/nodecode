@@ -16,6 +16,11 @@ def connect():
     print('connection established')
 
 
+@sio.event
+def disconnect():
+    print('disconnected from server')
+
+
 @sio.on('run')
 def on_run(data):
     print('message received with ', data)
@@ -32,11 +37,6 @@ def on_run(data):
 @sio.on('quit')
 def on_quit():
     sio.disconnect()
-
-
-@sio.event
-def disconnect():
-    print('disconnected from server')
 
 
 sio.connect('http://localhost:5000')
