@@ -19,5 +19,6 @@ interface Window {
     appendLoading: () => void
     removeLoading: () => void
     listenerCount: (eventName: string | symbol) => number
+    removeAllListeners: (channel: string) => void
   }
 }

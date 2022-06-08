@@ -4,27 +4,46 @@
 // Interface between frontend and backend (via IPC)
 ////////////////////////////////////////////////////////////////////////////////
 
-type ToBackendEvent = {
-  name: string,
-  args?: any[],
-  timeout?: number,
+import { ipcMain } from "electron"
+
+////////////////////////////////////////////////////////////////////////////////
+// FROM BACKEND TO RENDERER
+////////////////////////////////////////////////////////////////////////////////
+const backendListeners: { [channel: string]: ((...args: any) => void)[] } = {}
+
+window.api.removeAllListeners('fromBackend')
+window.api.on('fromBackend', (_, channel, ...args) => {
+  if (!backendListeners[channel])
+    return
+  for (const listener of backendListeners[channel])
+    listener(...args)
+})
+
+export function onBackendEvent(channel: string, callback: (...args: any) => void) {
+  if (!backendListeners[channel])
+    backendListeners[channel] = []
+  backendListeners[channel].push(callback)
 }
 
-// register listener for incoming events from backend if not already registered
-// TODO: provide function to register for specific backend events
-if (window.api.listenerCount('fromBackend') === 0) {
-  window.api.on('fromBackend', (event, data) => {
-    console.log('sent from backend to renderer:', data)
-  })
+export function listenerCount(channel: string) {
+  return backendListeners[channel] ? backendListeners[channel].length : 0
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// FROM RENDERER TO BACKEND
+////////////////////////////////////////////////////////////////////////////////
 // TODO: check if backend is connected before sending by implementing an event from main to renderer on disconnect
-export function sendBackend(event: ToBackendEvent): void {
-  window.api.send('toBackend', event)
+// or check if handlers are registered before sending
+export function sendBackend(channel: string, ...args: any): void {
+  // console.log(ipcMain.listenerCount(channel)) // TODO: check if backend is connected using this, but why not working
+  window.api.send('toBackend', channel, ...args)
 }
 
-export function invokeBackend(event: ToBackendEvent): Promise<any> {
-  return window.api.invoke('toBackend', event)
+export function invokeBackend(channel: string, ...args: any): Promise<any> {
+  return window.api.invoke('toBackend', channel, 0, ...args)
+}
+export function invokeBackendTimeout(channel: string, timeout: number, ...args: any): Promise<any> {
+  return window.api.invoke('toBackend', channel, timeout, ...args)
 }
 
 

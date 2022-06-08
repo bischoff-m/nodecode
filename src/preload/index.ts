@@ -40,6 +40,7 @@ const api: Window['api'] = {
   appendLoading,
   removeLoading,
   listenerCount: eventName => ipcRenderer.listenerCount(eventName),
+  removeAllListeners: channel => ipcRenderer.removeAllListeners(channel),
 }
 
 contextBridge.exposeInMainWorld('api', api)

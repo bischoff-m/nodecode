@@ -18,16 +18,13 @@ export default function Header() {
       <Group position='right'>
         <Button
           color="primary"
-          onClick={() => invokeBackend({
-            'name': 'run',
-            'args': ['hallo hier mein programm'],
-          }).then((data) => {
-            console.log('antwort ist zurück: ', data)
-          })}
+          onClick={() => invokeBackend('run', 'hallo hier mein programm')
+            .then((data) => console.log('antwort ist zurück: ', data))
+          }
         >RUN</Button>
         <Button
           color="primary"
-          onClick={() => sendBackend({ 'name': 'quit' })}
+          onClick={() => sendBackend('quit')}
         >QUIT</Button>
       </Group>
     </MantineHeader>
