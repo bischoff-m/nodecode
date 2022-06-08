@@ -1,10 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit';
-import connectorsReducer from '@/redux/connectorsSlice';
+import socketsReducer from '@/redux/socketsSlice';
 import canvasReducer from '@/redux/canvasSlice';
 
 const store = configureStore({
   reducer: {
-    connectors: connectorsReducer,
+    sockets: socketsReducer,
     canvas: canvasReducer,
   },
 })

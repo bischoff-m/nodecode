@@ -1,11 +1,11 @@
 import { createStyles, useMantineTheme } from '@mantine/core';
-import { registerConnector } from '@/redux/connectorsSlice';
-import { useDispatchTyped, useSelectorTyped } from '@/redux/hooks';
+import { updateSocket } from '@/redux/socketsSlice';
+import { useDispatchTyped } from '@/redux/hooks';
 import { useEffect, useRef } from 'react';
 import type { FieldProps } from '@/types/util';
 import { screenToCanvas } from '@/components/NodeCanvas';
 
-// TODO: implement multiple connections on the same connector and datatypes
+// TODO: implement multiple connections on the same socket and datatypes
 // TODO: add aditional checks for properties
 // TODO: handle position needs to updated when node is updated (for example a list is expanded)
 
@@ -20,7 +20,7 @@ const useStyles = createStyles((theme) => ({
     paddingLeft: 5,
     paddingRight: 5,
   },
-  connContainer: {
+  socketContainer: {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -35,7 +35,7 @@ const useStyles = createStyles((theme) => ({
       transform: `translate(${theme.other.handleSize / 2}px, ${(theme.other.fieldHeight - theme.other.handleSize) / 2}px)`,
     }
   },
-  connector: {
+  socket: {
     width: theme.other.handleSize,
     height: theme.other.handleSize,
     backgroundColor: theme.colors.blue[9],
@@ -57,7 +57,6 @@ export default function InputOutputField(props: InputOutputFieldProps) {
   const theme = useMantineTheme();
   const leftHandleRef = useRef<HTMLDivElement>(null);
   const rightHandleRef = useRef<HTMLDivElement>(null);
-  const canvasOrigin = useSelectorTyped(state => state.canvas.origin);
 
   const dispatch = useDispatchTyped();
 
@@ -67,30 +66,28 @@ export default function InputOutputField(props: InputOutputFieldProps) {
 
     const leftPos = leftHandleRef.current.getBoundingClientRect()
     const rightPos = rightHandleRef.current.getBoundingClientRect()
-    // props.inputLabel == 'Output' && console.log(leftPos.left, leftPos.top)
 
     Array(true, false).forEach(isLeft => {
-      const pos = screenToCanvas(isLeft ? leftPos : rightPos);
-      props.inputLabel == 'Output' && isLeft && console.log(pos.x + theme.other.handleSize / 2)
+      const pos = screenToCanvas(isLeft ? leftPos : rightPos)
       if (isLeft ? props.inputLabel : props.outputLabel)
-        dispatch(registerConnector({
-          connKey: `${props.nodeKey}.${props.fieldKey}.${isLeft ? 'left' : 'right'}`,
+        dispatch(updateSocket({
+          socketKey: `${props.nodeKey}.${props.fieldKey}.${isLeft ? 'left' : 'right'}`,
           nodeKey: props.nodeKey,
           fieldKey: props.fieldKey,
           pos: {
-            x: pos.x + theme.other.handleSize / 2, // TODO: this needs an additional "- outerOffset", but why? answer: outerOffset is not initialized yet when screenToCanvas is called
+            x: pos.x + theme.other.handleSize / 2,
             y: pos.y + theme.other.handleSize / 2,
           },
           isInput: isLeft,
         }))
     })
-  }, [canvasOrigin])
+  }, [])
 
   return (
     <div className={classes.container}>
-      <div className={classes.connContainer}>
-        <div className={classes.connector} style={{ opacity: props.inputLabel ? 1 : 0 }} ref={leftHandleRef}></div>
-        <div className={classes.connector} style={{ opacity: props.outputLabel ? 1 : 0 }} ref={rightHandleRef}></div>
+      <div className={classes.socketContainer}>
+        <div className={classes.socket} style={{ opacity: props.inputLabel ? 1 : 0 }} ref={leftHandleRef}></div>
+        <div className={classes.socket} style={{ opacity: props.outputLabel ? 1 : 0 }} ref={rightHandleRef}></div>
       </div>
       <span style={{ opacity: props.inputLabel ? 1 : 0 }}>
         {props.inputLabel}

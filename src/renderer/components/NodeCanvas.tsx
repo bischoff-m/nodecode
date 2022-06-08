@@ -2,7 +2,7 @@ import { createStyles, MantineProvider } from '@mantine/core';
 import { theme, styleOverrides } from '@/styles/theme_canvas';
 import { MouseEvent as ReactMouseEvent, WheelEvent as ReactWheelEvent, ReactElement, useEffect, useState, useRef } from 'react';
 import gridSvg from '@/assets/gridSvg.svg';
-import CurveConnection from '@/components/CurveConnection';
+import Noodle from '@/components/Noodle';
 import { getNodeComponent, onNodesLoaded } from '@/components/NodeFactory';
 import { directstyled, useDirectStyle } from '@/lib/direct-styled'; // https://github.com/everweij/direct-styled
 import { Vec2D } from '@/types/util';
@@ -14,26 +14,29 @@ let prevDragPos: Vec2D = { x: 0, y: 0 }; // screen position of mouse, updated wh
 let innerOffset: Vec2D = { x: 0, y: 0 }; // offset of canvas relative to its parent component in pixels, can be changed by dragging
 let zoom = 1; // relative size of elements on canvas in percent
 
-let outerOffset: Vec2D = { x: 0, y: 0 }; // position of container of canvas, is set when DOM is updated
-let canvasSize = { width: 0, height: 0 }; // size of canvas in pixels, is set when DOM is updated
+let canvasDiv: HTMLDivElement | null = null; // ref.current of the canvas component that can be dragged
+let containerDiv: HTMLDivElement | null = null; // ref.current of the div that contains the canvas
 
-export const getScreenOffset = () => innerOffset;
 export const getCanvasZoom = () => zoom;
-export const screenToCanvas = (position: Vec2D) => ({
-  x: (position.x + canvasSize.width * (zoom - 1) / 2 - outerOffset.x - innerOffset.x) / zoom,
-  y: (position.y + canvasSize.height * (zoom - 1) / 2 - outerOffset.y - innerOffset.y) / zoom,
-})
-// export const screenToCanvas = (position: Vec2D) => ({
-//   x: position.x + canvasSize.width * (zoom - 1) / 2 - outerOffset.x - innerOffset.x,
-//   y: position.y + canvasSize.height * (zoom - 1) / 2 - outerOffset.y - innerOffset.y,
-// })
+export const screenToCanvas = (position: Vec2D) => {
+  if (!canvasDiv || !containerDiv)
+    return { x: NaN, y: NaN }
+  const { left, top, width: innerWidth } = canvasDiv.getBoundingClientRect()
+  const { width: outerWidth } = containerDiv.getBoundingClientRect()
+  return {
+    x: (position.x - left) / (innerWidth / outerWidth),
+    y: (position.y - top) / (innerWidth / outerWidth),
+  }
+}
 export const onZoomChanged = (callback: (newZoom: number) => void) => {
   onZoomCallbacks.push(callback);
 }
 
 // TODO: alles, was möglich ist an konkreten werten durch mantine properties ersetzen
+// TODO: replace vector math by something where you dont need to write x and y for each calculation
+//       - https://mathjs.org/ Problem: code is less readable because of math.add(...) instead of ... + ...
+//       - https://www.sweetjs.org/doc/tutorial.html Define own operators (maybe in combination with mathjs)
 
-// const useStyles = createStyles((theme) => ({
 const useStyles = createStyles((theme) => ({
   container: {
     width: '100%',
@@ -51,15 +54,6 @@ const useStyles = createStyles((theme) => ({
     width: '100%',
     height: '100%',
   },
-  // marker: { // TODO: remove
-  //   position: 'absolute',
-  //   left: 500,
-  //   top: 300,
-  //   width: 10,
-  //   height: 10,
-  //   backgroundColor: 'red',
-  //   zIndex: 2000,
-  // },
   dragging: {
     cursor: 'grabbing',
   },
@@ -80,28 +74,21 @@ export default function NodeCanvas() {
   // Refs
   const containerRef = useRef<HTMLDivElement>(null);
   const draggableRef = useRef<HTMLDivElement>(null);
-  // const markerRef = useRef<HTMLDivElement>(null); // TODO: remove
 
   // React state
   const [nodes, setNodes] = useState<ReactElement[]>();
   const [isLoaded, setIsLoaded] = useState(false);
 
   function updateCanvasStyle() {
+    // calculate and set position of canvas and background of canvas based on
+    // innerOffset, zoom and the size of the canvas container
     if (!containerRef.current)
       return
-
-    const width = containerRef.current.offsetWidth
-    const height = containerRef.current.offsetHeight
-    canvasSize = { width: width, height: height }
-    outerOffset = { x: containerRef.current.offsetLeft, y: containerRef.current.offsetTop }
-
+    const { width, height } = containerRef.current.getBoundingClientRect()
     const translatedOffset = {
-      x: innerOffset.x - canvasSize.width * (zoom - 1) / 2,
-      y: innerOffset.y - canvasSize.height * (zoom - 1) / 2,
+      x: innerOffset.x - width * (zoom - 1) / 2,
+      y: innerOffset.y - height * (zoom - 1) / 2,
     }
-
-    // TODO: remove
-    // markerRef.current.style.setProperty('transform', `translate(${-innerOffset.x / zoom}px, ${-innerOffset.y / zoom}px)`)
 
     setDragStyle({
       transform: `translate(${innerOffset.x}px, ${innerOffset.y}px) scale(${zoom}, ${zoom})`,
@@ -149,13 +136,13 @@ export default function NodeCanvas() {
   function handleWheel(e: ReactWheelEvent<"div">) {
     // TODO: min und max für zoom
     if (containerRef.current == null) return
-    const canvasOffset = containerRef.current.getBoundingClientRect()
+    const { left, top, width, height } = containerRef.current.getBoundingClientRect()
     
     // Calculations from https://stackoverflow.com/a/46833254/16953263
     // position of cursor relative to the center point of the container
     let zoomPoint = {
-      x: e.clientX - canvasOffset.left - canvasSize.width / 2,
-      y: e.clientY - canvasOffset.top - canvasSize.height / 2,
+      x: e.clientX - left - width / 2,
+      y: e.clientY - top - height / 2,
     }
     let zoomTarget = {
       x: (zoomPoint.x - innerOffset.x) / zoom,
@@ -188,6 +175,8 @@ export default function NodeCanvas() {
     })
   }, [])
 
+  containerRef.current && (containerDiv = containerRef.current)
+  draggableRef.current && (canvasDiv = draggableRef.current)
   return (
     <MantineProvider theme={theme} styles={styleOverrides} withNormalizeCSS withGlobalStyles>
       <directstyled.div
@@ -205,19 +194,19 @@ export default function NodeCanvas() {
           ref={draggableRef}
           style={dragStyle}
         >
-          {/* TODO: remove */}
-          {/* <div className={classes.marker} ref={markerRef}></div> */}
-          <div className={classes.nodesContainer}>
-            {nodes}
-          </div>
           {
             isLoaded &&
-            <CurveConnection
-              defaultConnKeyLeft='node1.output.right'
-              defaultConnKeyRight='node2.input.left'
-              key={0}
-              curveID='0'
-            />
+            <>
+              <div className={classes.nodesContainer}>
+                {nodes}
+              </div>
+              <Noodle
+                defaultSocketKeyLeft='node1.output.right'
+                defaultSocketKeyRight='node2.input.left'
+                key={0}
+                noodleID='0'
+              />
+            </>
           }
         </directstyled.div>
       </directstyled.div>

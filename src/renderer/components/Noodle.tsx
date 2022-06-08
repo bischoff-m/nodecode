@@ -3,9 +3,9 @@ import { useEffect, useRef, useState } from 'react';
 import type { MouseEvent as ReactMouseEvent } from 'react';
 import Draggable, { DraggableEvent } from 'react-draggable';
 import { useSelectorTyped } from '@/redux/hooks';
-import { getScreenOffset, getCanvasZoom, screenToCanvas } from '@/components/NodeCanvas';
+import { getCanvasZoom, screenToCanvas } from '@/components/NodeCanvas';
 import { Vec2D } from '@/types/util';
-import type { Connector } from '@/redux/connectorsSlice';
+import type { Socket } from '@/redux/socketsSlice';
 
 const handleSize = 40;
 let isDragging = false; // is true when user began to drag and(!) moved his mouse
@@ -28,13 +28,13 @@ const useStyles = createStyles({
   belowNodes: { zIndex: 10 },
 });
 
-type CurveConnectionProps = {
-  defaultConnKeyLeft: string,
-  defaultConnKeyRight: string,
-  curveID: string,
+type NoodleProps = {
+  defaultSocketKeyLeft: string,
+  defaultSocketKeyRight: string,
+  noodleID: string,
 }
 
-export default function CurveConnection(props: CurveConnectionProps) {
+export default function Noodle(props: NoodleProps) {
   // Styles
   const { classes } = useStyles();
 
@@ -45,36 +45,36 @@ export default function CurveConnection(props: CurveConnectionProps) {
   const refSVG = useRef<SVGSVGElement>(null);
 
   // Redux state
-  const connectPos = useSelectorTyped(state => state.connectors.position);
+  const allSockets = useSelectorTyped(state => state.sockets.sockets);
 
   // React state
   const [mousePos, setMousePos] = useState<Vec2D>({ x: 0, y: 0 });
-  const [connKeyLeft, setConnKeyLeft] = useState<string | undefined>(undefined);
-  const [connKeyRight, setConnKeyRight] = useState<string | undefined>(undefined);
+  const [socketKeyLeft, setSocketKeyLeft] = useState<string | undefined>(undefined);
+  const [socketKeyRight, setSocketKeyRight] = useState<string | undefined>(undefined);
   // is true when user began to drag, even if he didnt move his mouse yet
-  const [beganDragging, setBeganDragging] = useState<boolean>(props.defaultConnKeyLeft && props.defaultConnKeyRight ? false : true);
+  const [beganDragging, setBeganDragging] = useState<boolean>(props.defaultSocketKeyLeft && props.defaultSocketKeyRight ? false : true);
 
   useEffect(() => {
-    setConnKeyLeft(props.defaultConnKeyLeft)
-    setConnKeyRight(props.defaultConnKeyRight)
+    setSocketKeyLeft(props.defaultSocketKeyLeft)
+    setSocketKeyRight(props.defaultSocketKeyRight)
   }, [props])
 
-  function posFromConnKey(connKey: string) {
-    // Takes a unique id for a connector and looks up the position
-    let conn = connectPos.find(conn => conn.connKey === connKey)
-    if (conn)
-      return conn.pos
-    else throw Error(`Connector key not found: ${connKey}`)
+  function posFromSocketKey(socketKey: string) {
+    // Takes a unique id for a socket and looks up the position
+    let socket = allSockets.find(socket => socket.socketKey === socketKey)
+    if (socket)
+      return socket.pos
+    else throw Error(`Socket key not found: ${socketKey}`)
   }
 
-  function snapsToConn(handlePos: Vec2D): Connector | undefined {
-    // calculates the distance to all connectors
-    // then returns the position of the closest connector if its distance is below the snap threshold
+  function snapsToSocket(handlePos: Vec2D): Socket | undefined {
+    // calculates the distance to all sockets
+    // then returns the position of the closest socket if its distance is below the snap threshold
     // and returns undefined otherwise
-    const connectDistances = connectPos.map(conn => Math.sqrt((conn.pos.x - handlePos.x) ** 2 + (conn.pos.y - handlePos.y) ** 2))
-    const minDistance = Math.min(...connectDistances)
+    const socketDistances = allSockets.map(socket => Math.sqrt((socket.pos.x - handlePos.x) ** 2 + (socket.pos.y - handlePos.y) ** 2))
+    const minDistance = Math.min(...socketDistances)
     if (minDistance <= handleSize / 2)
-      return connectPos[connectDistances.indexOf(minDistance)]
+      return allSockets[socketDistances.indexOf(minDistance)]
     else
       return undefined
   }
@@ -83,18 +83,15 @@ export default function CurveConnection(props: CurveConnectionProps) {
     beganDragging && (isDragging = true);
     const e = event as ReactMouseEvent;
 
-    const screenOffset = getScreenOffset()
-    const canvasZoom = getCanvasZoom()
     const newMousePos = screenToCanvas({ x: e.clientX, y: e.clientY })
-
-    const setConnKey = isLeft ? setConnKeyLeft : setConnKeyRight
-    const snapConn = snapsToConn(newMousePos)
-    if (snapConn && (isLeft ? !snapConn.isInput : snapConn.isInput)) {
-      // stick to nearest connector
-      setConnKey(snapConn.connKey)
+    const setSocketKey = isLeft ? setSocketKeyLeft : setSocketKeyRight
+    const snapSocket = snapsToSocket(newMousePos)
+    if (snapSocket && (isLeft ? !snapSocket.isInput : snapSocket.isInput)) {
+      // stick to nearest socket
+      setSocketKey(snapSocket.socketKey)
     } else {
       // stick to mouse
-      setConnKey(undefined)
+      setSocketKey(undefined)
     }
     setMousePos(newMousePos)
   }
@@ -102,33 +99,33 @@ export default function CurveConnection(props: CurveConnectionProps) {
   function getHandlePos(isLeft: boolean) {
     // Called when handles are dragged
     // TODO: document logic
-    const connKey = isLeft ? connKeyLeft : connKeyRight
-    const oppositeConnKey = isLeft ? connKeyRight : connKeyLeft
+    const socketKey = isLeft ? socketKeyLeft : socketKeyRight
+    const oppositeSocketKey = isLeft ? socketKeyRight : socketKeyLeft
     let handlePos = mousePos;
-    if (connKey)
-      handlePos = posFromConnKey(connKey)
-    else if (oppositeConnKey)
-      handlePos = posFromConnKey(oppositeConnKey)
+    if (socketKey)
+      handlePos = posFromSocketKey(socketKey)
+    else if (oppositeSocketKey)
+      handlePos = posFromSocketKey(oppositeSocketKey)
     return { x: handlePos.x - handleSize / 2, y: handlePos.y - handleSize / 2 }
   }
 
   function getCurve() {
-    if (!refSVG.current || !(isDragging || (connKeyLeft && connKeyRight)))
+    if (!refSVG.current || !(isDragging || (socketKeyLeft && socketKeyRight)))
       return "M0 0 C 0 0, 0 0, 0 0"
 
     // left and right anchor of bezier curve
     let posLeft: Vec2D;
     let posRight: Vec2D;
 
-    if (connKeyLeft) {
-      let connPos = posFromConnKey(connKeyLeft)
-      posLeft = { x: connPos.x + 7, y: connPos.y }
+    if (socketKeyLeft) {
+      let socketPos = posFromSocketKey(socketKeyLeft)
+      posLeft = { x: socketPos.x + 7, y: socketPos.y }
     } else {
       posLeft = mousePos
     }
-    if (connKeyRight) {
-      let connPos = posFromConnKey(connKeyRight)
-      posRight = { x: connPos.x - 7, y: connPos.y }
+    if (socketKeyRight) {
+      let socketPos = posFromSocketKey(socketKeyRight)
+      posRight = { x: socketPos.x - 7, y: socketPos.y }
     } else {
       posRight = mousePos
     }
@@ -162,6 +159,7 @@ export default function CurveConnection(props: CurveConnectionProps) {
 
     return `M${x1} ${y1} C ${x2} ${y2}, ${x3} ${y3}, ${x4} ${y4}`
   }
+
   return (
     <>
       <svg className={`${classes.svg} ${beganDragging ? classes.aboveNodes : classes.belowNodes}`} ref={refSVG}>
@@ -170,8 +168,8 @@ export default function CurveConnection(props: CurveConnectionProps) {
         <path
           ref={refPath}
           d={getCurve()}
-          style={{ display: beganDragging || (connKeyLeft && connKeyRight) ? '' : 'none' }}
-          id={`svg_${props.curveID}`}
+          style={{ display: beganDragging || (socketKeyLeft && socketKeyRight) ? '' : 'none' }}
+          id={`svg_${props.noodleID}`}
           strokeWidth="2"
           stroke="#fff"
           fill="none"

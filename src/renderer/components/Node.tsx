@@ -1,6 +1,6 @@
 import { createStyles, Paper, MantineSize, Stack } from '@mantine/core';
 import { useDispatchTyped } from '@/redux/hooks';
-import { moveNode } from '@/redux/connectorsSlice';
+import { moveNode } from '@/redux/socketsSlice';
 import { ReactNode, useRef, useState } from 'react';
 import Draggable, { DraggableData, DraggableEvent } from 'react-draggable';
 import { getCanvasZoom, onZoomChanged } from './NodeCanvas';
