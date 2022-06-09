@@ -21,7 +21,7 @@ const useStyles = createStyles({
     width: handleSize,
     height: handleSize,
     borderRadius: handleSize / 2,
-    opacity: 0.5,
+    opacity: 0,
     zIndex: 1000,
   },
   aboveNodes: { zIndex: 500 },

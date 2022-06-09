@@ -1,21 +1,23 @@
-import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
 import { useState } from 'react';
 import type { FieldProps } from '@/types/util';
-import { createStyles } from '@mantine/core';
+import { createStyles, Select } from '@mantine/core';
 
 const useStyles = createStyles((theme) => ({
   container: {
-    height: 40,
     paddingTop: 5,
+    backgroundColor: '#262626',
+    borderRadius: 10,
   },
-  select: {
-    height: 35,
-    backgroundColor: '#262626', // TODO: add to theme
+  label: {
+    paddingLeft: 10,
   },
 }));
 
 // TODO: close dropdown when canvas is moved or scaled (or move and scale dropdown as well?)
+//        -> better option: use redux to track canvas state and pass canvasOrigin to positionDependencies prop of SelectField
 // TODO: These props should be required. Is there a way to define is in nodeCollection.schema.json?
+//        -> Yes, define a schema for each possible field?
+// TODO: transform "values" prop into value-label pairs to support e.g. timezone selection
 type SelectFieldProps = {
   values?: string[],
   default?: string,
@@ -23,34 +25,24 @@ type SelectFieldProps = {
 } & FieldProps
 
 export default function SelectField(props: SelectFieldProps) {
+  if (!props.values) throw new Error('SelectField: "values" prop is required');
+  if (!props.default) throw new Error('SelectField: "default" prop is required');
+  if (!props.label) throw new Error('SelectField: "label" prop is required');
+
   const { classes } = useStyles();
-  const [value, setValue] = useState(props.default);
+  const [value, setValue] = useState<string>(props.default);
 
-  const handleChange = (event: SelectChangeEvent) => {
-    setValue(event.target.value);
-  };
-
+  const label = <div className={classes.label}>{props.label}</div>
   return (
     <div className={classes.container}>
-      <FormControl fullWidth size='small'>
-        <InputLabel id="label">{props.label}</InputLabel>
-        <Select
-          className={classes.select}
-          labelId="label"
-          id="select"
-          value={value}
-          label={props.label}
-          onChange={handleChange}
-        >
-          {
-            props.values?.map((val, i) =>
-              <MenuItem key={i} value={val}>
-                {val}
-              </MenuItem>
-            )
-          }
-        </Select>
-      </FormControl>
+      <Select
+        value={value}
+        onChange={(value) => value && setValue(value)}
+        label={label}
+        placeholder=''
+        variant='default'
+        data={props.values.map((value) => ({ value, label: value }))}
+      />
     </div>
   )
 }
