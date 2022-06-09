@@ -4,7 +4,7 @@ import {
   Button,
   Group,
 } from '@mantine/core';
-import { sendBackend, invokeBackend } from '@/util/backendInterface';
+import backend from '@/util/backendInterface';
 
 const useStyles = createStyles((theme) => ({
 
@@ -18,13 +18,13 @@ export default function Header() {
       <Group position='right'>
         <Button
           color="primary"
-          onClick={() => invokeBackend('run', 'hallo hier mein programm')
+          onClick={() => backend.invoke('run', 'hallo hier mein programm')
             .then((data) => console.log('antwort ist zurück: ', data))
           }
         >RUN</Button>
         <Button
           color="primary"
-          onClick={() => sendBackend('quit')}
+          onClick={() => backend.send('quit')}
         >QUIT</Button>
       </Group>
     </MantineHeader>
