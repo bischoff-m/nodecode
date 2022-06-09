@@ -4,7 +4,7 @@ import {
   Button,
   Group,
 } from '@mantine/core';
-import { sendBackend, invokeBackend } from '@/util';
+import { sendBackend, invokeBackend } from '@/util/backendInterface';
 
 const useStyles = createStyles((theme) => ({
 
