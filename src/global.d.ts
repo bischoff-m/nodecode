@@ -10,15 +10,17 @@ declare namespace NodeJS {
 
 // Extends global Window type
 interface Window {
-  /** Expose some Api through preload script */
-  api: {
+  /** Expose some functionality through preload script */
+  ipc: {
     send: (channel: string, ...args: any[]) => void
     invoke: (channel: string, ...args: any[]) => Promise<any>
     on: (channel: string, func: (...args: any[]) => void) => void
     once: (channel: string, func: (...args: any[]) => void) => void
+    removeAllListeners: (channel: string) => void
+    listenerCount: (channel: string) => number
+  }
+  loading: {
     appendLoading: () => void
     removeLoading: () => void
-    listenerCount: (eventName: string | symbol) => number
-    removeAllListeners: (channel: string) => void
   }
 }

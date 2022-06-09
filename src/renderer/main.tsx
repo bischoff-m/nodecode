@@ -9,6 +9,6 @@ ReactDOM.render(
   </React.StrictMode>,
   document.getElementById('root'),
   () => {
-    window.api.removeLoading()
+    window.loading.removeLoading()
   },
 )

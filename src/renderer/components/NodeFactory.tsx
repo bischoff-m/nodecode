@@ -7,7 +7,7 @@ import ListField from '@/components/nodeComponents/ListField';
 var callbacks: (() => void)[] = [];
 var nodeConfig: NodeCollectionSchema | null;
 
-window.api.invoke(
+window.ipc.invoke(
   'requestPublicFile',
   '/public/config/nodeCollections/basic_nodes.json',
   { encoding: 'utf-8' }

@@ -33,14 +33,14 @@ Graphical Node Editor
 		})
 
 		// For message from main
-		window.api.handle('mymessage', (event, ...args) => {
+		window.ipc.handle('mymessage', (event, ...args) => {
 			return response
 		})
 
 3. Send a message
 
 		// For message to main
-		window.api.invoke('mymessage', ...args).then((data) => {
+		window.ipc.invoke('mymessage', ...args).then((data) => {
 			console.log(data)
 		})
 
