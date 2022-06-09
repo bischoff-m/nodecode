@@ -2,7 +2,7 @@
     "name": "Basic Nodes",
     "nodes": [
         {
-            "id": "input_list",
+            "id": "input_list_without_list_field",
             "title": "List Input",
             "fields": [
                 {
@@ -30,7 +30,7 @@
             ]
         },
         {
-            "id": "input_list_old",
+            "id": "input_list",
             "title": "List Input",
             "fields": [
                 {

@@ -4,11 +4,12 @@ import { createStyles, Select } from '@mantine/core';
 
 const useStyles = createStyles((theme) => ({
   container: {
-    paddingTop: 5,
     backgroundColor: '#262626',
     borderRadius: 10,
+    boxShadow: 'inset 0px 0px 3px rgb(0 0 0 / 40%)',
   },
   label: {
+    paddingTop: 5,
     paddingLeft: 10,
   },
 }));
@@ -27,7 +28,6 @@ type SelectFieldProps = {
 export default function SelectField(props: SelectFieldProps) {
   if (!props.values) throw new Error('SelectField: "values" prop is required');
   if (!props.default) throw new Error('SelectField: "default" prop is required');
-  if (!props.label) throw new Error('SelectField: "label" prop is required');
 
   const { classes } = useStyles();
   const [value, setValue] = useState<string>(props.default);
@@ -38,7 +38,7 @@ export default function SelectField(props: SelectFieldProps) {
       <Select
         value={value}
         onChange={(value) => value && setValue(value)}
-        label={label}
+        label={props.label ? label : undefined}
         placeholder=''
         variant='default'
         data={props.values.map((value) => ({ value, label: value }))}
