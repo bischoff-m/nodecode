@@ -19,6 +19,8 @@ let containerDiv: HTMLDivElement | null = null; // ref.current of the div that c
 
 export const getCanvasZoom = () => zoom;
 export const screenToCanvas = (position: Vec2D) => {
+  // transforms screen coordinates to canvas coordinates (e.g. for mouse events)
+  // this does not use the innerOffset and zoom variables because it would not account for animations
   if (!canvasDiv || !containerDiv)
     return { x: NaN, y: NaN }
   const { left, top, width: innerWidth } = canvasDiv.getBoundingClientRect()

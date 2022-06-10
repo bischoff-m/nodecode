@@ -1,50 +1,36 @@
 import type { FieldProps } from '@/types/util';
-import { ActionIcon, createStyles, TextInput } from '@mantine/core';
+import { ActionIcon, CloseButton, createStyles, Stack, TextInput } from '@mantine/core';
 import { IconPlus } from '@tabler/icons';
-// import AddIcon from '@mui/icons-material/Add';
-// import CloseIcon from '@mui/icons-material/Close'; // TODO: switch to https://mantine.dev/core/action-icon/ with tabler icons
-// import { Theme } from '@mui/material';
-// import FormControl from '@mui/material/FormControl';
-// import IconButton from '@mui/material/IconButton';
-// import InputAdornment from '@mui/material/InputAdornment';
-// import InputLabel from '@mui/material/InputLabel';
-// import List from '@mui/material/List';
-// import ListItem from '@mui/material/ListItem';
-// import OutlinedInput from '@mui/material/OutlinedInput';
-// import { makeStyles } from '@mui/styles';
-import { ChangeEvent, KeyboardEvent as ReactKeyboardEvent, useState } from 'react';
+import { useState } from 'react';
 
 const useStyles = createStyles((theme) => ({
   container: {
-    marginTop: 5,
     backgroundColor: '#262626',
     borderRadius: 10,
     boxShadow: 'inset 0px 0px 3px rgb(0 0 0 / 40%)',
   },
-  input: {
-    height: 35,
-    backgroundColor: '#262626',
-    '& button': {
-      width: 30,
-      height: 30,
-      borderRadius: 10,
-    },
+  label: {
+    paddingTop: 5,
+    paddingLeft: 10,
   },
   listItem: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingLeft: 10,
+    paddingRight: 5,
     height: 35,
     '& > div': {
-      right: 5,
-    },
-    '& button': {
-      width: 30,
-      height: 30,
-      borderRadius: 10,
-    },
+      width: '100%',
+    }
   },
 }));
 
-type ListFieldProps = {
+// TODO: add maximum height and scroll container to list
+// TODO: implement props: label, defaultItems, placeholder(?)
 
+type ListFieldProps = {
+  label?: string,
 } & FieldProps
 
 export default function ListField(props: ListFieldProps) {
@@ -58,56 +44,36 @@ export default function ListField(props: ListFieldProps) {
       setInputValue('')
     }
   }
+  const addButton = (
+    <ActionIcon
+      onClick={() => console.log('hi')}
+      variant='hover'
+    ><IconPlus size={18} /></ActionIcon>
+  )
+  // TODO: replace content by an actual option to set a label
+  const label = <div className={classes.label}>{props.label ? props.label : 'List'}</div>
 
   return (
     <div className={classes.container}>
       <TextInput
         value={inputValue}
+        onKeyDown={(event) => event.key === 'Enter' && handleAddItem()}
         onChange={(event) => setInputValue(event.target.value)}
-        rightSection={<ActionIcon><IconPlus /></ActionIcon>}
+        rightSection={addButton}
+        variant='default'
+        label={label}
+        // label={props.label ? label : undefined} // TODO: use this once label is implemented
       />
+      <Stack spacing={0}>
+        {
+          listItems.map((item, i) =>
+            <div key={i} className={classes.listItem}>
+              <div>{item}</div>
+              <CloseButton onClick={() => setListItems(listItems.slice(0, i).concat(listItems.slice(i + 1)))} />
+            </div>
+          )
+        }
+      </Stack>
     </div>
-    // <div className={classes.container}>
-    //   <FormControl fullWidth variant='outlined' size='small'>
-    //     <InputLabel shrink htmlFor='outlined-adornment-password'>List</InputLabel>
-    //     <OutlinedInput
-    //       className={classes.input}
-    //       id='outlined-adornment-password' // TODO: change
-    //       label='List'
-    //       value={inputValue}
-    //       onKeyDown={(event: ReactKeyboardEvent) => event.key === 'Enter' && handleAddItem()}
-    //       onChange={(event: ChangeEvent<HTMLInputElement>) => setInputValue(event.target.value)}
-    //       notched
-    //       endAdornment={
-    //         <InputAdornment position='end'>
-    //           <IconButton onClick={handleAddItem} edge='end'>
-    //             <AddIcon />
-    //           </IconButton>
-    //         </InputAdornment>
-    //       }
-    //     />
-    //     <List dense disablePadding sx={{ paddingTop: listItems.length > 0 ? '3px' : '0px' }}>
-    //       {
-    //         listItems.map((item, i) =>
-    //           <ListItem
-    //             key={i}
-    //             className={classes.listItem}
-    //             secondaryAction={
-    //               <IconButton
-    //                 edge='end'
-    //                 onClick={() => setListItems(listItems.slice(0, i).concat(listItems.slice(i + 1)))}
-    //                 size='small'
-    //               >
-    //                 <CloseIcon />
-    //               </IconButton>
-    //             }
-    //           >
-    //             {item}
-    //           </ListItem>
-    //         )
-    //       }
-    //     </List>
-    //   </FormControl>
-    // </div>
   )
 }
