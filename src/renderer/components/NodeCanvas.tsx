@@ -137,7 +137,7 @@ export default function NodeCanvas() {
 
   function handleWheel(e: ReactWheelEvent<"div">) {
     // TODO: min und max für zoom
-    if (containerRef.current == null) return
+    if (containerRef.current == null || isDragging) return
     const { left, top, width, height } = containerRef.current.getBoundingClientRect()
     
     // Calculations from https://stackoverflow.com/a/46833254/16953263

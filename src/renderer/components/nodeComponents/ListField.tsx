@@ -19,9 +19,11 @@ const useStyles = createStyles((theme) => ({
     alignItems: 'center',
     paddingLeft: 10,
     paddingRight: 5,
-    height: 35,
+    height: 30,
     '& > div': {
       width: '100%',
+      fontWeight: 300,
+      fontSize: 14,
     }
   },
 }));
