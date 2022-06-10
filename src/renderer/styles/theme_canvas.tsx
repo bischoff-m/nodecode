@@ -1,4 +1,6 @@
-import { MantineProviderProps, MantineThemeOverride, PaperStylesParams } from '@mantine/core';
+import { MantineProviderProps, MantineThemeOverride } from '@mantine/core';
+
+// TODO: extend MantineThemeOverride to support linting on 'other' property
 
 const theme: MantineThemeOverride = {
   colorScheme: 'dark',

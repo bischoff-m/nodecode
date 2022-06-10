@@ -6,7 +6,7 @@ import { useState } from 'react';
 const useStyles = createStyles((theme) => ({
   container: {
     backgroundColor: '#262626',
-    borderRadius: 10,
+    borderRadius: theme.radius.md, // TODO: use this for other properties as well
     boxShadow: 'inset 0px 0px 3px rgb(0 0 0 / 40%)',
   },
   label: {
