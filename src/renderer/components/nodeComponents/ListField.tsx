@@ -1,3 +1,4 @@
+import { fixedTheme } from '@/styles/theme_canvas';
 import type { FieldProps } from '@/types/util';
 import { ActionIcon, CloseButton, createStyles, Stack, TextInput } from '@mantine/core';
 import { IconPlus } from '@tabler/icons';
@@ -5,26 +6,33 @@ import { useState } from 'react';
 
 const useStyles = createStyles((theme) => ({
   container: {
-    backgroundColor: '#262626',
-    borderRadius: theme.radius.md, // TODO: use this for other properties as well
-    boxShadow: 'inset 0px 0px 3px rgb(0 0 0 / 40%)',
+    backgroundColor: theme.other.fieldBackgroundColor,
+    borderRadius: theme.radius[fixedTheme.fieldContainerRadius],
+    border: theme.other.fieldBorder,
+    boxShadow: theme.other.fieldContainerShadow,
+    paddingBottom: fixedTheme.fieldInnerMargin,
+  },
+  input: {
+    marginLeft: fixedTheme.fieldInnerMargin,
+    marginRight: fixedTheme.fieldInnerMargin,
+    marginTop: 4,
+    marginBottom: 4,
   },
   label: {
     paddingTop: 5,
-    paddingLeft: 10,
+    paddingLeft: 8,
   },
   listItem: {
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    paddingLeft: 10,
-    paddingRight: 5,
+    paddingLeft: fixedTheme.fieldInnerMargin + 6,
+    paddingRight: fixedTheme.fieldInnerMargin,
     height: 30,
     '& > div': {
       width: '100%',
-      fontWeight: 300,
-      fontSize: 14,
-    }
+      fontSize: theme.fontSizes.sm,
+    },
   },
 }));
 
@@ -48,21 +56,22 @@ export default function ListField(props: ListFieldProps) {
   }
   const addButton = (
     <ActionIcon
-      onClick={() => console.log('hi')}
+      onClick={() => handleAddItem()}
       variant='hover'
     ><IconPlus size={18} /></ActionIcon>
   )
   // TODO: replace content by an actual option to set a label
-  const label = <div className={classes.label}>{props.label ? props.label : 'List'}</div>
+  const label = <div className={classes.label}>{props.label ? props.label : 'Values'}</div>
 
   return (
     <div className={classes.container}>
       <TextInput
+        className={classes.input}
         value={inputValue}
         onKeyDown={(event) => event.key === 'Enter' && handleAddItem()}
         onChange={(event) => setInputValue(event.target.value)}
         rightSection={addButton}
-        variant='default'
+        variant='filled'
         label={label}
         // label={props.label ? label : undefined} // TODO: use this once label is implemented
       />

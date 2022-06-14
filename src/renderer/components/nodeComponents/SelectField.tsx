@@ -1,16 +1,21 @@
 import { useState } from 'react';
-import type { FieldProps } from '@/types/util';
 import { createStyles, Select } from '@mantine/core';
+import type { FieldProps } from '@/types/util';
+import { fixedTheme } from '@/styles/theme_canvas';
 
 const useStyles = createStyles((theme) => ({
   container: {
-    backgroundColor: '#262626',
-    borderRadius: 10,
-    boxShadow: 'inset 0px 0px 3px rgb(0 0 0 / 40%)',
+    backgroundColor: theme.other.fieldBackgroundColor,
+    borderRadius: theme.radius[fixedTheme.fieldContainerRadius],
+    border: theme.other.fieldBorder,
+    boxShadow: theme.other.fieldContainerShadow,
+  },
+  input: {
+    margin: fixedTheme.fieldInnerMargin,
   },
   label: {
     paddingTop: 5,
-    paddingLeft: 10,
+    paddingLeft: 8,
   },
 }));
 
@@ -36,12 +41,13 @@ export default function SelectField(props: SelectFieldProps) {
   return (
     <div className={classes.container}>
       <Select
+        className={classes.input}
         value={value}
         onChange={(value) => value && setValue(value)}
         label={props.label ? label : undefined}
-        placeholder=''
-        variant='default'
         data={props.values.map((value) => ({ value, label: value }))}
+        placeholder=''
+        variant='filled'
       />
     </div>
   )

@@ -4,25 +4,28 @@ import { moveNode } from '@/redux/socketsSlice';
 import { ReactNode, useRef, useState } from 'react';
 import Draggable, { DraggableData, DraggableEvent } from 'react-draggable';
 import { getCanvasZoom, onZoomChanged } from './NodeCanvas';
-
-const gridSize = 20;
+import { fixedTheme } from '@/styles/theme_canvas';
 
 const useStyles = createStyles((theme) => {
   const borderRadius = theme.defaultRadius as MantineSize;
   return ({
     card: {
       position: 'absolute',
-      width: 300,
+      width: fixedTheme.nodeWidth,
+      boxShadow: theme.other.nodeContainerShadow,
     },
     header: {
       padding: 8,
-      paddingLeft: 14, // TODO: use mantine padding instead (sm, lg, xl, ...)
-      backgroundColor: theme.colors.blue[9],
+      paddingLeft: fixedTheme.nodePadding + 4,
+      backgroundColor: theme.other.nodeHeaderBackgroundColor,
       borderTopLeftRadius: theme.radius[borderRadius],
       borderTopRightRadius: theme.radius[borderRadius],
     },
     content: {
-      padding: theme.other.nodePadding,
+      padding: fixedTheme.nodePadding,
+    },
+    highlight: {
+      outline: theme.other.nodeHoverOutline,
     },
   })
 });
@@ -39,6 +42,7 @@ export default function Node(props: NodeProps) {
   const { classes } = useStyles();
   const nodeRef = useRef(null);
   const [canvasZoom, setCanvasZoom] = useState<number>(getCanvasZoom()); // variable is mirrored from NodeCanvas to enable state updates
+  const [outlineActive, setOutlineActive] = useState<boolean>(false);
 
   const dispatch = useDispatchTyped();
 
@@ -57,13 +61,17 @@ export default function Node(props: NodeProps) {
     <Draggable
       handle={'.' + classes.header}
       defaultPosition={{ x: props.x, y: props.y }}
-      grid={[gridSize * canvasZoom, gridSize * canvasZoom]}
+      grid={[fixedTheme.gridSize * canvasZoom, fixedTheme.gridSize * canvasZoom]}
       nodeRef={nodeRef}
       onDrag={handleDrag}
       scale={canvasZoom}
     >
-      <Paper className={classes.card} ref={nodeRef}>
-        <div className={classes.header}>
+      <Paper className={`${classes.card} ${outlineActive ? classes.highlight : undefined}`} ref={nodeRef}>
+        <div
+          className={classes.header}
+          onMouseOver={() => setOutlineActive(true)}
+          onMouseOut={() => setOutlineActive(false)}
+        >
           {props.title}
         </div>
         <Stack className={classes.content} justify="flex-start" spacing="sm">

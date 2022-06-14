@@ -1,5 +1,5 @@
 import { createStyles, MantineProvider } from '@mantine/core';
-import { theme, styleOverrides } from '@/styles/theme_canvas';
+import { styleOverrides, mantineTheme } from '@/styles/theme_canvas';
 import { MouseEvent as ReactMouseEvent, WheelEvent as ReactWheelEvent, ReactElement, useEffect, useState, useRef } from 'react';
 import gridSvg from '@/assets/gridSvg.svg';
 import Noodle from '@/components/Noodle';
@@ -34,7 +34,6 @@ export const onZoomChanged = (callback: (newZoom: number) => void) => {
   onZoomCallbacks.push(callback);
 }
 
-// TODO: alles, was möglich ist an konkreten werten durch mantine properties ersetzen
 // TODO: replace vector math by something where you dont need to write x and y for each calculation
 //       - https://mathjs.org/ Problem: code is less readable because of math.add(...) instead of ... + ...
 //       - https://www.sweetjs.org/doc/tutorial.html Define own operators (maybe in combination with mathjs)
@@ -43,7 +42,7 @@ const useStyles = createStyles((theme) => ({
   container: {
     width: '100%',
     height: '100%',
-    backgroundColor: theme.colors.dark[7],
+    backgroundColor: mantineTheme.other?.canvasBackgroundColor,
     backgroundImage: `url(${gridSvg})`,
     backgroundRepeat: 'repeat',
     backgroundPosition: '0px 0px',
@@ -180,7 +179,7 @@ export default function NodeCanvas() {
   containerRef.current && (containerDiv = containerRef.current)
   draggableRef.current && (canvasDiv = draggableRef.current)
   return (
-    <MantineProvider theme={theme} styles={styleOverrides} withNormalizeCSS withGlobalStyles>
+    <MantineProvider theme={mantineTheme} styles={styleOverrides} withNormalizeCSS withGlobalStyles>
       <directstyled.div
         className={`${classes.container} ${classes.animatedBackground}`}
         ref={containerRef}

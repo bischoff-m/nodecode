@@ -4,10 +4,13 @@ import { useDispatchTyped } from '@/redux/hooks';
 import { useEffect, useRef } from 'react';
 import type { FieldProps } from '@/types/util';
 import { screenToCanvas } from '@/components/NodeCanvas';
+import { fixedTheme } from '@/styles/theme_canvas';
 
 // TODO: implement multiple connections on the same socket and datatypes
 // TODO: add aditional checks for properties
 // TODO: handle position needs to updated when node is updated (for example a list is expanded)
+
+const { handleSize, fieldDefaultHeight, nodePadding } = fixedTheme;
 
 const useStyles = createStyles((theme) => ({
   container: {
@@ -15,10 +18,10 @@ const useStyles = createStyles((theme) => ({
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: '100%',
-    height: theme.other.fieldHeight,
+    height: fieldDefaultHeight,
     alignItems: 'center',
     paddingLeft: 5,
-    paddingRight: 5,
+    paddingRight: 10,
   },
   socketContainer: {
     display: 'flex',
@@ -26,20 +29,20 @@ const useStyles = createStyles((theme) => ({
     justifyContent: 'space-between',
     position: 'absolute',
     width: '100%',
-    height: theme.other.fieldHeight,
-    transform: `translate(-${theme.other.nodePadding + 5}px, 0)`,
+    height: fieldDefaultHeight,
+    transform: `translate(-${nodePadding + 5}px, 0)`,
     '& :first-of-type': {
-      transform: `translate(-${theme.other.handleSize / 2}px, ${(theme.other.fieldHeight - theme.other.handleSize) / 2}px)`,
+      transform: `translate(-${handleSize / 2}px, ${(fieldDefaultHeight - handleSize) / 2}px)`,
     },
     '& :last-of-type': {
-      transform: `translate(${theme.other.handleSize / 2}px, ${(theme.other.fieldHeight - theme.other.handleSize) / 2}px)`,
+      transform: `translate(${handleSize / 2}px, ${(fieldDefaultHeight - handleSize) / 2}px)`,
     }
   },
   socket: {
-    width: theme.other.handleSize,
-    height: theme.other.handleSize,
-    backgroundColor: theme.colors.blue[9],
-    borderRadius: theme.other.handleSize / 2,
+    width: handleSize,
+    height: handleSize,
+    backgroundColor: theme.other.socketColor,
+    borderRadius: handleSize / 2,
   },
 }));
 
@@ -75,8 +78,8 @@ export default function InputOutputField(props: InputOutputFieldProps) {
           nodeKey: props.nodeKey,
           fieldKey: props.fieldKey,
           pos: {
-            x: pos.x + theme.other.handleSize / 2,
-            y: pos.y + theme.other.handleSize / 2,
+            x: pos.x + handleSize / 2,
+            y: pos.y + handleSize / 2,
           },
           isInput: isLeft,
         }))
