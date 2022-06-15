@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { createStyles, Select } from '@mantine/core';
+import { createStyles, Select, useMantineTheme } from '@mantine/core';
 import type { FieldProps } from '@/types/util';
 import { fixedTheme } from '@/styles/theme_canvas';
 
@@ -34,8 +34,9 @@ export default function SelectField(props: SelectFieldProps) {
   if (!props.values) throw new Error('SelectField: "values" prop is required');
   if (!props.default) throw new Error('SelectField: "default" prop is required');
 
-  const { classes } = useStyles();
-  const [value, setValue] = useState<string>(props.default);
+  const { classes } = useStyles()
+  const theme = useMantineTheme()
+  const [value, setValue] = useState<string>(props.default)
 
   const label = <div className={classes.label}>{props.label}</div>
   return (
@@ -47,7 +48,7 @@ export default function SelectField(props: SelectFieldProps) {
         label={props.label ? label : undefined}
         data={props.values.map((value) => ({ value, label: value }))}
         placeholder=''
-        variant='filled'
+        variant={theme.other.fieldComponentVariant}
       />
     </div>
   )

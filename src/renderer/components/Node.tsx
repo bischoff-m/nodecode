@@ -6,37 +6,36 @@ import Draggable, { DraggableData, DraggableEvent } from 'react-draggable';
 import { getCanvasZoom, onZoomChanged } from './NodeCanvas';
 import { fixedTheme } from '@/styles/theme_canvas';
 
-const useStyles = createStyles((theme) => {
-  const borderRadius = theme.defaultRadius as MantineSize;
-  return ({
-    card: {
-      position: 'absolute',
-      width: fixedTheme.nodeWidth,
-      boxShadow: theme.other.nodeContainerShadow,
-    },
-    header: {
-      padding: 8,
-      paddingLeft: fixedTheme.nodePadding + 4,
-      backgroundColor: theme.other.nodeHeaderBackgroundColor,
-      borderTopLeftRadius: theme.radius[borderRadius],
-      borderTopRightRadius: theme.radius[borderRadius],
-    },
-    content: {
-      padding: fixedTheme.nodePadding,
-    },
-    highlight: {
-      outline: theme.other.nodeHoverOutline,
-    },
-  })
-});
+const useStyles = createStyles((theme) => ({
+  card: {
+    position: 'absolute',
+    width: fixedTheme.nodeWidth,
+    boxShadow: theme.other.nodeContainerShadow,
+    backgroundColor: theme.other.nodeBackgroundColor,
+    borderRadius: theme.radius[theme.defaultRadius as MantineSize],
+  },
+  header: {
+    padding: 8,
+    paddingLeft: fixedTheme.nodePadding + 4,
+    backgroundColor: theme.other.nodeHeaderBackgroundColor,
+    borderTopLeftRadius: theme.radius[theme.defaultRadius as MantineSize],
+    borderTopRightRadius: theme.radius[theme.defaultRadius as MantineSize],
+  },
+  content: {
+    padding: fixedTheme.nodePadding,
+  },
+  highlight: {
+    outline: theme.other.nodeHoverOutline,
+  },
+}));
 
 export type NodeProps = {
-  children?: ReactNode
-  nodeKey: string,
-  title: string,
-  x: number,
-  y: number,
-}
+  children?: ReactNode;
+  nodeKey: string;
+  title: string;
+  x: number;
+  y: number;
+};
 
 export default function Node(props: NodeProps) {
   const { classes } = useStyles();
@@ -48,25 +47,35 @@ export default function Node(props: NodeProps) {
 
   onZoomChanged((newZoom: number) => {
     setCanvasZoom(newZoom);
-  })
+  });
 
   function handleDrag(event: DraggableEvent, data: DraggableData) {
-    dispatch(moveNode({
-      nodeKey: props.nodeKey,
-      by: { x: data.deltaX, y: data.deltaY }
-    }))
+    dispatch(
+      moveNode({
+        nodeKey: props.nodeKey,
+        by: { x: data.deltaX, y: data.deltaY },
+      })
+    );
   }
 
   return (
     <Draggable
       handle={'.' + classes.header}
       defaultPosition={{ x: props.x, y: props.y }}
-      grid={[fixedTheme.gridSize * canvasZoom, fixedTheme.gridSize * canvasZoom]}
+      grid={[
+        fixedTheme.gridSize * canvasZoom,
+        fixedTheme.gridSize * canvasZoom,
+      ]}
       nodeRef={nodeRef}
       onDrag={handleDrag}
       scale={canvasZoom}
     >
-      <Paper className={`${classes.card} ${outlineActive ? classes.highlight : undefined}`} ref={nodeRef}>
+      <div
+        className={`${classes.card} ${
+          outlineActive ? classes.highlight : undefined
+        }`}
+        ref={nodeRef}
+      >
         <div
           className={classes.header}
           onMouseOver={() => setOutlineActive(true)}
@@ -77,7 +86,7 @@ export default function Node(props: NodeProps) {
         <Stack className={classes.content} justify="flex-start" spacing="sm">
           {props.children}
         </Stack>
-      </Paper>
+      </div>
     </Draggable>
-  )
+  );
 }

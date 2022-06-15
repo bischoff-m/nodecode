@@ -5,7 +5,7 @@ import store from '@/redux/store';
 import { MantineProvider, AppShell } from '@mantine/core';
 import Navbar from '@/components/Navbar';
 import Header from '@/components/Header';
-
+import '@/styles/global.scss';
 
 export default function App() {
   return (
@@ -18,5 +18,5 @@ export default function App() {
         </MantineProvider>
       </Provider>
     </div>
-  )
+  );
 }

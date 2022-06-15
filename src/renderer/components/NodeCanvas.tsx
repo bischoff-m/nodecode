@@ -40,6 +40,8 @@ export const onZoomChanged = (callback: (newZoom: number) => void) => {
 
 const useStyles = createStyles((theme) => ({
   container: {
+    position: 'absolute',
+    overflow: 'hidden',
     width: '100%',
     height: '100%',
     backgroundColor: mantineTheme.other?.canvasBackgroundColor,
@@ -83,85 +85,89 @@ export default function NodeCanvas() {
   function updateCanvasStyle() {
     // calculate and set position of canvas and background of canvas based on
     // innerOffset, zoom and the size of the canvas container
-    if (!containerRef.current)
-      return
-    const { width, height } = containerRef.current.getBoundingClientRect()
+    if (!containerRef.current) return;
+    const { width, height } = containerRef.current.getBoundingClientRect();
     const translatedOffset = {
-      x: innerOffset.x - width * (zoom - 1) / 2,
-      y: innerOffset.y - height * (zoom - 1) / 2,
-    }
+      x: innerOffset.x - (width * (zoom - 1)) / 2,
+      y: innerOffset.y - (height * (zoom - 1)) / 2,
+    };
 
     setDragStyle({
       transform: `translate(${innerOffset.x}px, ${innerOffset.y}px) scale(${zoom}, ${zoom})`,
-    })
+    });
     setContainerStyle({
       backgroundPositionX: translatedOffset.x,
       backgroundPositionY: translatedOffset.y,
       backgroundSize: `${zoom * 100}px ${zoom * 100}px`,
-    })
+    });
   }
 
-
-  function handleMouseDown(e: ReactMouseEvent<"div">) {
-    prevDragPos = { x: e.clientX, y: e.clientY }
+  function handleMouseDown(e: ReactMouseEvent<'div'>) {
+    prevDragPos = { x: e.clientX, y: e.clientY };
     // if wheel was pressed
-    isDragging = e.button === 1
+    isDragging = e.button === 1;
     if (isDragging) {
-      e.preventDefault()
-      containerRef.current && containerRef.current.classList.add(classes.dragging)
-      containerRef.current && containerRef.current.classList.remove(classes.animatedBackground)
-      draggableRef.current && draggableRef.current.classList.remove(classes.animatedTransition)
+      e.preventDefault();
+      containerRef.current &&
+        containerRef.current.classList.add(classes.dragging);
+      containerRef.current &&
+        containerRef.current.classList.remove(classes.animatedBackground);
+      draggableRef.current &&
+        draggableRef.current.classList.remove(classes.animatedTransition);
     }
   }
 
-  function handleMouseUp(e: ReactMouseEvent<"div">) {
-    isDragging = false
-    containerRef.current && containerRef.current.classList.remove(classes.dragging)
-    containerRef.current && containerRef.current.classList.add(classes.animatedBackground)
-    draggableRef.current && draggableRef.current.classList.add(classes.animatedTransition)
+  function handleMouseUp(e: ReactMouseEvent<'div'>) {
+    isDragging = false;
+    containerRef.current &&
+      containerRef.current.classList.remove(classes.dragging);
+    containerRef.current &&
+      containerRef.current.classList.add(classes.animatedBackground);
+    draggableRef.current &&
+      draggableRef.current.classList.add(classes.animatedTransition);
   }
 
-  function handleMouseMove(e: ReactMouseEvent<"div">) {
-    e.preventDefault()
-    if (!isDragging)
-      return
+  function handleMouseMove(e: ReactMouseEvent<'div'>) {
+    e.preventDefault();
+    if (!isDragging) return;
 
     // runs when the mouse is dragged while the mouse wheel is pressed
-    innerOffset.x += e.clientX - prevDragPos.x
-    innerOffset.y += e.clientY - prevDragPos.y
-    prevDragPos.x = e.clientX
-    prevDragPos.y = e.clientY
-    updateCanvasStyle()
+    innerOffset.x += e.clientX - prevDragPos.x;
+    innerOffset.y += e.clientY - prevDragPos.y;
+    prevDragPos.x = e.clientX;
+    prevDragPos.y = e.clientY;
+    updateCanvasStyle();
   }
 
-  function handleWheel(e: ReactWheelEvent<"div">) {
+  function handleWheel(e: ReactWheelEvent<'div'>) {
     // TODO: min und max für zoom
-    if (containerRef.current == null || isDragging) return
-    const { left, top, width, height } = containerRef.current.getBoundingClientRect()
-    
+    if (containerRef.current == null || isDragging) return;
+    const { left, top, width, height } =
+      containerRef.current.getBoundingClientRect();
+
     // Calculations from https://stackoverflow.com/a/46833254/16953263
     // position of cursor relative to the center point of the container
     let zoomPoint = {
       x: e.clientX - left - width / 2,
       y: e.clientY - top - height / 2,
-    }
+    };
     let zoomTarget = {
       x: (zoomPoint.x - innerOffset.x) / zoom,
       y: (zoomPoint.y - innerOffset.y) / zoom,
-    }
-    zoom *= zoomFactor ** Math.sign(e.deltaY)
+    };
+    zoom *= zoomFactor ** Math.sign(e.deltaY);
 
-    innerOffset.x = zoomPoint.x - zoomTarget.x * zoom
-    innerOffset.y = zoomPoint.y - zoomTarget.y * zoom
+    innerOffset.x = zoomPoint.x - zoomTarget.x * zoom;
+    innerOffset.y = zoomPoint.y - zoomTarget.y * zoom;
 
-    let drag = draggableRef.current
+    let drag = draggableRef.current;
     if (drag && !drag.classList.contains(classes.animatedTransition))
-      drag.classList.add(classes.animatedTransition)
+      drag.classList.add(classes.animatedTransition);
 
     // update this component
-    updateCanvasStyle()
+    updateCanvasStyle();
     // updated other components that registered a callback
-    onZoomCallbacks.forEach(callback => callback(zoom))
+    onZoomCallbacks.forEach((callback) => callback(zoom));
   }
 
   useEffect(() => {
@@ -169,24 +175,33 @@ export default function NodeCanvas() {
       setNodes([
         getNodeComponent('node1', 'input_list', { x: 40, y: 100 }),
         getNodeComponent('node2', 'output', { x: 500, y: 100 }),
-      ])
-      setIsLoaded(true)
-      updateCanvasStyle()
+      ]);
+      setIsLoaded(true);
+      updateCanvasStyle();
       // setNodes(Array(1).fill(0).map((_, i) => getNodeComponent('node' + i, 'input_list', { x: 40, y: 100 })))
-    })
-  }, [])
+    });
+  }, []);
 
-  containerRef.current && (containerDiv = containerRef.current)
-  draggableRef.current && (canvasDiv = draggableRef.current)
+  containerRef.current && (containerDiv = containerRef.current);
+  draggableRef.current && (canvasDiv = draggableRef.current);
   return (
-    <MantineProvider theme={mantineTheme} styles={styleOverrides} withNormalizeCSS withGlobalStyles>
+    <MantineProvider
+      theme={mantineTheme}
+      styles={styleOverrides}
+      classNames={{ Select: { root: 'mantine-select-filled' } }}
+      withNormalizeCSS
+      withGlobalStyles
+      withCSSVariables
+    >
       <directstyled.div
         className={`${classes.container} ${classes.animatedBackground}`}
         ref={containerRef}
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
         onMouseMove={handleMouseMove}
-        onMouseEnter={(e) => { if (e.buttons !== 4) isDragging = false }}
+        onMouseEnter={(e) => {
+          if (e.buttons !== 4) isDragging = false;
+        }}
         onWheel={handleWheel}
         style={containerStyle}
       >
@@ -195,22 +210,19 @@ export default function NodeCanvas() {
           ref={draggableRef}
           style={dragStyle}
         >
-          {
-            isLoaded &&
+          {isLoaded && (
             <>
-              <div className={classes.nodesContainer}>
-                {nodes}
-              </div>
+              <div className={classes.nodesContainer}>{nodes}</div>
               <Noodle
-                defaultSocketKeyLeft='node1.output.right'
-                defaultSocketKeyRight='node2.input.left'
+                defaultSocketKeyLeft="node1.output.right"
+                defaultSocketKeyRight="node2.input.left"
                 key={0}
-                noodleID='0'
+                noodleID="0"
               />
             </>
-          }
+          )}
         </directstyled.div>
       </directstyled.div>
     </MantineProvider>
-  )
+  );
 }
