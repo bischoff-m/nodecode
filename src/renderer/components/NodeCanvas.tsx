@@ -34,6 +34,7 @@ export const onZoomChanged = (callback: (newZoom: number) => void) => {
   onZoomCallbacks.push(callback);
 }
 
+// TODO: auf dem Surface Pro 4 werden scroll bars angezeigt (vielleicht ist das Canvas zu groß)
 // TODO: replace vector math by something where you dont need to write x and y for each calculation
 //       - https://mathjs.org/ Problem: code is less readable because of math.add(...) instead of ... + ...
 //       - https://www.sweetjs.org/doc/tutorial.html Define own operators (maybe in combination with mathjs)
