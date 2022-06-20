@@ -68,7 +68,7 @@ export default function Noodle(props: NoodleProps) {
 
   function posFromSocketKey(socketKey: string): Vec2D {
     // Takes a unique id for a socket and looks up the position
-    let socket = allSockets.find((socket) => socket.socketKey === socketKey)
+    let socket = allSockets.find((socket) => socket.key === socketKey)
     if (socket) return socket.pos
     else throw Error(`Socket key not found: ${socketKey}`)
   }
@@ -95,7 +95,7 @@ export default function Noodle(props: NoodleProps) {
     const snapSocket = snapsToSocket(newMousePos)
     if (snapSocket && (isLeft ? !snapSocket.isInput : snapSocket.isInput)) {
       // stick to nearest socket
-      setSocketKey(snapSocket.socketKey)
+      setSocketKey(snapSocket.key)
     } else {
       // stick to mouse
       setSocketKey(undefined)

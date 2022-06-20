@@ -9,10 +9,10 @@ import {
   useRef,
 } from 'react'
 import gridSvg from '@/assets/gridSvg.svg'
-import Noodle from '@/components/Noodle'
 import { getNodeComponent, onNodesLoaded } from '@/components/NodeFactory'
 import { directstyled, useDirectStyle } from '@/lib/direct-styled' // https://github.com/everweij/direct-styled
 import { Vec2D } from '@/types/util'
+import NoodleProvider from '@/components/NoodleProvider'
 
 const zoomFactor = 0.8
 let onZoomCallbacks: ((newZoom: number) => void)[] = [] // functions that should be called when user zoomed in/out
@@ -217,12 +217,7 @@ export default function NodeCanvas() {
           {isLoaded && (
             <>
               <div className={classes.nodesContainer}>{nodes}</div>
-              <Noodle
-                // defaultSocketKeyLeft="node1.output.right"
-                defaultSocketKeyRight="node3.in-select_out-query.left"
-                key={0}
-                noodleID="0"
-              />
+              <NoodleProvider />
             </>
           )}
         </directstyled.div>

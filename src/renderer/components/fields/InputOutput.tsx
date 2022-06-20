@@ -74,7 +74,6 @@ export default function InputOutputField(props: InputOutputFieldProps) {
       const pos = screenToCanvas(isLeft ? leftPos : rightPos)
       if (isLeft ? props.inputLabel : props.outputLabel)
         dispatch(updateSocket({
-          socketKey: `${props.nodeKey}.${props.fieldKey}.${isLeft ? 'left' : 'right'}`,
           nodeKey: props.nodeKey,
           fieldKey: props.fieldKey,
           pos: {
