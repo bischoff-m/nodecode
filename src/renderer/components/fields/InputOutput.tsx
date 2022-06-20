@@ -1,16 +1,16 @@
-import { createStyles, useMantineTheme } from '@mantine/core';
-import { updateSocket } from '@/redux/socketsSlice';
-import { useDispatchTyped } from '@/redux/hooks';
-import { useEffect, useRef } from 'react';
-import type { FieldProps } from '@/types/util';
-import { screenToCanvas } from '@/components/NodeCanvas';
-import { fixedTheme } from '@/styles/theme_canvas';
+import { createStyles, useMantineTheme } from '@mantine/core'
+import { updateSocket } from '@/redux/socketsSlice'
+import { useDispatchTyped } from '@/redux/hooks'
+import { useEffect, useRef } from 'react'
+import type { FieldProps } from '@/types/util'
+import { screenToCanvas } from '@/components/NodeCanvas'
+import { fixedTheme } from '@/styles/theme_canvas'
 
 // TODO: implement multiple connections on the same socket and datatypes
 // TODO: add aditional checks for properties
 // TODO: handle position needs to updated when node is updated (for example a list is expanded)
 
-const { handleSize, fieldDefaultHeight, nodePadding } = fixedTheme;
+const { handleSize, fieldDefaultHeight, nodePadding } = fixedTheme
 
 const useStyles = createStyles((theme) => ({
   container: {
@@ -44,7 +44,7 @@ const useStyles = createStyles((theme) => ({
     backgroundColor: theme.other.socketColor,
     borderRadius: handleSize / 2,
   },
-}));
+}))
 
 
 type InputOutputFieldProps = {
@@ -56,12 +56,12 @@ export default function InputOutputField(props: InputOutputFieldProps) {
   if (!props.inputLabel && !props.outputLabel)
     throw Error('No inputLabel and no outputLabel given to InputOutputField. It needs at least one of them.')
 
-  const { classes } = useStyles();
-  const theme = useMantineTheme();
-  const leftHandleRef = useRef<HTMLDivElement>(null);
-  const rightHandleRef = useRef<HTMLDivElement>(null);
+  const { classes } = useStyles()
+  const theme = useMantineTheme()
+  const leftHandleRef = useRef<HTMLDivElement>(null)
+  const rightHandleRef = useRef<HTMLDivElement>(null)
 
-  const dispatch = useDispatchTyped();
+  const dispatch = useDispatchTyped()
 
   useEffect(() => {
     if (!leftHandleRef.current || !rightHandleRef.current)

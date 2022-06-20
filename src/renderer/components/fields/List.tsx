@@ -1,5 +1,5 @@
-import { fixedTheme } from '@/styles/theme_canvas';
-import type { FieldProps } from '@/types/util';
+import { fixedTheme } from '@/styles/theme_canvas'
+import type { FieldProps } from '@/types/util'
 import {
   ActionIcon,
   CloseButton,
@@ -7,9 +7,9 @@ import {
   Stack,
   TextInput,
   useMantineTheme,
-} from '@mantine/core';
-import { IconPlus } from '@tabler/icons';
-import { useState } from 'react';
+} from '@mantine/core'
+import { IconPlus } from '@tabler/icons'
+import { useState } from 'react'
 
 const useStyles = createStyles((theme) => ({
   container: {
@@ -41,39 +41,39 @@ const useStyles = createStyles((theme) => ({
       fontSize: theme.fontSizes.sm,
     },
   },
-}));
+}))
 
 // TODO: add maximum height and scroll container to list
 // TODO: implement props: label, defaultItems, placeholder(?)
 
 type ListFieldProps = {
-  label?: string;
-} & FieldProps;
+  label?: string
+} & FieldProps
 
 export default function ListField(props: ListFieldProps) {
-  const { classes } = useStyles();
+  const { classes } = useStyles()
   const [listItems, setListItems] = useState<string[]>([
     'charttime',
     'terseform',
     'unitofmeasure',
-  ]);
-  const [inputValue, setInputValue] = useState('');
+  ])
+  const [inputValue, setInputValue] = useState('')
 
   function handleAddItem() {
     if (inputValue.trim() !== '') {
-      setListItems([inputValue, ...listItems]);
-      setInputValue('');
+      setListItems([inputValue, ...listItems])
+      setInputValue('')
     }
   }
   const addButton = (
     <ActionIcon onClick={() => handleAddItem()} variant="hover">
       <IconPlus size={fixedTheme.iconSize} />
     </ActionIcon>
-  );
+  )
   // TODO: replace content by an actual option to set a label
   const label = (
     <div className={classes.label}>{props.label ? props.label : 'Values'}</div>
-  );
+  )
 
   return (
     <div className={classes.container}>
@@ -85,7 +85,7 @@ export default function ListField(props: ListFieldProps) {
         rightSection={addButton}
         variant="filled"
         label={label}
-        // label={props.label ? label : undefined} // TODO: use this once label is implemented
+      // label={props.label ? label : undefined} // TODO: use this once label is implemented
       />
       <Stack spacing={0}>
         {listItems.map((item, i) => (
@@ -102,5 +102,5 @@ export default function ListField(props: ListFieldProps) {
         ))}
       </Stack>
     </div>
-  );
+  )
 }

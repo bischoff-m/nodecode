@@ -1,5 +1,5 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import type { Vec2D } from '@/types/util';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import type { Vec2D } from '@/types/util'
 
 export type Socket = {
   socketKey: string,
@@ -29,7 +29,7 @@ export const socketsSlice = createSlice({
   initialState,
   reducers: {
     updateSocket: (state, action: PayloadAction<Socket>) => {
-      const key = action.payload.socketKey;
+      const key = action.payload.socketKey
       const socketKeys = state.sockets.map(item => item.socketKey)
       const index = socketKeys.indexOf(key)
       if (index !== -1)

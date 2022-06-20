@@ -1,12 +1,12 @@
 import { join } from 'path'
 import { app, BrowserWindow, ipcMain } from 'electron'
-import isDev from 'electron-is-dev';
-import fs from 'fs';
-import path from 'path';
-import startServer from './server';
+import isDev from 'electron-is-dev'
+import fs from 'fs'
+import path from 'path'
+import startServer from './server'
 
 if (isDev)
-  app.disableHardwareAcceleration();
+  app.disableHardwareAcceleration()
 
 if (!app.requestSingleInstanceLock()) {
   app.quit()
@@ -38,12 +38,12 @@ async function createWindow() {
   }
 
   win.on('ready-to-show', async () => {
-    win?.show();
+    win?.show()
     if (!isDev)
-      win?.maximize();
+      win?.maximize()
 
     // TODO: only start server, if not already created (reload throws error)
-    win && startServer(win);
+    win && startServer(win)
   })
 }
 
@@ -74,7 +74,7 @@ app.on('activate', () => {
 })
 
 ipcMain.handle('requestPublicFile', (event, filePath, fsOptions) => {
-  const relative = path.relative('/public', filePath);
+  const relative = path.relative('/public', filePath)
   // check if path exists and if it is a subdir of /public
   if (!relative || relative.startsWith('..') || path.isAbsolute(relative))
     throw Error('Path has to refer to a file in the /public directory: ' + filePath)

@@ -1,7 +1,7 @@
-import { useState } from 'react';
-import { createStyles, Select, useMantineTheme } from '@mantine/core';
-import type { FieldProps } from '@/types/util';
-import { fixedTheme } from '@/styles/theme_canvas';
+import { useState } from 'react'
+import { createStyles, Select, useMantineTheme } from '@mantine/core'
+import type { FieldProps } from '@/types/util'
+import { fixedTheme } from '@/styles/theme_canvas'
 
 const useStyles = createStyles((theme) => ({
   container: {
@@ -17,7 +17,7 @@ const useStyles = createStyles((theme) => ({
     paddingTop: 5,
     paddingLeft: 8,
   },
-}));
+}))
 
 // TODO: close dropdown when canvas is moved or scaled (or move and scale dropdown as well?)
 //        -> better option: use redux to track canvas state and pass canvasOrigin to positionDependencies prop of SelectField
@@ -31,8 +31,8 @@ type SelectFieldProps = {
 } & FieldProps
 
 export default function SelectField(props: SelectFieldProps) {
-  if (!props.values) throw new Error('SelectField: "values" prop is required');
-  if (!props.default) throw new Error('SelectField: "default" prop is required');
+  if (!props.values) throw new Error('SelectField: "values" prop is required')
+  if (!props.default) throw new Error('SelectField: "default" prop is required')
 
   const { classes } = useStyles()
   const theme = useMantineTheme()

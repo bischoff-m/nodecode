@@ -1,5 +1,5 @@
-import { Vec2D } from '@/types/util';
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { Vec2D } from '@/types/util'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 // Define a type for the slice state
 interface CanvasState {
@@ -20,15 +20,15 @@ export const canvasSlice = createSlice({
   initialState,
   reducers: {
     setZoom: (state, action: PayloadAction<number>) => {
-      const newZoom = action.payload;
+      const newZoom = action.payload
       if (newZoom > 0)
-        state.zoom = newZoom;
+        state.zoom = newZoom
     },
     setOrigin: (state, action: PayloadAction<Vec2D>) => {
-      state.origin = action.payload;
+      state.origin = action.payload
     },
     setOriginZoomed: (state, action: PayloadAction<Vec2D>) => {
-      state.originZoomed = action.payload;
+      state.originZoomed = action.payload
     },
   },
 })

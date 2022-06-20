@@ -1,23 +1,23 @@
 
 
-const express = require('express');
-import { createServer } from 'http';
-import { Server } from 'socket.io';
-import { ServerToClientEvents, ClientToServerEvents, InterServerEvents, SocketData } from '@/types/server';
-import { BrowserWindow, ipcMain } from 'electron';
+const express = require('express')
+import { createServer } from 'http'
+import { Server } from 'socket.io'
+import { ServerToClientEvents, ClientToServerEvents, InterServerEvents, SocketData } from '@/types/server'
+import { BrowserWindow, ipcMain } from 'electron'
 
 // Doc: https://stackoverflow.com/questions/66686377/how-to-tie-socket-io-width-express-an-typescript
 export default function startServer(win: BrowserWindow) {
   // Express server
-  const expressApp = express();
-  const httpServer = createServer(expressApp);
+  const expressApp = express()
+  const httpServer = createServer(expressApp)
 
   expressApp.get('/', (req: any, res: any) => {
-    res.send('Please connect using <a href="https://socket.io/">socket.io</a>');
-  });
+    res.send('Please connect using <a href="https://socket.io/">socket.io</a>')
+  })
 
   // Socket.io server
-  const io = new Server<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData>(httpServer);
+  const io = new Server<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData>(httpServer)
 
   io.on('connection', (socket) => {
     console.log('user connected')
@@ -29,10 +29,10 @@ export default function startServer(win: BrowserWindow) {
     // FROM BACKEND TO RENDERER
     ////////////////////////////////////////////////////////////////////////////////
     socket.on('disconnect', () => {
-      console.log('user disconnected');
+      console.log('user disconnected')
       ipcMain.removeAllListeners('toBackend')
       ipcMain.removeHandler('toBackend')
-    });
+    })
 
     socket.onAny((channel, ...args) => {
       win.webContents.send('fromBackend', channel, ...args)
@@ -64,8 +64,8 @@ export default function startServer(win: BrowserWindow) {
         timeout > 0 && setTimeout(() => reject(new Error('Timeout when sending event from main to backend.')), timeout)
       })
     })
-  });
+  })
 
   // start express server
-  httpServer.listen(5000);
+  httpServer.listen(5000)
 }

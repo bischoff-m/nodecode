@@ -5,11 +5,11 @@ export interface ServerToClientEvents {
 }
 
 export interface ClientToServerEvents {
-  output: (msg: any) => void;
+  output: (msg: any) => void
 }
 
 export interface InterServerEvents {
-  ping: () => void;
+  ping: () => void
 }
 
 export interface SocketData {

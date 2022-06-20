@@ -8,7 +8,7 @@ const { appendLoading, removeLoading } = useLoading();
   await domReady()
 
   appendLoading()
-})();
+})()
 
 
 const toMainChannels: string[] = [

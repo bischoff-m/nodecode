@@ -1,6 +1,6 @@
-import { configureStore } from '@reduxjs/toolkit';
-import socketsReducer from '@/redux/socketsSlice';
-import canvasReducer from '@/redux/canvasSlice';
+import { configureStore } from '@reduxjs/toolkit'
+import socketsReducer from '@/redux/socketsSlice'
+import canvasReducer from '@/redux/canvasSlice'
 
 const store = configureStore({
   reducer: {

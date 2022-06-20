@@ -3,7 +3,7 @@ import {
   MantineProviderProps,
   MantineSize,
   MantineThemeOverride,
-} from '@mantine/core';
+} from '@mantine/core'
 
 // style variables that are the same for all themes
 const fixedTheme = {
@@ -19,7 +19,7 @@ const fixedTheme = {
   fieldContainerRadius: 'md' as MantineSize,
   // fonts
   // fontWeight: 300, // TODO: Roboto font only supports normal and bold
-};
+}
 
 // style variables that depend on the color scheme
 const mantineTheme: MantineThemeOverride = {
@@ -46,23 +46,23 @@ const mantineTheme: MantineThemeOverride = {
     // mantine-specific
     fieldComponentVariant: 'filled',
   },
-};
+}
 
 declare module '@mantine/core' {
   export interface MantineThemeOther {
-    canvasBackgroundColor: string;
-    nodeBackgroundColor: string;
-    nodeHeaderBackgroundColor: string;
-    fieldBackgroundColor: string;
-    socketColor: string;
-    iconColor: string;
-    textColor: string;
-    noodleColor: string;
-    nodeContainerShadow: string;
-    fieldContainerShadow: string;
-    fieldBorder: string;
-    nodeHoverOutline: string;
-    fieldComponentVariant: InputVariant;
+    canvasBackgroundColor: string
+    nodeBackgroundColor: string
+    nodeHeaderBackgroundColor: string
+    fieldBackgroundColor: string
+    socketColor: string
+    iconColor: string
+    textColor: string
+    noodleColor: string
+    nodeContainerShadow: string
+    fieldContainerShadow: string
+    fieldBorder: string
+    nodeHoverOutline: string
+    fieldComponentVariant: InputVariant
   }
 }
 
@@ -77,7 +77,7 @@ const styleOverrides: MantineProviderProps['styles'] = {
       backgroundColor: theme.colors.dark[7],
     },
   }),
-};
+}
 
 const classNames = {
   Select: { root: 'mantine-select-filled' },
@@ -88,4 +88,4 @@ export {
   mantineTheme,
   styleOverrides,
   classNames,
-};
+}

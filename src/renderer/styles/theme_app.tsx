@@ -1,5 +1,5 @@
-import { MantineThemeOverride } from "@mantine/core";
-import { removeColorTags } from '@/util/colorFunctions';
+import { MantineThemeOverride } from "@mantine/core"
+import { removeColorTags } from '@/util/colorFunctions'
 
 const theme: MantineThemeOverride = {
   colorScheme: 'dark',

@@ -1,10 +1,10 @@
-import { createStyles, Paper, MantineSize, Stack } from '@mantine/core';
-import { useDispatchTyped } from '@/redux/hooks';
-import { moveNode } from '@/redux/socketsSlice';
-import { ReactNode, useRef, useState } from 'react';
-import Draggable, { DraggableData, DraggableEvent } from 'react-draggable';
-import { getCanvasZoom, onZoomChanged } from './NodeCanvas';
-import { fixedTheme } from '@/styles/theme_canvas';
+import { createStyles, Paper, MantineSize, Stack } from '@mantine/core'
+import { useDispatchTyped } from '@/redux/hooks'
+import { moveNode } from '@/redux/socketsSlice'
+import { ReactNode, useRef, useState } from 'react'
+import Draggable, { DraggableData, DraggableEvent } from 'react-draggable'
+import { getCanvasZoom, onZoomChanged } from './NodeCanvas'
+import { fixedTheme } from '@/styles/theme_canvas'
 
 const useStyles = createStyles((theme) => ({
   card: {
@@ -27,27 +27,27 @@ const useStyles = createStyles((theme) => ({
   highlight: {
     outline: theme.other.nodeHoverOutline,
   },
-}));
+}))
 
 export type NodeProps = {
-  children?: ReactNode;
-  nodeKey: string;
-  title: string;
-  x: number;
-  y: number;
-};
+  children?: ReactNode
+  nodeKey: string
+  title: string
+  x: number
+  y: number
+}
 
 export default function Node(props: NodeProps) {
-  const { classes } = useStyles();
-  const nodeRef = useRef(null);
-  const [canvasZoom, setCanvasZoom] = useState<number>(getCanvasZoom()); // variable is mirrored from NodeCanvas to enable state updates
-  const [outlineActive, setOutlineActive] = useState<boolean>(false);
+  const { classes } = useStyles()
+  const nodeRef = useRef(null)
+  const [canvasZoom, setCanvasZoom] = useState<number>(getCanvasZoom()) // variable is mirrored from NodeCanvas to enable state updates
+  const [outlineActive, setOutlineActive] = useState<boolean>(false)
 
-  const dispatch = useDispatchTyped();
+  const dispatch = useDispatchTyped()
 
   onZoomChanged((newZoom: number) => {
-    setCanvasZoom(newZoom);
-  });
+    setCanvasZoom(newZoom)
+  })
 
   function handleDrag(event: DraggableEvent, data: DraggableData) {
     dispatch(
@@ -55,7 +55,7 @@ export default function Node(props: NodeProps) {
         nodeKey: props.nodeKey,
         by: { x: data.deltaX, y: data.deltaY },
       })
-    );
+    )
   }
 
   return (
@@ -71,9 +71,8 @@ export default function Node(props: NodeProps) {
       scale={canvasZoom}
     >
       <div
-        className={`${classes.card} ${
-          outlineActive ? classes.highlight : undefined
-        }`}
+        className={`${classes.card} ${outlineActive ? classes.highlight : undefined
+          }`}
         ref={nodeRef}
       >
         <div
@@ -88,5 +87,5 @@ export default function Node(props: NodeProps) {
         </Stack>
       </div>
     </Draggable>
-  );
+  )
 }

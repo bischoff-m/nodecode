@@ -1,28 +1,34 @@
-import { createStyles, MantineProvider } from '@mantine/core';
-import { mantineTheme, styleOverrides, classNames } from '@/styles/theme_canvas';
-import { MouseEvent as ReactMouseEvent, WheelEvent as ReactWheelEvent, ReactElement, useEffect, useState, useRef } from 'react';
-import gridSvg from '@/assets/gridSvg.svg';
-import Noodle from '@/components/Noodle';
-import { getNodeComponent, onNodesLoaded } from '@/components/NodeFactory';
-import { directstyled, useDirectStyle } from '@/lib/direct-styled'; // https://github.com/everweij/direct-styled
-import { Vec2D } from '@/types/util';
+import { createStyles, MantineProvider } from '@mantine/core'
+import { mantineTheme, styleOverrides, classNames } from '@/styles/theme_canvas'
+import {
+  MouseEvent as ReactMouseEvent,
+  WheelEvent as ReactWheelEvent,
+  ReactElement,
+  useEffect,
+  useState,
+  useRef,
+} from 'react'
+import gridSvg from '@/assets/gridSvg.svg'
+import Noodle from '@/components/Noodle'
+import { getNodeComponent, onNodesLoaded } from '@/components/NodeFactory'
+import { directstyled, useDirectStyle } from '@/lib/direct-styled' // https://github.com/everweij/direct-styled
+import { Vec2D } from '@/types/util'
 
-const zoomFactor = 0.8;
-let onZoomCallbacks: ((newZoom: number) => void)[] = []; // functions that should be called when user zoomed in/out
-let isDragging = false; // whether the user is currently dragging
-let prevDragPos: Vec2D = { x: 0, y: 0 }; // screen position of mouse, updated while dragging
-let innerOffset: Vec2D = { x: 0, y: 0 }; // offset of canvas relative to its parent component in pixels, can be changed by dragging
-let zoom = 1; // relative size of elements on canvas in percent
+const zoomFactor = 0.8
+let onZoomCallbacks: ((newZoom: number) => void)[] = [] // functions that should be called when user zoomed in/out
+let isDragging = false // whether the user is currently dragging
+let prevDragPos: Vec2D = { x: 0, y: 0 } // screen position of mouse, updated while dragging
+let innerOffset: Vec2D = { x: 0, y: 0 } // offset of canvas relative to its parent component in pixels, can be changed by dragging
+let zoom = 1 // relative size of elements on canvas in percent
 
-let canvasDiv: HTMLDivElement | null = null; // ref.current of the canvas component that can be dragged
-let containerDiv: HTMLDivElement | null = null; // ref.current of the div that contains the canvas
+let canvasDiv: HTMLDivElement | null = null // ref.current of the canvas component that can be dragged
+let containerDiv: HTMLDivElement | null = null // ref.current of the div that contains the canvas
 
-export const getCanvasZoom = () => zoom;
+export const getCanvasZoom = () => zoom
 export const screenToCanvas = (position: Vec2D) => {
   // transforms screen coordinates to canvas coordinates (e.g. for mouse events)
   // this does not use the innerOffset and zoom variables because it would not account for animations
-  if (!canvasDiv || !containerDiv)
-    return { x: NaN, y: NaN }
+  if (!canvasDiv || !containerDiv) return { x: NaN, y: NaN }
   const { left, top, width: innerWidth } = canvasDiv.getBoundingClientRect()
   const { width: outerWidth } = containerDiv.getBoundingClientRect()
   return {
@@ -31,7 +37,7 @@ export const screenToCanvas = (position: Vec2D) => {
   }
 }
 export const onZoomChanged = (callback: (newZoom: number) => void) => {
-  onZoomCallbacks.push(callback);
+  onZoomCallbacks.push(callback)
 }
 
 // TODO: auf dem Surface Pro 4 werden scroll bars angezeigt (vielleicht ist das Canvas zu groß)
@@ -67,108 +73,103 @@ const useStyles = createStyles((theme) => ({
   animatedBackground: {
     transition: 'background-position .3s, background-size .3s',
   },
-}));
+}))
 
 export default function NodeCanvas() {
   // Styles
-  const { classes } = useStyles();
-  const [containerStyle, setContainerStyle] = useDirectStyle();
-  const [dragStyle, setDragStyle] = useDirectStyle();
+  const { classes } = useStyles()
+  const [containerStyle, setContainerStyle] = useDirectStyle()
+  const [dragStyle, setDragStyle] = useDirectStyle()
 
   // Refs
-  const containerRef = useRef<HTMLDivElement>(null);
-  const draggableRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null)
+  const draggableRef = useRef<HTMLDivElement>(null)
 
   // React state
-  const [nodes, setNodes] = useState<ReactElement[]>();
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [nodes, setNodes] = useState<ReactElement[]>()
+  const [isLoaded, setIsLoaded] = useState(false)
 
   function updateCanvasStyle() {
     // calculate and set position of canvas and background of canvas based on
     // innerOffset, zoom and the size of the canvas container
-    if (!containerRef.current) return;
-    const { width, height } = containerRef.current.getBoundingClientRect();
+    if (!containerRef.current) return
+    const { width, height } = containerRef.current.getBoundingClientRect()
     const translatedOffset = {
       x: innerOffset.x - (width * (zoom - 1)) / 2,
       y: innerOffset.y - (height * (zoom - 1)) / 2,
-    };
+    }
 
     setDragStyle({
       transform: `translate(${innerOffset.x}px, ${innerOffset.y}px) scale(${zoom}, ${zoom})`,
-    });
+    })
     setContainerStyle({
       backgroundPositionX: translatedOffset.x,
       backgroundPositionY: translatedOffset.y,
       backgroundSize: `${zoom * 100}px ${zoom * 100}px`,
-    });
+    })
   }
 
   function handleMouseDown(e: ReactMouseEvent<'div'>) {
-    prevDragPos = { x: e.clientX, y: e.clientY };
+    prevDragPos = { x: e.clientX, y: e.clientY }
     // if wheel was pressed
-    isDragging = e.button === 1;
+    isDragging = e.button === 1
     if (isDragging) {
-      e.preventDefault();
+      e.preventDefault()
+      containerRef.current && containerRef.current.classList.add(classes.dragging)
       containerRef.current &&
-        containerRef.current.classList.add(classes.dragging);
-      containerRef.current &&
-        containerRef.current.classList.remove(classes.animatedBackground);
+        containerRef.current.classList.remove(classes.animatedBackground)
       draggableRef.current &&
-        draggableRef.current.classList.remove(classes.animatedTransition);
+        draggableRef.current.classList.remove(classes.animatedTransition)
     }
   }
 
   function handleMouseUp(e: ReactMouseEvent<'div'>) {
-    isDragging = false;
-    containerRef.current &&
-      containerRef.current.classList.remove(classes.dragging);
-    containerRef.current &&
-      containerRef.current.classList.add(classes.animatedBackground);
-    draggableRef.current &&
-      draggableRef.current.classList.add(classes.animatedTransition);
+    isDragging = false
+    containerRef.current && containerRef.current.classList.remove(classes.dragging)
+    containerRef.current && containerRef.current.classList.add(classes.animatedBackground)
+    draggableRef.current && draggableRef.current.classList.add(classes.animatedTransition)
   }
 
   function handleMouseMove(e: ReactMouseEvent<'div'>) {
-    e.preventDefault();
-    if (!isDragging) return;
+    e.preventDefault()
+    if (!isDragging) return
 
     // runs when the mouse is dragged while the mouse wheel is pressed
-    innerOffset.x += e.clientX - prevDragPos.x;
-    innerOffset.y += e.clientY - prevDragPos.y;
-    prevDragPos.x = e.clientX;
-    prevDragPos.y = e.clientY;
-    updateCanvasStyle();
+    innerOffset.x += e.clientX - prevDragPos.x
+    innerOffset.y += e.clientY - prevDragPos.y
+    prevDragPos.x = e.clientX
+    prevDragPos.y = e.clientY
+    updateCanvasStyle()
   }
 
   function handleWheel(e: ReactWheelEvent<'div'>) {
     // TODO: min und max für zoom
-    if (containerRef.current == null || isDragging) return;
-    const { left, top, width, height } =
-      containerRef.current.getBoundingClientRect();
+    if (containerRef.current == null || isDragging) return
+    const { left, top, width, height } = containerRef.current.getBoundingClientRect()
 
     // Calculations from https://stackoverflow.com/a/46833254/16953263
     // position of cursor relative to the center point of the container
     let zoomPoint = {
       x: e.clientX - left - width / 2,
       y: e.clientY - top - height / 2,
-    };
+    }
     let zoomTarget = {
       x: (zoomPoint.x - innerOffset.x) / zoom,
       y: (zoomPoint.y - innerOffset.y) / zoom,
-    };
-    zoom *= zoomFactor ** Math.sign(e.deltaY);
+    }
+    zoom *= zoomFactor ** Math.sign(e.deltaY)
 
-    innerOffset.x = zoomPoint.x - zoomTarget.x * zoom;
-    innerOffset.y = zoomPoint.y - zoomTarget.y * zoom;
+    innerOffset.x = zoomPoint.x - zoomTarget.x * zoom
+    innerOffset.y = zoomPoint.y - zoomTarget.y * zoom
 
-    let drag = draggableRef.current;
+    let drag = draggableRef.current
     if (drag && !drag.classList.contains(classes.animatedTransition))
-      drag.classList.add(classes.animatedTransition);
+      drag.classList.add(classes.animatedTransition)
 
     // update this component
-    updateCanvasStyle();
+    updateCanvasStyle()
     // updated other components that registered a callback
-    onZoomCallbacks.forEach((callback) => callback(zoom));
+    onZoomCallbacks.forEach((callback) => callback(zoom))
   }
 
   useEffect(() => {
@@ -179,14 +180,14 @@ export default function NodeCanvas() {
         getNodeComponent('node3', 'sql_query', { x: 500, y: 240 }),
         getNodeComponent('node4', 'sql_aggregate', { x: 500, y: 600 }),
         getNodeComponent('node5', 'sql_distinct', { x: 500, y: 780 }),
-      ]);
-      setIsLoaded(true);
-      updateCanvasStyle();
-    });
-  }, []);
+      ])
+      setIsLoaded(true)
+      updateCanvasStyle()
+    })
+  }, [])
 
-  containerRef.current && (containerDiv = containerRef.current);
-  draggableRef.current && (canvasDiv = draggableRef.current);
+  containerRef.current && (containerDiv = containerRef.current)
+  draggableRef.current && (canvasDiv = draggableRef.current)
   return (
     <MantineProvider
       theme={mantineTheme}
@@ -203,7 +204,7 @@ export default function NodeCanvas() {
         onMouseUp={handleMouseUp}
         onMouseMove={handleMouseMove}
         onMouseEnter={(e) => {
-          if (e.buttons !== 4) isDragging = false;
+          if (e.buttons !== 4) isDragging = false
         }}
         onWheel={handleWheel}
         style={containerStyle}
@@ -227,5 +228,5 @@ export default function NodeCanvas() {
         </directstyled.div>
       </directstyled.div>
     </MantineProvider>
-  );
+  )
 }
