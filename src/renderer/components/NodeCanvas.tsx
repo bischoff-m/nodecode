@@ -1,5 +1,5 @@
 import { createStyles, MantineProvider } from '@mantine/core';
-import { styleOverrides, mantineTheme } from '@/styles/theme_canvas';
+import { mantineTheme, styleOverrides, classNames } from '@/styles/theme_canvas';
 import { MouseEvent as ReactMouseEvent, WheelEvent as ReactWheelEvent, ReactElement, useEffect, useState, useRef } from 'react';
 import gridSvg from '@/assets/gridSvg.svg';
 import Noodle from '@/components/Noodle';
@@ -45,7 +45,7 @@ const useStyles = createStyles((theme) => ({
     overflow: 'hidden',
     width: '100%',
     height: '100%',
-    backgroundColor: mantineTheme.other?.canvasBackgroundColor,
+    backgroundColor: theme.other.canvasBackgroundColor,
     backgroundImage: `url(${gridSvg})`,
     backgroundRepeat: 'repeat',
     backgroundPosition: '0px 0px',
@@ -189,7 +189,7 @@ export default function NodeCanvas() {
     <MantineProvider
       theme={mantineTheme}
       styles={styleOverrides}
-      classNames={{ Select: { root: 'mantine-select-filled' } }}
+      classNames={classNames}
       withNormalizeCSS
       withGlobalStyles
       withCSSVariables

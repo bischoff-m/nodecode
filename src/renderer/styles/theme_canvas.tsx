@@ -79,4 +79,13 @@ const styleOverrides: MantineProviderProps['styles'] = {
   }),
 };
 
-export { fixedTheme, mantineTheme, styleOverrides };
+const classNames = {
+  Select: { root: 'mantine-select-filled' },
+}
+
+export {
+  fixedTheme,
+  mantineTheme,
+  styleOverrides,
+  classNames,
+};
