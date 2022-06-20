@@ -2,29 +2,92 @@
     "name": "Basic Nodes",
     "nodes": [
         {
-            "id": "input_list_without_list_field",
-            "title": "List Input",
+            "id": "sql_query",
+            "title": "SQL Query",
             "fields": [
                 {
-                    "id": "output",
+                    "id": "in-select_out-query",
                     "type": "InputOutputField",
                     "arguments": {
-                        "outputLabel": "List",
-                        "outputDatatype": "array"
+                        "inputLabel": "Select",
+                        "outputLabel": "Query"
                     }
                 },
                 {
-                    "id": "datatype",
+                    "id": "in-from_out-columns",
+                    "type": "InputOutputField",
+                    "arguments": {
+                        "inputLabel": "From",
+                        "outputLabel": "Columns"
+                    }
+                },
+                {
+                    "id": "in-groupby",
+                    "type": "InputOutputField",
+                    "arguments": {
+                        "inputLabel": "Group by"
+                    }
+                },
+                {
+                    "id": "in-orderby",
+                    "type": "InputOutputField",
+                    "arguments": {
+                        "inputLabel": "Order by"
+                    }
+                },
+                {
+                    "id": "in-where",
+                    "type": "InputOutputField",
+                    "arguments": {
+                        "inputLabel": "Where"
+                    }
+                },
+                {
+                    "id": "in-having",
+                    "type": "InputOutputField",
+                    "arguments": {
+                        "inputLabel": "Having"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "sql_aggregate",
+            "title": "Aggregate",
+            "fields": [
+                {
+                    "id": "input-output",
+                    "type": "InputOutputField",
+                    "arguments": {
+                        "inputLabel": "Columns",
+                        "outputLabel": "Columns"
+                    }
+                },
+                {
+                    "id": "select",
                     "type": "SelectField",
                     "arguments": {
-                        "label": "Datatype",
                         "values": [
-                            "String",
-                            "Int",
-                            "Float",
-                            "Boolean"
+                            "Count",
+                            "Sum",
+                            "Min",
+                            "Max"
                         ],
-                        "default": "String"
+                        "default": "Count"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "sql_distinct",
+            "title": "Distinct",
+            "fields": [
+                {
+                    "id": "in-columns_out-columns",
+                    "type": "InputOutputField",
+                    "arguments": {
+                        "inputLabel": "Columns",
+                        "outputLabel": "Columns"
                     }
                 }
             ]

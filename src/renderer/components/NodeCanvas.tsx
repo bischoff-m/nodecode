@@ -176,6 +176,8 @@ export default function NodeCanvas() {
       setNodes([
         getNodeComponent('node1', 'input_list', { x: 40, y: 100 }),
         getNodeComponent('node2', 'output', { x: 500, y: 100 }),
+        getNodeComponent('node3', 'sql_query', { x: 500, y: 240 }),
+        getNodeComponent('node4', 'sql_aggregate', { x: 500, y: 600 }),
       ]);
       setIsLoaded(true);
       updateCanvasStyle();
