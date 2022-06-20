@@ -1,8 +1,8 @@
 import Node from '@/components/Node';
-import SelectField from '@/components/fields/SelectField';
+import SelectField from '@/components/fields/Select';
 import { Arguments, NodeCollectionSchema } from '@/types/nodeCollection';
-import InputOutputField from '@/components/fields/InputOutputField';
-import ListField from '@/components/fields/ListField';
+import InputOutputField from '@/components/fields/InputOutput';
+import ListField from '@/components/fields/List';
 
 var callbacks: (() => void)[] = [];
 var nodeConfig: NodeCollectionSchema | null;
