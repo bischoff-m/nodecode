@@ -178,10 +178,10 @@ export default function NodeCanvas() {
         getNodeComponent('node2', 'output', { x: 500, y: 100 }),
         getNodeComponent('node3', 'sql_query', { x: 500, y: 240 }),
         getNodeComponent('node4', 'sql_aggregate', { x: 500, y: 600 }),
+        getNodeComponent('node5', 'sql_distinct', { x: 500, y: 780 }),
       ]);
       setIsLoaded(true);
       updateCanvasStyle();
-      // setNodes(Array(1).fill(0).map((_, i) => getNodeComponent('node' + i, 'input_list', { x: 40, y: 100 })))
     });
   }, []);
 

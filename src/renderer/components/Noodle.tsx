@@ -21,7 +21,7 @@ const useStyles = createStyles({
     width: handleSize,
     height: handleSize,
     borderRadius: handleSize / 2,
-    opacity: 0,
+    opacity: 0.5,
     zIndex: 1000,
   },
   aboveNodes: { zIndex: 500 },
@@ -179,7 +179,7 @@ export default function Noodle(props: NoodleProps) {
         ref={refSVG}
       >
         {/* TODO: remove */}
-        {/* <rect width="100%" height="100%" fill="blue" opacity={0.2} /> */}
+        <rect width="100%" height="100%" fill="blue" opacity={0.2} />
         <path
           ref={refPath}
           d={getCurve()}
