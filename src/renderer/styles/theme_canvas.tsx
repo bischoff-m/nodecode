@@ -12,6 +12,7 @@ const fixedTheme = {
   nodeWidth: 300,
   nodePadding: 10,
   handleSize: 14,
+  handleDraggableSize: 40,
   fieldInnerMargin: 4,
   fieldDefaultHeight: 36,
   iconSize: 18,
@@ -19,6 +20,9 @@ const fixedTheme = {
   fieldContainerRadius: 'md' as MantineSize,
   // fonts
   // fontWeight: 300, // TODO: Roboto font only supports normal and bold
+  // debugging
+  handleDraggableOpacity: 0.5,
+  noodleBackgroundOpacity: 0,
 }
 
 // style variables that depend on the color scheme

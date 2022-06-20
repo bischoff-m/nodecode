@@ -6,8 +6,9 @@ import { useSelectorTyped } from '@/redux/hooks'
 import { getCanvasZoom, screenToCanvas } from '@/components/NodeCanvas'
 import { Vec2D } from '@/types/util'
 import type { Socket } from '@/redux/socketsSlice'
+import { fixedTheme } from '@/styles/theme_canvas'
 
-const handleSize = 40
+const handleSize = fixedTheme.handleDraggableSize
 let isDragging = false // is true when user began to drag and(!) moved his mouse
 
 const useStyles = createStyles({
@@ -21,7 +22,7 @@ const useStyles = createStyles({
     width: handleSize,
     height: handleSize,
     borderRadius: handleSize / 2,
-    opacity: 0.5,
+    opacity: fixedTheme.handleDraggableOpacity,
     zIndex: 1000,
   },
   aboveNodes: { zIndex: 500 },
@@ -171,8 +172,10 @@ export default function Noodle(props: NoodleProps) {
           }`}
         ref={refSVG}
       >
-        {/* TODO: remove */}
-        <rect width="100%" height="100%" fill="blue" opacity={0.2} />
+        {
+          fixedTheme.noodleBackgroundOpacity > 0 &&
+          <rect width="100%" height="100%" fill="blue" opacity={fixedTheme.noodleBackgroundOpacity} />
+        }
         <path
           ref={refPath}
           d={getCurve()}
