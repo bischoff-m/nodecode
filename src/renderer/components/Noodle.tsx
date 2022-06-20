@@ -30,8 +30,8 @@ const useStyles = createStyles({
 })
 
 type NoodleProps = {
-  defaultSocketKeyLeft: string
-  defaultSocketKeyRight: string
+  defaultSocketKeyLeft?: string
+  defaultSocketKeyRight?: string
   noodleID: string
 }
 
@@ -58,12 +58,15 @@ export default function Noodle(props: NoodleProps) {
     props.defaultSocketKeyLeft && props.defaultSocketKeyRight ? false : true,
   )
 
+  if (!props.defaultSocketKeyLeft && !props.defaultSocketKeyRight)
+    throw new Error('Noodle: at least one default socket key is required')
+
   useEffect(() => {
     setSocketKeyLeft(props.defaultSocketKeyLeft)
     setSocketKeyRight(props.defaultSocketKeyRight)
   }, [props])
 
-  function posFromSocketKey(socketKey: string) {
+  function posFromSocketKey(socketKey: string): Vec2D {
     // Takes a unique id for a socket and looks up the position
     let socket = allSockets.find((socket) => socket.socketKey === socketKey)
     if (socket) return socket.pos
@@ -83,7 +86,7 @@ export default function Noodle(props: NoodleProps) {
     else return undefined
   }
 
-  function handleDrag(isLeft: boolean, event: DraggableEvent) {
+  function handleDrag(isLeft: boolean, event: DraggableEvent): void {
     beganDragging && (isDragging = true)
     const e = event as ReactMouseEvent
 
@@ -168,8 +171,7 @@ export default function Noodle(props: NoodleProps) {
   return (
     <>
       <svg
-        className={`${classes.svg} ${beganDragging ? classes.aboveNodes : classes.belowNodes
-          }`}
+        className={`${classes.svg} ${beganDragging ? classes.aboveNodes : classes.belowNodes}`}
         ref={refSVG}
       >
         {
@@ -192,7 +194,6 @@ export default function Noodle(props: NoodleProps) {
         handle={'.handleLeft'}
         position={getHandlePos(true)}
         nodeRef={refLeft}
-        disabled={true}
         onStart={() => setBeganDragging(true)}
         onStop={() => {
           setBeganDragging(false)
@@ -201,7 +202,13 @@ export default function Noodle(props: NoodleProps) {
         onDrag={(event) => handleDrag(true, event)}
         scale={getCanvasZoom()}
       >
-        <div className={`${classes.handle} handleLeft`} ref={refLeft}></div>
+        <div
+          className={`${classes.handle} handleLeft`}
+          ref={refLeft}
+          style={{
+            display: socketKeyLeft !== undefined || !socketKeyRight ? 'none' : 'block',
+          }}
+        ></div>
       </Draggable>
       <Draggable
         handle={'.handleRight'}
@@ -215,7 +222,13 @@ export default function Noodle(props: NoodleProps) {
         onDrag={(event) => handleDrag(false, event)}
         scale={getCanvasZoom()}
       >
-        <div className={`${classes.handle} handleRight`} ref={refRight}></div>
+        <div
+          className={`${classes.handle} handleRight`}
+          ref={refRight}
+          style={{
+            display: !socketKeyLeft && socketKeyRight !== undefined ? 'none' : 'block',
+          }}
+        ></div>
       </Draggable>
     </>
   )

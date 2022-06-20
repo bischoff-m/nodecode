@@ -46,7 +46,7 @@ const mantineTheme: MantineThemeOverride = {
     fieldContainerShadow: 'none',
     // borders
     fieldBorder: '1px solid hsl(0 0% 100% / 10%)',
-    nodeHoverOutline: '1px solid hsl(0 0% 100% / 40%)',
+    nodeHoverOutline: '1px solid hsl(0 0% 100% / 60%)',
     // mantine-specific
     fieldComponentVariant: 'filled',
   },

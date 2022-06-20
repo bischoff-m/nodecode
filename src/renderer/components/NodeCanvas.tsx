@@ -218,8 +218,8 @@ export default function NodeCanvas() {
             <>
               <div className={classes.nodesContainer}>{nodes}</div>
               <Noodle
-                defaultSocketKeyLeft="node1.output.right"
-                defaultSocketKeyRight="node2.input.left"
+                // defaultSocketKeyLeft="node1.output.right"
+                defaultSocketKeyRight="node3.in-select_out-query.left"
                 key={0}
                 noodleID="0"
               />
