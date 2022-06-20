@@ -41,7 +41,7 @@ export const onZoomChanged = (callback: (newZoom: number) => void) => {
 
 const useStyles = createStyles((theme) => ({
   container: {
-    position: 'absolute',
+    // position: 'absolute',
     overflow: 'hidden',
     width: '100%',
     height: '100%',
