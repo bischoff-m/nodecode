@@ -1,5 +1,5 @@
 import { createStyles, useMantineTheme } from '@mantine/core'
-import { updateSocket } from '@/redux/socketsSlice'
+import { updateSocket, addSocket } from '@/redux/socketsSlice'
 import { useDispatchTyped } from '@/redux/hooks'
 import { useEffect, useRef } from 'react'
 import type { FieldProps } from '@/types/util'
@@ -72,16 +72,21 @@ export default function InputOutputField(props: InputOutputFieldProps) {
 
     Array(true, false).forEach(isLeft => {
       const pos = screenToCanvas(isLeft ? leftPos : rightPos)
-      if (isLeft ? props.inputLabel : props.outputLabel)
-        dispatch(updateSocket({
+      if (isLeft ? props.inputLabel : props.outputLabel) {
+        const socket = {
           nodeKey: props.nodeKey,
           fieldKey: props.fieldKey,
+          isInput: isLeft,
+        }
+        dispatch(addSocket({
+          socket: socket,
           pos: {
             x: pos.x + handleSize / 2,
             y: pos.y + handleSize / 2,
           },
-          isInput: isLeft,
         }))
+        dispatch(updateSocket(socket))
+      }
     })
   }, [])
 

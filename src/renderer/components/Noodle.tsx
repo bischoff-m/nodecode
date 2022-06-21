@@ -47,7 +47,8 @@ export default function Noodle(props: NoodleProps) {
   const refSVG = useRef<SVGSVGElement>(null)
 
   // Redux state
-  const allSockets = useSelectorTyped((state) => state.sockets.sockets)
+  const allSockets = useSelectorTyped((state) => state.sockets.identifiers)
+  const socketsPos = useSelectorTyped((state) => state.sockets.positions)
 
   // React state
   const [mousePos, setMousePos] = useState<Vec2D>({ x: 0, y: 0 })
@@ -68,22 +69,24 @@ export default function Noodle(props: NoodleProps) {
 
   function posFromSocketKey(socketKey: string): Vec2D {
     // Takes a unique id for a socket and looks up the position
-    let socket = allSockets.find((socket) => socket.key === socketKey)
-    if (socket) return socket.pos
+    if (socketsPos[socketKey]) return socketsPos[socketKey]
     else throw Error(`Socket key not found: ${socketKey}`)
   }
 
-  function snapsToSocket(handlePos: Vec2D): Socket | undefined {
+  function snapsToSocket(handlePos: Vec2D): string | undefined {
+    if (!socketsPos || !allSockets) return undefined
     // calculates the distance to all sockets
     // then returns the position of the closest socket if its distance is below the snap threshold
     // and returns undefined otherwise
-    const socketDistances = allSockets.map((socket) =>
-      Math.sqrt((socket.pos.x - handlePos.x) ** 2 + (socket.pos.y - handlePos.y) ** 2),
-    )
-    const minDistance = Math.min(...socketDistances)
-    if (minDistance <= handleSize / 2)
-      return allSockets[socketDistances.indexOf(minDistance)]
-    else return undefined
+    const [minSocketKey, minDistance] = Object
+      .keys(socketsPos)
+      .reduce<[string, number]>((res: [string, number], key: string) => {
+        let distance = Math.sqrt((socketsPos[key].x - handlePos.x) ** 2 + (socketsPos[key].y - handlePos.y) ** 2)
+        if (distance < res[1]) return [key, distance]
+        else return res
+      }, ['', Infinity])
+
+    return minDistance <= handleSize / 2 ? minSocketKey : undefined
   }
 
   function handleDrag(isLeft: boolean, event: DraggableEvent): void {
@@ -92,10 +95,11 @@ export default function Noodle(props: NoodleProps) {
 
     const newMousePos = screenToCanvas({ x: e.clientX, y: e.clientY })
     const setSocketKey = isLeft ? setSocketKeyLeft : setSocketKeyRight
-    const snapSocket = snapsToSocket(newMousePos)
-    if (snapSocket && (isLeft ? !snapSocket.isInput : snapSocket.isInput)) {
+    const snapSocketKey = snapsToSocket(newMousePos)
+    const snapSocket = snapSocketKey ? allSockets[snapSocketKey] : undefined
+    if (snapSocketKey && (isLeft ? !snapSocket?.isInput : snapSocket?.isInput)) {
       // stick to nearest socket
-      setSocketKey(snapSocket.key)
+      setSocketKey(snapSocketKey)
     } else {
       // stick to mouse
       setSocketKey(undefined)

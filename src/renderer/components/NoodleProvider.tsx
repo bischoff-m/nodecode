@@ -5,16 +5,16 @@ export type NoodleProviderProps = {}
 
 export default function NoodleProvider(props: NoodleProviderProps) {
   // Redux state
-  const allSockets = useSelectorTyped((state) => state.sockets.sockets)
-  const noodles = allSockets.map((socket, index) =>
+  const allSockets = useSelectorTyped((state) => state.sockets.identifiers)
+  const noodles = Object.keys(allSockets).map((key, index) =>
     <Noodle
-      defaultSocketKeyLeft={!socket.isInput ? socket.key : undefined}
-      defaultSocketKeyRight={socket.isInput ? socket.key : undefined}
+      defaultSocketKeyLeft={!allSockets[key].isInput ? key : undefined}
+      defaultSocketKeyRight={allSockets[key].isInput ? key : undefined}
       key={index}
       noodleID={index.toString()}
     />
   )
-  console.log('new')
+  console.log('new provider')
 
   return (
     <div>
