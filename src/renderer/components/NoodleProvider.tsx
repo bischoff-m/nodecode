@@ -14,7 +14,6 @@ export default function NoodleProvider(props: NoodleProviderProps) {
       noodleID={index.toString()}
     />
   )
-  console.log('new provider')
 
   return (
     <div>

@@ -42,16 +42,16 @@ export const positionSlice = createSlice({
   initialState: initialStatePos,
   reducers: {
     moveNode: (state, action: PayloadAction<MoveNodePayload>) => {
-      const p = action.payload
-      console.log('moveNode', p)
-      for (let key in Object.keys(state).filter(k => k.startsWith(p.nodeKey))) {
-        state[key].x += p.by.x
-        state[key].y += p.by.y
-      }
+      Object
+        .keys(state)
+        .filter(k => k.startsWith(action.payload.nodeKey))
+        .forEach(k => {
+          state[k].x += action.payload.by.x
+          state[k].y += action.payload.by.y
+        })
     },
     addSocket: (state, action: PayloadAction<AddSocketPayload>) => {
       const key = keyFromSocket(action.payload.socket)
-      console.log('addSocket', key)
       if (!state[key])
         state[key] = action.payload.pos
     }
@@ -71,7 +71,6 @@ export const socketsSlice = createSlice({
   initialState: initialStateIDs,
   reducers: {
     updateSocket: (state, action: PayloadAction<Socket>) => { // TODO: rename updateSocket
-      console.log('updateSocket', action.payload)
       const key = keyFromSocket(action.payload)
       state[key] = action.payload
     },
