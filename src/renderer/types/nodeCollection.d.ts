@@ -5,29 +5,29 @@
  * and run json-schema-to-typescript to regenerate this file.
  */
 
-export type NodeCollectionSchema = NodeCollection
+export type NodeCollectionSchema = NodeCollection;
 
 export interface NodeCollection {
-  name: string
-  nodes: Node[]
+  name: string;
+  nodes: Node[];
 }
 export interface Node {
-  id: string
-  title: string
-  fields: Field[]
+  id: string;
+  title: string;
+  fields: Field[];
 }
 export interface Field {
-  id: string
-  type: string
-  arguments: Arguments
+  id: string;
+  type: string;
+  arguments: Arguments;
 }
 export interface Arguments {
-  label?: string
-  inputLabel?: string
-  outputLabel?: string
-  inputDatatype?: string
-  outputDatatype?: string
-  inputMulti?: boolean
-  values?: string[]
-  default?: string
+  label?: string;
+  inputLabel?: string;
+  outputLabel?: string;
+  inputDatatype?: string;
+  outputDatatype?: string;
+  inputMulti?: boolean;
+  values?: string[];
+  default?: string;
 }
