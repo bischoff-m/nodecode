@@ -5,7 +5,6 @@ import Draggable, { DraggableEvent } from 'react-draggable'
 import { useSelectorTyped } from '@/redux/hooks'
 import { getCanvasZoom, screenToCanvas } from '@/components/NodeCanvas'
 import { Vec2D } from '@/types/util'
-import type { Socket } from '@/redux/socketsSlice'
 import { fixedTheme } from '@/styles/theme_canvas'
 
 const handleSize = fixedTheme.handleDraggableSize
@@ -33,9 +32,13 @@ type NoodleProps = {
   defaultSocketKeyLeft?: string
   defaultSocketKeyRight?: string
   noodleID: string
+  onSocketUpdate?: (leftSocketKey: string | undefined, rightSocketKey: string | undefined) => void
 }
 
 export default function Noodle(props: NoodleProps) {
+  if (!props.defaultSocketKeyLeft && !props.defaultSocketKeyRight)
+    throw new Error('Noodle: at least one default socket key is required')
+
   // Styles
   const { classes } = useStyles()
   const theme = useMantineTheme()
@@ -48,6 +51,8 @@ export default function Noodle(props: NoodleProps) {
 
   // Redux state
   const allSockets = useSelectorTyped((state) => state.sockets.identifiers)
+  // TODO: use manual state updates instead like onZoomChanged in NodeCanvas
+  //        problem: all noodles are redrawn when node is moved, instead of just the noodle that is connected and not disabled
   const socketsPos = useSelectorTyped((state) => state.sockets.positions)
 
   // React state
@@ -58,9 +63,25 @@ export default function Noodle(props: NoodleProps) {
   const [beganDragging, setBeganDragging] = useState<boolean>(
     props.defaultSocketKeyLeft && props.defaultSocketKeyRight ? false : true,
   )
-
-  if (!props.defaultSocketKeyLeft && !props.defaultSocketKeyRight)
-    throw new Error('Noodle: at least one default socket key is required')
+  // wrap socket key update methods to also call the callback given by onSocketUpdate
+  const setKeyLeft = (key: string | undefined) => {
+    if (!key && !socketKeyRight)
+      throw new Error('Noodle: socketKeyLeft must be defined if socketKeyRight is undefined')
+    // props.onSocketUpdate
+    //   && !isDragging
+    //   && key !== socketKeyLeft
+    //   && props.onSocketUpdate(key, socketKeyRight)
+    setSocketKeyLeft(key)
+  }
+  const setKeyRight = (key: string | undefined) => {
+    if (!key && !socketKeyLeft)
+      throw new Error('Noodle: socketKeyRight must be defined if socketKeyLeft is undefined')
+    // props.onSocketUpdate
+    //   && !isDragging
+    //   && key !== socketKeyRight
+    //   && props.onSocketUpdate(socketKeyLeft, key)
+    setSocketKeyRight(key)
+  }
 
   useEffect(() => {
     setSocketKeyLeft(props.defaultSocketKeyLeft)
@@ -94,7 +115,7 @@ export default function Noodle(props: NoodleProps) {
     const e = event as ReactMouseEvent
 
     const newMousePos = screenToCanvas({ x: e.clientX, y: e.clientY })
-    const setSocketKey = isLeft ? setSocketKeyLeft : setSocketKeyRight
+    const setSocketKey = isLeft ? setKeyLeft : setKeyRight
     const snapSocketKey = snapsToSocket(newMousePos)
     const snapSocket = snapSocketKey ? allSockets[snapSocketKey] : undefined
     if (snapSocketKey && (isLeft ? !snapSocket?.isInput : snapSocket?.isInput)) {
@@ -202,6 +223,7 @@ export default function Noodle(props: NoodleProps) {
         onStop={() => {
           setBeganDragging(false)
           isDragging = false
+          props.onSocketUpdate && props.onSocketUpdate(socketKeyLeft, socketKeyRight)
         }}
         onDrag={(event) => handleDrag(true, event)}
         scale={getCanvasZoom()}
@@ -222,6 +244,7 @@ export default function Noodle(props: NoodleProps) {
         onStop={() => {
           setBeganDragging(false)
           isDragging = false
+          props.onSocketUpdate && props.onSocketUpdate(socketKeyLeft, socketKeyRight)
         }}
         onDrag={(event) => handleDrag(false, event)}
         scale={getCanvasZoom()}

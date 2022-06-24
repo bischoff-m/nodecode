@@ -19,6 +19,15 @@ function keyFromSocket(socket: Socket): string {
   ].join('.')
 }
 
+// helper function to generate a socket object from a socket key
+function socketFromKey(key: string): Socket {
+  const [nodeKey, fieldKey, side] = key.split('.')
+  return {
+    nodeKey,
+    fieldKey,
+    isInput: side === 'left',
+  }
+}
 
 
 // #############################################################################
