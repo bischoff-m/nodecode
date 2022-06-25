@@ -51,7 +51,7 @@ const useStyles = createStyles((theme) => ({
     overflow: 'hidden',
     width: '100%',
     height: '100%',
-    backgroundColor: theme.other.canvasBackgroundColor,
+    backgroundColor: mantineTheme.other?.canvasBackgroundColor,
     backgroundImage: `url(${gridSvg})`,
     backgroundRepeat: 'repeat',
     backgroundPosition: '0px 0px',

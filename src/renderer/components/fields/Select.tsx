@@ -10,12 +10,11 @@ const useStyles = createStyles((theme) => ({
     border: theme.other.fieldBorder,
     boxShadow: theme.other.fieldContainerShadow,
   },
-  input: {
-    margin: fixedTheme.fieldInnerMargin,
-  },
   label: {
-    paddingTop: 5,
-    paddingLeft: 8,
+    padding: 5,
+    paddingLeft: fixedTheme.fieldLabelMargin,
+    fontSize: theme.fontSizes.lg,
+    color: theme.other.textColor,
   },
 }))
 
@@ -41,11 +40,10 @@ export default function SelectField(props: SelectFieldProps) {
   const label = <div className={classes.label}>{props.label}</div>
   return (
     <div className={classes.container}>
+      {props.label ? label : undefined}
       <Select
-        className={classes.input}
         value={value}
         onChange={(value) => value && setValue(value)}
-        label={props.label ? label : undefined}
         data={props.values.map((value) => ({ value, label: value }))}
         placeholder=''
         variant={theme.other.fieldComponentVariant}

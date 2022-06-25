@@ -1,4 +1,4 @@
-import { createStyles, useMantineTheme } from '@mantine/core'
+import { createStyles } from '@mantine/core'
 import { updateSocket, addSocket } from '@/redux/socketsSlice'
 import { useDispatchTyped } from '@/redux/hooks'
 import { useEffect, useRef } from 'react'
@@ -14,28 +14,29 @@ const { handleSize, fieldDefaultHeight, nodePadding } = fixedTheme
 
 const useStyles = createStyles((theme) => ({
   container: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '100%',
+    display: 'grid',
     height: fieldDefaultHeight,
     alignItems: 'center',
-    paddingLeft: 5,
-    paddingRight: 10,
+    '& > div': {
+      gridRow: 1,
+      gridColumn: 1,
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+    }
+  },
+  labelContainer: {
+    paddingLeft: fixedTheme.fieldLabelMargin,
+    paddingRight: fixedTheme.fieldLabelMargin,
+    fontSize: theme.fontSizes.lg,
+    color: theme.other.textColor,
   },
   socketContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    position: 'absolute',
-    width: '100%',
-    height: fieldDefaultHeight,
-    transform: `translate(-${nodePadding + 5}px, 0)`,
     '& :first-of-type': {
-      transform: `translate(-${handleSize / 2}px, ${(fieldDefaultHeight - handleSize) / 2}px)`,
+      transform: `translateX(${-handleSize / 2 - nodePadding}px)`,
     },
     '& :last-of-type': {
-      transform: `translate(${handleSize / 2}px, ${(fieldDefaultHeight - handleSize) / 2}px)`,
+      transform: `translateX(${handleSize / 2 + nodePadding}px)`,
     }
   },
   socket: {
@@ -57,7 +58,6 @@ export default function InputOutputField(props: InputOutputFieldProps) {
     throw Error('No inputLabel and no outputLabel given to InputOutputField. It needs at least one of them.')
 
   const { classes } = useStyles()
-  const theme = useMantineTheme()
   const leftHandleRef = useRef<HTMLDivElement>(null)
   const rightHandleRef = useRef<HTMLDivElement>(null)
 
@@ -96,12 +96,14 @@ export default function InputOutputField(props: InputOutputFieldProps) {
         <div className={classes.socket} style={{ opacity: props.inputLabel ? 1 : 0 }} ref={leftHandleRef}></div>
         <div className={classes.socket} style={{ opacity: props.outputLabel ? 1 : 0 }} ref={rightHandleRef}></div>
       </div>
-      <span style={{ opacity: props.inputLabel ? 1 : 0 }}>
-        {props.inputLabel}
-      </span>
-      <span style={{ opacity: props.outputLabel ? 1 : 0 }}>
-        {props.outputLabel}
-      </span>
+      <div className={classes.labelContainer}>
+        <span style={{ opacity: props.inputLabel ? 1 : 0 }}>
+          {props.inputLabel}
+        </span>
+        <span style={{ opacity: props.outputLabel ? 1 : 0 }}>
+          {props.outputLabel}
+        </span>
+      </div>
     </div>
   )
 }

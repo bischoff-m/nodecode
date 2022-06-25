@@ -15,6 +15,8 @@ const useStyles = createStyles((theme) => ({
     borderRadius: theme.radius[theme.defaultRadius as MantineSize],
   },
   header: {
+    fontSize: theme.fontSizes.xl,
+    color: theme.other.textColor,
     padding: 8,
     paddingLeft: fixedTheme.nodePadding + 4,
     backgroundColor: theme.other.nodeHeaderBackgroundColor,

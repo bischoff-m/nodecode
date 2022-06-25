@@ -22,12 +22,13 @@ const useStyles = createStyles((theme) => ({
   input: {
     marginLeft: fixedTheme.fieldInnerMargin,
     marginRight: fixedTheme.fieldInnerMargin,
-    marginTop: 4,
     marginBottom: 4,
   },
   label: {
-    paddingTop: 5,
-    paddingLeft: 8,
+    padding: 5,
+    paddingLeft: fixedTheme.fieldLabelMargin,
+    fontSize: theme.fontSizes.lg,
+    color: theme.other.textColor,
   },
   listItem: {
     display: 'flex',
@@ -35,10 +36,11 @@ const useStyles = createStyles((theme) => ({
     alignItems: 'center',
     paddingLeft: fixedTheme.fieldInnerMargin + 6,
     paddingRight: fixedTheme.fieldInnerMargin,
-    height: 30,
+    height: fixedTheme.fieldDefaultHeight,
     '& > div': {
       width: '100%',
-      fontSize: theme.fontSizes.sm,
+      fontSize: theme.fontSizes.md,
+      color: theme.other.textColor,
     },
   },
 }))
@@ -52,6 +54,8 @@ type ListFieldProps = {
 
 export default function ListField(props: ListFieldProps) {
   const { classes } = useStyles()
+  const theme = useMantineTheme()
+
   const [listItems, setListItems] = useState<string[]>([
     'charttime',
     'terseform',
@@ -67,7 +71,7 @@ export default function ListField(props: ListFieldProps) {
   }
   const addButton = (
     <ActionIcon onClick={() => handleAddItem()} variant="hover">
-      <IconPlus size={fixedTheme.iconSize} />
+      <IconPlus size={fixedTheme.iconSize} color={theme.other.iconColor} />
     </ActionIcon>
   )
   // TODO: replace content by an actual option to set a label
@@ -77,6 +81,8 @@ export default function ListField(props: ListFieldProps) {
 
   return (
     <div className={classes.container}>
+      {label}
+      {/* {props.label ? label : undefined} TODO: use this once label is implemented */}
       <TextInput
         className={classes.input}
         value={inputValue}
@@ -84,19 +90,15 @@ export default function ListField(props: ListFieldProps) {
         onChange={(event) => setInputValue(event.target.value)}
         rightSection={addButton}
         variant="filled"
-        label={label}
-      // label={props.label ? label : undefined} // TODO: use this once label is implemented
       />
       <Stack spacing={0}>
         {listItems.map((item, i) => (
           <div key={i} className={classes.listItem}>
             <div>{item}</div>
             <CloseButton
-              onClick={() =>
-                setListItems(
-                  listItems.slice(0, i).concat(listItems.slice(i + 1))
-                )
-              }
+              onClick={() => setListItems(listItems.slice(0, i).concat(listItems.slice(i + 1)))}
+              iconSize={fixedTheme.iconSize}
+              style={{ color: theme.other.iconColor }}
             />
           </div>
         ))}
