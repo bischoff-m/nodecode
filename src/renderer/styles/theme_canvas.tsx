@@ -4,6 +4,7 @@ import {
   MantineSize,
   MantineThemeOverride,
 } from '@mantine/core'
+import { mantineColors } from '@/styles/mantineColors'
 
 // style variables that are the same for all themes
 const fixedTheme = {
@@ -21,7 +22,7 @@ const fixedTheme = {
   // fonts
   // fontWeight: 300, // TODO: Roboto font only supports normal and bold
   // debugging
-  handleDraggableOpacity: 0.5,
+  handleDraggableOpacity: 0,
   noodleBackgroundOpacity: 0,
 }
 
@@ -33,14 +34,14 @@ const mantineTheme: MantineThemeOverride = {
   primaryColor: 'blue',
   other: {
     // colors
-    canvasBackgroundColor: '#1A1B1E', // dark[7]
-    nodeHeaderBackgroundColor: '#1864AB', // blue[9]
-    nodeBackgroundColor: '#2C2E33', // dark[5]
-    fieldBackgroundColor: '#2C2E33', // dark[5]
-    socketColor: '#1864AB', // blue[9]
-    iconColor: '#969696',
-    textColor: '#e9e9e9',
-    noodleColor: '#e9e9e9',
+    canvasBackgroundColor: mantineColors.dark[7], // not used?
+    nodeHeaderBackgroundColor: mantineColors.blue[9],
+    nodeBackgroundColor: mantineColors.dark[5],
+    fieldBackgroundColor: mantineColors.dark[5],
+    socketColor: mantineColors.blue[9],
+    iconColor: mantineColors.dark[1], // not used?
+    textColor: mantineColors.gray[2], // not used?
+    noodleColor: mantineColors.gray[2],
     // shadows
     nodeContainerShadow: '0px 0px 5px rgb(0 0 0 / 60%)',
     fieldContainerShadow: 'none',
