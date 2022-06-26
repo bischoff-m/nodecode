@@ -6,6 +6,7 @@ import { useSelectorTyped } from '@/redux/hooks'
 import { getCanvasZoom, screenToCanvas } from '@/components/NodeCanvas'
 import { Vec2D } from '@/types/util'
 import { fixedTheme } from '@/styles/theme_canvas'
+import { socketPositions as socketPos, onMoveNode, removeOnMoveNode } from '@/redux/socketsSlice'
 
 const handleSize = fixedTheme.handleDraggableSize
 let isDragging = false // is true when user began to drag and(!) moved his mouse
@@ -51,9 +52,7 @@ export default function Noodle(props: NoodleProps) {
 
   // Redux state
   const allSockets = useSelectorTyped((state) => state.sockets.identifiers)
-  // TODO: use manual state updates instead like onZoomChanged in NodeCanvas
-  //        problem: all noodles are redrawn when node is moved, instead of just the noodle that is connected and not disabled
-  const socketsPos = useSelectorTyped((state) => state.sockets.positions)
+  const socketPosAfterMove = useSelectorTyped((state) => state.sockets.positions)
 
   // React state
   const [mousePos, setMousePos] = useState<Vec2D>({ x: 0, y: 0 })
@@ -64,7 +63,17 @@ export default function Noodle(props: NoodleProps) {
     props.defaultSocketKeyLeft && props.defaultSocketKeyRight ? false : true,
   )
 
-  // wrap socket key update methods to also call the callback given by onSocketUpdate
+  // If a node that the noodle is connected to is moved, update the path of the noodle
+  onMoveNode((nodeKey: string, by: Vec2D) => {
+    if (!socketKeyLeft || !socketKeyRight || !refPath.current)
+      return
+    const leftNodeKey = allSockets[socketKeyLeft].nodeKey
+    const rightNodeKey = allSockets[socketKeyRight].nodeKey
+    if (nodeKey === leftNodeKey || nodeKey === rightNodeKey)
+      refPath.current.setAttribute('d', getCurve())
+  }, props.noodleID)
+
+  // TODO: remove if isMounted is not needed
   const setKeyLeft = (key: string | undefined) => {
     if (!key && !socketKeyRight)
       throw new Error('Noodle: socketKeyLeft must be defined if socketKeyRight is undefined')
@@ -76,21 +85,22 @@ export default function Noodle(props: NoodleProps) {
     isMounted && setSocketKeyRight(key)
   }
 
+  // takes a unique id for a socket and looks up the position
   function posFromSocketKey(socketKey: string): Vec2D {
-    // Takes a unique id for a socket and looks up the position
-    if (socketsPos[socketKey]) return socketsPos[socketKey]
+    if (socketPos[socketKey]) return socketPos[socketKey]
     else throw Error(`Socket key not found: ${socketKey}`)
   }
 
+  // calculates the distance to all sockets
+  // then returns the position of the closest socket if its distance is below the snap threshold
+  // and returns undefined otherwise
   function snapsToSocket(handlePos: Vec2D, excludeNode: string | undefined): string | undefined {
-    if (!socketsPos || !allSockets) return undefined
-    // calculates the distance to all sockets
-    // then returns the position of the closest socket if its distance is below the snap threshold
-    // and returns undefined otherwise
+    if (!socketPosAfterMove || !allSockets) return undefined
     const [minSocketKey, minDistance] = Object
-      .keys(socketsPos)
+      .keys(socketPosAfterMove)
       .reduce((res, key) => {
-        let distance = Math.sqrt((socketsPos[key].x - handlePos.x) ** 2 + (socketsPos[key].y - handlePos.y) ** 2)
+        let pos = socketPosAfterMove[key]
+        let distance = Math.sqrt((pos.x - handlePos.x) ** 2 + (pos.y - handlePos.y) ** 2)
         if (distance < res[1] && allSockets[key].nodeKey !== excludeNode) return [key, distance]
         else return res
       }, ['', Infinity] as [string, number])
@@ -98,6 +108,7 @@ export default function Noodle(props: NoodleProps) {
     return minDistance <= handleSize / 2 ? minSocketKey : undefined
   }
 
+  // updates state when one of the handles is dragged
   function handleDrag(isLeft: boolean, event: DraggableEvent): void {
     beganDragging && (isDragging = true)
     const e = event as ReactMouseEvent
@@ -118,16 +129,20 @@ export default function Noodle(props: NoodleProps) {
     isMounted && setMousePos(newMousePos)
   }
 
+  // defines the position of the two Draggable handles if they are not currently being dragged
+  // after drag: if own socket is defined, stick to it
+  //             otherwise if opposite socket is defined, stick to it
+  //             otherwise return placeholder position (only happens during loading)
   function getHandlePos(isLeft: boolean) {
-    // Called when handles are dragged
     const socketKey = isLeft ? socketKeyLeft : socketKeyRight
     const oppositeSocketKey = isLeft ? socketKeyRight : socketKeyLeft
-    let handlePos = mousePos
+    let handlePos = { x: 0, y: 0 }
     if (socketKey) handlePos = posFromSocketKey(socketKey)
     else if (oppositeSocketKey) handlePos = posFromSocketKey(oppositeSocketKey)
     return { x: handlePos.x - handleSize / 2, y: handlePos.y - handleSize / 2 }
   }
 
+  // calculates the path (d-Attribute of svg.path) of the noodle for the current state (socketKeyLeft, socketKeyRight)
   function getCurve() {
     if (!refSVG.current || !(isDragging || (socketKeyLeft && socketKeyRight)))
       return 'M0 0 C 0 0, 0 0, 0 0'
@@ -187,7 +202,8 @@ export default function Noodle(props: NoodleProps) {
     setSocketKeyLeft(props.defaultSocketKeyLeft)
     setSocketKeyRight(props.defaultSocketKeyRight)
     return () => {
-      isMounted = false
+      isMounted = false // TODO: remove if it does not prevent the warning
+      removeOnMoveNode(props.noodleID)
     }
   }, [props])
 

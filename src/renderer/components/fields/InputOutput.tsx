@@ -1,5 +1,5 @@
 import { createStyles } from '@mantine/core'
-import { updateSocket, addSocket } from '@/redux/socketsSlice'
+import { updateSocket, addSocketPos } from '@/redux/socketsSlice'
 import { useDispatchTyped } from '@/redux/hooks'
 import { useEffect, useRef } from 'react'
 import type { FieldProps } from '@/types/util'
@@ -78,7 +78,7 @@ export default function InputOutputField(props: InputOutputFieldProps) {
           fieldKey: props.fieldKey,
           isInput: isLeft,
         }
-        dispatch(addSocket({
+        dispatch(addSocketPos({
           socket: socket,
           pos: {
             x: pos.x + handleSize / 2,

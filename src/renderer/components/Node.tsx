@@ -1,6 +1,6 @@
-import { createStyles, Paper, MantineSize, Stack } from '@mantine/core'
+import { createStyles, MantineSize, Stack } from '@mantine/core'
 import { useDispatchTyped } from '@/redux/hooks'
-import { moveNode } from '@/redux/socketsSlice'
+import { moveNode, moveNodeStop } from '@/redux/socketsSlice'
 import { ReactNode, useRef, useState } from 'react'
 import Draggable, { DraggableData, DraggableEvent } from 'react-draggable'
 import { getCanvasZoom, onZoomChanged } from './NodeCanvas'
@@ -43,6 +43,7 @@ export default function Node(props: NodeProps) {
   const { classes } = useStyles()
   const nodeRef = useRef(null)
   const [canvasZoom, setCanvasZoom] = useState<number>(getCanvasZoom()) // variable is mirrored from NodeCanvas to enable state updates
+  const moveDelta = { x: 0, y: 0 }
 
   const dispatch = useDispatchTyped()
 
@@ -50,13 +51,21 @@ export default function Node(props: NodeProps) {
     setCanvasZoom(newZoom)
   })
 
-  function handleDrag(event: DraggableEvent, data: DraggableData) {
-    dispatch(
-      moveNode({
-        nodeKey: props.nodeKey,
-        by: { x: data.deltaX, y: data.deltaY },
-      })
-    )
+  function onDrag(event: DraggableEvent, data: DraggableData) {
+    moveDelta.x += data.deltaX
+    moveDelta.y += data.deltaY
+    moveNode(props.nodeKey, { x: data.deltaX, y: data.deltaY })
+  }
+
+  function onStop(event: DraggableEvent, data: DraggableData) {
+    if (moveDelta.x === 0 && moveDelta.y === 0)
+      return
+    dispatch(moveNodeStop({
+      nodeKey: props.nodeKey,
+      by: moveDelta,
+    }))
+    moveDelta.x = 0
+    moveDelta.y = 0
   }
 
   return (
@@ -68,7 +77,8 @@ export default function Node(props: NodeProps) {
         fixedTheme.gridSize * canvasZoom,
       ]}
       nodeRef={nodeRef}
-      onDrag={handleDrag}
+      onDrag={onDrag}
+      onStop={onStop}
       scale={canvasZoom}
     >
       <div className={classes.card} ref={nodeRef}>

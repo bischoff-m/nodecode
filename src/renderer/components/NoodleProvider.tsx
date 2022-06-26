@@ -101,7 +101,7 @@ export default function NoodleProvider(props: NoodleProviderProps) {
     //        -> keep all non-collapsed noodles instead
     setNoodleInfos(Object
       .keys(allSockets)
-      .slice(0, 3)
+      // .slice(0, 3)
       .reduce((res, key) => {
         const info = {
           left: !allSockets[key].isInput ? key : undefined,
