@@ -1,8 +1,8 @@
 import { createStyles, MantineProvider } from '@mantine/core'
 import { mantineTheme, styleOverrides, classNames } from '@/styles/theme_canvas'
 import {
-  MouseEvent as ReactMouseEvent,
-  WheelEvent as ReactWheelEvent,
+  MouseEvent,
+  WheelEvent,
   ReactElement,
   useEffect,
   useState,
@@ -14,6 +14,7 @@ import { directstyled, useDirectStyle } from '@/lib/direct-styled' // https://gi
 import { Vec2D } from '@/types/util'
 import NoodleProvider from '@/components/NoodleProvider'
 
+// Global constants and variables
 const zoomFactor = 0.8
 let onZoomCallbacks: ((newZoom: number) => void)[] = [] // functions that should be called when user zoomed in/out
 let isDragging = false // whether the user is currently dragging
@@ -21,6 +22,7 @@ let prevDragPos: Vec2D = { x: 0, y: 0 } // screen position of mouse, updated whi
 let innerOffset: Vec2D = { x: 0, y: 0 } // offset of canvas relative to its parent component in pixels, can be changed by dragging
 let zoom = 1 // relative size of elements on canvas in percent
 
+// Refs
 let canvasDiv: HTMLDivElement | null = null // ref.current of the canvas component that can be dragged
 let containerDiv: HTMLDivElement | null = null // ref.current of the div that contains the canvas
 
@@ -109,7 +111,7 @@ export default function NodeCanvas() {
     })
   }
 
-  function handleMouseDown(e: ReactMouseEvent<'div'>) {
+  function handleMouseDown(e: MouseEvent<'div'>) {
     prevDragPos = { x: e.clientX, y: e.clientY }
     // if wheel was pressed
     isDragging = e.button === 1
@@ -123,14 +125,14 @@ export default function NodeCanvas() {
     }
   }
 
-  function handleMouseUp(e: ReactMouseEvent<'div'>) {
+  function handleMouseUp(e: MouseEvent<'div'>) {
     isDragging = false
     containerRef.current && containerRef.current.classList.remove(classes.dragging)
     containerRef.current && containerRef.current.classList.add(classes.animatedBackground)
     draggableRef.current && draggableRef.current.classList.add(classes.animatedTransition)
   }
 
-  function handleMouseMove(e: ReactMouseEvent<'div'>) {
+  function handleMouseMove(e: MouseEvent<'div'>) {
     e.preventDefault()
     if (!isDragging) return
 
@@ -142,7 +144,7 @@ export default function NodeCanvas() {
     updateCanvasStyle()
   }
 
-  function handleWheel(e: ReactWheelEvent<'div'>) {
+  function handleWheel(e: WheelEvent<'div'>) {
     // TODO: min und max für zoom
     if (containerRef.current == null || isDragging) return
     const { left, top, width, height } = containerRef.current.getBoundingClientRect()

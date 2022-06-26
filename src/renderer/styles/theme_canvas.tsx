@@ -31,7 +31,7 @@ const fixedTheme = {
 // style variables that depend on the color scheme
 const mantineTheme: MantineThemeOverride = {
   colorScheme: 'dark',
-  fontFamily: 'Roboto, sans-serif',
+  fontFamily: defaultTheme.fontFamily,
   defaultRadius: 'md',
   primaryColor: 'blue',
   fontSizes: {
