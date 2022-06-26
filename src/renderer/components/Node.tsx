@@ -1,10 +1,11 @@
-import { createStyles, MantineSize, Stack } from '@mantine/core'
+import { createStyles, MantineSize, Stack, useMantineTheme } from '@mantine/core'
 import { useDispatchTyped } from '@/redux/hooks'
 import { moveNode, moveNodeStop } from '@/redux/socketsSlice'
 import { ReactNode, useRef, useState } from 'react'
-import Draggable, { DraggableData, DraggableEvent } from 'react-draggable'
+import Draggable from 'react-draggable'
 import { getCanvasZoom, onZoomChanged } from './NodeCanvas'
 import { fixedTheme } from '@/styles/theme_canvas'
+import type { DraggableData, DraggableEvent } from 'react-draggable'
 
 const useStyles = createStyles((theme) => ({
   card: {
@@ -41,7 +42,8 @@ export type NodeProps = {
 
 export default function Node(props: NodeProps) {
   const { classes } = useStyles()
-  const nodeRef = useRef(null)
+  const theme = useMantineTheme()
+  const nodeRef = useRef<HTMLDivElement>(null)
   const [canvasZoom, setCanvasZoom] = useState<number>(getCanvasZoom()) // variable is mirrored from NodeCanvas to enable state updates
   const moveDelta = { x: 0, y: 0 }
 
@@ -68,6 +70,11 @@ export default function Node(props: NodeProps) {
     moveDelta.y = 0
   }
 
+  function setHighlight(highlight: Boolean) {
+    if (nodeRef.current)
+      nodeRef.current.style.outline = highlight ? theme.other.nodeHoverOutline : 'none'
+  }
+
   return (
     <Draggable
       handle={'.' + classes.header}
@@ -84,8 +91,8 @@ export default function Node(props: NodeProps) {
       <div className={classes.card} ref={nodeRef}>
         <div
           className={classes.header}
-          onMouseOver={(e) => e.currentTarget.parentElement?.classList.add(classes.highlight)}
-          onMouseOut={(e) => e.currentTarget.parentElement?.classList.remove(classes.highlight)}
+          onMouseOver={() => setHighlight(true)}
+          onMouseOut={() => setHighlight(false)}
         >
           {props.title}
         </div>
