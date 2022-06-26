@@ -16,17 +16,14 @@ import NoodleProvider from '@/components/NoodleProvider'
 
 // Global constants and variables
 const zoomFactor = 0.8
-let onZoomCallbacks: ((newZoom: number) => void)[] = [] // functions that should be called when user zoomed in/out
 let isDragging = false // whether the user is currently dragging
 let prevDragPos: Vec2D = { x: 0, y: 0 } // screen position of mouse, updated while dragging
 let innerOffset: Vec2D = { x: 0, y: 0 } // offset of canvas relative to its parent component in pixels, can be changed by dragging
-let zoom = 1 // relative size of elements on canvas in percent
 
 // Refs
 let canvasDiv: HTMLDivElement | null = null // ref.current of the canvas component that can be dragged
 let containerDiv: HTMLDivElement | null = null // ref.current of the div that contains the canvas
 
-export const getCanvasZoom = () => zoom
 export const screenToCanvas = (position: Vec2D) => {
   // transforms screen coordinates to canvas coordinates (e.g. for mouse events)
   // this does not use the innerOffset and zoom variables because it would not account for animations
@@ -38,8 +35,24 @@ export const screenToCanvas = (position: Vec2D) => {
     y: (position.y - top) / (innerWidth / outerWidth),
   }
 }
-export const onZoomChanged = (callback: (newZoom: number) => void) => {
-  onZoomCallbacks.push(callback)
+
+// Zoom state (get using direct access or with callback on update)
+let zoom = 1 // relative size of elements on canvas in percent
+export const getCanvasZoom = () => zoom
+const onZoomCallbacks: ((newZoom: number) => void)[] = [] // functions that should be called when user zoomed in/out
+export const onZoomChanged = (callback: (newZoom: number) => void) => onZoomCallbacks.push(callback)
+
+// Node selection state: getter
+let selectedNode: string | null = null // key of the node that is currently selected
+export const getSelectedNode = () => selectedNode
+const onNodeSelectedCallbacks: ((nodeKey: string | null) => void)[] = [] // functions that should be called when user selected a node
+export const onNodeSelected = (callback: (nodeKey: string | null) => void) => {
+  onNodeSelectedCallbacks.push(callback)
+}
+// Node selection state: setter
+export const setSelectedNode = (nodeKey: string | null) => {
+  selectedNode = nodeKey
+  onNodeSelectedCallbacks.forEach((callback) => callback(nodeKey))
 }
 
 // TODO: auf dem Surface Pro 4 werden scroll bars angezeigt (vielleicht ist das Canvas zu groß)
@@ -209,6 +222,7 @@ export default function NodeCanvas() {
           if (e.buttons !== 4) isDragging = false
         }}
         onWheel={handleWheel}
+        onClick={() => setSelectedNode(null)}
         style={containerStyle}
       >
         <directstyled.div

@@ -56,7 +56,8 @@ const mantineTheme: MantineThemeOverride = {
     fieldContainerShadow: 'none',
     // borders
     fieldBorder: '1px solid hsl(0 0% 100% / 0%)',
-    nodeHoverOutline: '1px solid hsl(0 0% 100% / 60%)',
+    nodeHoverOutline: `2px solid ${defaultTheme.colors.blue[9]}`,
+    nodeActiveOutline: '2px solid hsl(0 0% 100% / 60%)',
     // mantine-specific
     fieldComponentVariant: 'filled',
   },
@@ -76,6 +77,7 @@ declare module '@mantine/core' {
     fieldContainerShadow: string
     fieldBorder: string
     nodeHoverOutline: string
+    nodeActiveOutline: string
     fieldComponentVariant: InputVariant
   }
 }

@@ -1,11 +1,12 @@
 import { createStyles, MantineSize, Stack, useMantineTheme } from '@mantine/core'
 import { useDispatchTyped } from '@/redux/hooks'
 import { moveNode, moveNodeStop } from '@/redux/socketsSlice'
-import { ReactNode, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import Draggable from 'react-draggable'
-import { getCanvasZoom, onZoomChanged } from './NodeCanvas'
+import { getCanvasZoom, getSelectedNode, onNodeSelected, onZoomChanged, setSelectedNode } from '@/components/NodeCanvas'
 import { fixedTheme } from '@/styles/theme_canvas'
 import type { DraggableData, DraggableEvent } from 'react-draggable'
+import type { ReactNode } from 'react'
 
 const useStyles = createStyles((theme) => ({
   card: {
@@ -46,6 +47,7 @@ export default function Node(props: NodeProps) {
   const nodeRef = useRef<HTMLDivElement>(null)
   const [canvasZoom, setCanvasZoom] = useState<number>(getCanvasZoom()) // variable is mirrored from NodeCanvas to enable state updates
   const moveDelta = { x: 0, y: 0 }
+  let isHovering = false
 
   const dispatch = useDispatchTyped()
 
@@ -70,11 +72,20 @@ export default function Node(props: NodeProps) {
     moveDelta.y = 0
   }
 
-  function setHighlight(highlight: Boolean) {
-    if (nodeRef.current)
-      nodeRef.current.style.outline = highlight ? theme.other.nodeHoverOutline : 'none'
+  function setHighlight() {
+    if (!nodeRef.current)
+      return
+    if (props.nodeKey === getSelectedNode())
+      nodeRef.current.style.outline = theme.other.nodeActiveOutline
+    else if (isHovering)
+      nodeRef.current.style.outline = theme.other.nodeHoverOutline
+    else
+      nodeRef.current.style.outline = 'none'
   }
 
+  onNodeSelected(() => setHighlight())
+
+  console.log('Node', props.nodeKey, props.title, props.x, props.y)
   return (
     <Draggable
       handle={'.' + classes.header}
@@ -88,11 +99,15 @@ export default function Node(props: NodeProps) {
       onStop={onStop}
       scale={canvasZoom}
     >
-      <div className={classes.card} ref={nodeRef}>
+      <div
+        className={classes.card}
+        ref={nodeRef}
+        onClick={(e) => { e.stopPropagation(); setSelectedNode(props.nodeKey) }}
+      >
         <div
           className={classes.header}
-          onMouseOver={() => setHighlight(true)}
-          onMouseOut={() => setHighlight(false)}
+          onMouseOver={() => { isHovering = true; setHighlight() }}
+          onMouseOut={() => { isHovering = false; setHighlight() }}
         >
           {props.title}
         </div>

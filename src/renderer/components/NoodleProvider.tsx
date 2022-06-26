@@ -115,7 +115,6 @@ export default function NoodleProvider(props: NoodleProviderProps) {
       console.log('NoodleProvider: cleanup')
     }
   }, [allSockets])
-  // }, [])
 
   console.log('rerender')
   return (
