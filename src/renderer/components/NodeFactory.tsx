@@ -74,9 +74,6 @@ export function getFieldComponent(
     case 'ListField':
       return <ListField {...allProps} />
     default:
-      return null
-    // TODO: throw Error
-    // return <div>Not implemented yet.</div>
-    // throw Error(`Field type \"${fieldType}\" could not be found.`)
+      throw Error(`Field type "${fieldType}" could not be found.`)
   }
 }

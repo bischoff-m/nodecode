@@ -12,6 +12,7 @@ const fixedTheme = {
   gridSize: 20,
   nodeWidth: 300,
   nodePadding: 5,
+  nodeFieldSpacing: 5,
   handleSize: 14,
   handleDraggableSize: 40,
   fieldInnerMargin: 0,

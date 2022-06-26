@@ -73,8 +73,7 @@ export default function Node(props: NodeProps) {
       scale={canvasZoom}
     >
       <div
-        className={`${classes.card} ${outlineActive ? classes.highlight : undefined
-          }`}
+        className={`${classes.card} ${outlineActive ? classes.highlight : undefined}`}
         ref={nodeRef}
       >
         <div
@@ -84,7 +83,7 @@ export default function Node(props: NodeProps) {
         >
           {props.title}
         </div>
-        <Stack className={classes.content} justify="flex-start" spacing="sm">
+        <Stack className={classes.content} justify="flex-start" spacing={fixedTheme.nodeFieldSpacing}>
           {props.children}
         </Stack>
       </div>
