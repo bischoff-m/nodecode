@@ -15,6 +15,7 @@ const useStyles = createStyles((theme) => ({
     paddingLeft: fixedTheme.fieldLabelMargin,
     fontSize: theme.fontSizes.lg,
     color: theme.other.textColor,
+    fontWeight: 500,
   },
 }))
 

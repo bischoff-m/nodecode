@@ -54,6 +54,7 @@ export default function Node(props: NodeProps) {
   onZoomChanged((newZoom: number) => {
     setCanvasZoom(newZoom)
   })
+  onNodeSelected(() => setHighlight())
 
   function onDrag(event: DraggableEvent, data: DraggableData) {
     moveDelta.x += data.deltaX
@@ -83,9 +84,6 @@ export default function Node(props: NodeProps) {
       nodeRef.current.style.outline = 'none'
   }
 
-  onNodeSelected(() => setHighlight())
-
-  console.log('Node', props.nodeKey, props.title, props.x, props.y)
   return (
     <Draggable
       handle={'.' + classes.header}
