@@ -24,7 +24,7 @@ const fixedTheme = {
   // fonts
   // fontWeight: 300, // TODO: Roboto font only supports normal and bold
   // debugging
-  handleDraggableOpacity: 0,
+  handleDraggableOpacity: 0.5,
   noodleBackgroundOpacity: 0,
 }
 

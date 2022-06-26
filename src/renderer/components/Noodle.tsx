@@ -17,7 +17,6 @@ const useStyles = createStyles({
   },
   handle: {
     position: 'absolute',
-    backgroundColor: 'red',
     width: handleSize,
     height: handleSize,
     borderRadius: handleSize / 2,
@@ -38,6 +37,7 @@ type NoodleProps = {
 export default function Noodle(props: NoodleProps) {
   if (!props.defaultSocketKeyLeft && !props.defaultSocketKeyRight)
     throw new Error('Noodle: at least one default socket key is required')
+  let isMounted = true
 
   // Styles
   const { classes } = useStyles()
@@ -63,22 +63,18 @@ export default function Noodle(props: NoodleProps) {
   const [beganDragging, setBeganDragging] = useState<boolean>(
     props.defaultSocketKeyLeft && props.defaultSocketKeyRight ? false : true,
   )
+
   // wrap socket key update methods to also call the callback given by onSocketUpdate
   const setKeyLeft = (key: string | undefined) => {
     if (!key && !socketKeyRight)
       throw new Error('Noodle: socketKeyLeft must be defined if socketKeyRight is undefined')
-    setSocketKeyLeft(key)
+    isMounted && setSocketKeyLeft(key)
   }
   const setKeyRight = (key: string | undefined) => {
     if (!key && !socketKeyLeft)
       throw new Error('Noodle: socketKeyRight must be defined if socketKeyLeft is undefined')
-    setSocketKeyRight(key)
+    isMounted && setSocketKeyRight(key)
   }
-
-  useEffect(() => {
-    setSocketKeyLeft(props.defaultSocketKeyLeft)
-    setSocketKeyRight(props.defaultSocketKeyRight)
-  }, [props])
 
   function posFromSocketKey(socketKey: string): Vec2D {
     // Takes a unique id for a socket and looks up the position
@@ -119,7 +115,7 @@ export default function Noodle(props: NoodleProps) {
       // stick to mouse
       setSocketKey(undefined)
     }
-    setMousePos(newMousePos)
+    isMounted && setMousePos(newMousePos)
   }
 
   function getHandlePos(isLeft: boolean) {
@@ -186,6 +182,15 @@ export default function Noodle(props: NoodleProps) {
     return `M${x1} ${y1} C ${x2} ${y2}, ${x3} ${y3}, ${x4} ${y4}`
   }
 
+  useEffect(() => {
+    // console.log('Noodle: useEffect', props.noodleID)
+    setSocketKeyLeft(props.defaultSocketKeyLeft)
+    setSocketKeyRight(props.defaultSocketKeyRight)
+    return () => {
+      isMounted = false
+    }
+  }, [props])
+
   return (
     <>
       <svg
@@ -212,9 +217,9 @@ export default function Noodle(props: NoodleProps) {
         handle={'.handleLeft'}
         position={getHandlePos(true)}
         nodeRef={refLeft}
-        onStart={() => setBeganDragging(true)}
+        onStart={() => isMounted && setBeganDragging(true)}
         onStop={() => {
-          setBeganDragging(false)
+          isMounted && setBeganDragging(false)
           isDragging = false
           props.onSocketUpdate && props.onSocketUpdate(socketKeyLeft, socketKeyRight)
         }}
@@ -226,6 +231,7 @@ export default function Noodle(props: NoodleProps) {
           ref={refLeft}
           style={{
             display: socketKeyLeft !== undefined || !socketKeyRight ? 'none' : 'block',
+            backgroundColor: 'red',
           }}
         ></div>
       </Draggable>
@@ -233,9 +239,9 @@ export default function Noodle(props: NoodleProps) {
         handle={'.handleRight'}
         position={getHandlePos(false)}
         nodeRef={refRight}
-        onStart={() => setBeganDragging(true)}
+        onStart={() => isMounted && setBeganDragging(true)}
         onStop={() => {
-          setBeganDragging(false)
+          isMounted && setBeganDragging(false)
           isDragging = false
           props.onSocketUpdate && props.onSocketUpdate(socketKeyLeft, socketKeyRight)
         }}
@@ -247,6 +253,7 @@ export default function Noodle(props: NoodleProps) {
           ref={refRight}
           style={{
             display: !socketKeyLeft && socketKeyRight !== undefined ? 'none' : 'block',
+            backgroundColor: 'green',
           }}
         ></div>
       </Draggable>
