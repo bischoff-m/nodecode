@@ -43,7 +43,6 @@ export default function Node(props: NodeProps) {
   const { classes } = useStyles()
   const nodeRef = useRef(null)
   const [canvasZoom, setCanvasZoom] = useState<number>(getCanvasZoom()) // variable is mirrored from NodeCanvas to enable state updates
-  const [outlineActive, setOutlineActive] = useState<boolean>(false)
 
   const dispatch = useDispatchTyped()
 
@@ -72,14 +71,11 @@ export default function Node(props: NodeProps) {
       onDrag={handleDrag}
       scale={canvasZoom}
     >
-      <div
-        className={`${classes.card} ${outlineActive ? classes.highlight : undefined}`}
-        ref={nodeRef}
-      >
+      <div className={classes.card} ref={nodeRef}>
         <div
           className={classes.header}
-          onMouseOver={() => setOutlineActive(true)}
-          onMouseOut={() => setOutlineActive(false)}
+          onMouseOver={(e) => e.currentTarget.parentElement?.classList.add(classes.highlight)}
+          onMouseOut={(e) => e.currentTarget.parentElement?.classList.remove(classes.highlight)}
         >
           {props.title}
         </div>
