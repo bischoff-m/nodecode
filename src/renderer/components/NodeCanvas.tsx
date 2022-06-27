@@ -60,6 +60,9 @@ export const setSelectedNode = (nodeKey: string | null) => {
 //       - https://mathjs.org/ Problem: code is less readable because of math.add(...) instead of ... + ...
 //       - https://www.sweetjs.org/doc/tutorial.html Define own operators (maybe in combination with mathjs)
 
+//////////////////////////////////////////////////////////////////////////////////////////////
+// Styles
+//////////////////////////////////////////////////////////////////////////////////////////////
 const useStyles = createStyles((theme) => ({
   container: {
     // position: 'absolute',
@@ -90,6 +93,10 @@ const useStyles = createStyles((theme) => ({
   },
 }))
 
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+// Canvas component
+//////////////////////////////////////////////////////////////////////////////////////////////
 export default function NodeCanvas() {
   // Styles
   const { classes } = useStyles()
@@ -233,7 +240,7 @@ export default function NodeCanvas() {
           {isLoaded && (
             <>
               <div className={classes.nodesContainer}>{nodes}</div>
-              <NoodleProvider />
+              <NoodleProvider socketPairs={{}} />
             </>
           )}
         </directstyled.div>
