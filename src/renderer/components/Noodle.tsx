@@ -60,7 +60,18 @@ export default function Noodle(props: NoodleProps) {
   // is true when user began to drag, even if he didnt move his mouse yet
   const [beganDragging, setBeganDragging] = useState<boolean>(false)
 
-  // TODO: remove if isMounted is not needed
+
+  // If a node that the noodle is connected to is moved, update the path of the noodle
+  onMoveNode((nodeKey: string, by: Vec2D) => {
+    if (!socketKeyLeft || !socketKeyRight || !refPath.current)
+      return
+    const leftNodeKey = allSockets[socketKeyLeft].nodeKey
+    const rightNodeKey = allSockets[socketKeyRight].nodeKey
+    if (nodeKey === leftNodeKey || nodeKey === rightNodeKey)
+      refPath.current.setAttribute('d', getCurve())
+  }, props.noodleID)
+
+  // Additional checks for the socket key update methods
   const setKeyLeft = (key: string | undefined) => {
     if (!key && !socketKeyRight)
       throw new Error('Noodle: socketKeyLeft must be defined if socketKeyRight is undefined')
@@ -185,21 +196,14 @@ export default function Noodle(props: NoodleProps) {
   }
 
   useEffect(() => {
-    // If a node that the noodle is connected to is moved, update the path of the noodle
-    onMoveNode((nodeKey: string, by: Vec2D) => {
-      if (!socketKeyLeft || !socketKeyRight || !refPath.current)
-        return
-      const leftNodeKey = allSockets[socketKeyLeft].nodeKey
-      const rightNodeKey = allSockets[socketKeyRight].nodeKey
-      if (nodeKey === leftNodeKey || nodeKey === rightNodeKey)
-        refPath.current.setAttribute('d', getCurve())
-    }, props.noodleID)
-
-    setSocketKeyLeft(props.defaultSocketKeyLeft)
-    setSocketKeyRight(props.defaultSocketKeyRight)
     return () => {
       removeOnMoveNode(props.noodleID)
     }
+  }, [])
+
+  useEffect(() => {
+    setSocketKeyLeft(props.defaultSocketKeyLeft)
+    setSocketKeyRight(props.defaultSocketKeyRight)
   }, [props])
 
   return (
