@@ -185,8 +185,6 @@ export default function Noodle(props: NoodleProps) {
   }
 
   useEffect(() => {
-    console.log('Noodle: useEffect', props.noodleID)
-
     // If a node that the noodle is connected to is moved, update the path of the noodle
     onMoveNode((nodeKey: string, by: Vec2D) => {
       if (!socketKeyLeft || !socketKeyRight || !refPath.current)
@@ -200,7 +198,6 @@ export default function Noodle(props: NoodleProps) {
     setSocketKeyLeft(props.defaultSocketKeyLeft)
     setSocketKeyRight(props.defaultSocketKeyRight)
     return () => {
-      console.log('Noodle: useEffect cleanup', props.noodleID)
       removeOnMoveNode(props.noodleID)
     }
   }, [props])

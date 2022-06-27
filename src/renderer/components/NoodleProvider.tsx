@@ -31,7 +31,6 @@ export default function NoodleProvider(props: NoodleProviderProps) {
   ) => {
     const { left, right } = socketPairs[noodleKey]
     // check if parameters are valid
-    console.log('before', noodleKey, { left: leftSocketKey, right: rightSocketKey }, socketPairs)
     if (leftSocketKey === left && rightSocketKey === right) return
     if (leftSocketKey !== left && rightSocketKey !== right) {
       console.warn('NoodleProvider: socket key update for a noodle that switched socket on both sides')
@@ -72,11 +71,11 @@ export default function NoodleProvider(props: NoodleProviderProps) {
           newSocketPairs[getNoodleKey(newCollapsedPair)] = newCollapsedPair
         }
       }
-    console.log('after', newSocketPairs)
     setSocketPairs(newSocketPairs)
   }
 
   useEffect(() => {
+    // TODO: this probably has to change once the state is initialized from a file
     // spawn collapsed noodles at each socket
     setSocketPairs(Object
       .keys(allSockets)
@@ -93,17 +92,15 @@ export default function NoodleProvider(props: NoodleProviderProps) {
 
   useEffect(() => {
     // create noodle components for the current state
-    console.log('NoodleProvider: useEffect')
     setNoodles(Object
       .keys(socketPairs)
-      // .slice(0, 1)
       .map((key) =>
         <Noodle
           defaultSocketKeyLeft={socketPairs[key].left}
           defaultSocketKeyRight={socketPairs[key].right}
           key={key}
           noodleID={key}
-          onSocketUpdate={(l, r) => handleSocketUpdate(key, l, r)} // TODO: Problem(?): this callback changes when its called which triggers a state update
+          onSocketUpdate={(l, r) => handleSocketUpdate(key, l, r)}
         />
       ))
   }, [allSockets, socketPairs])
