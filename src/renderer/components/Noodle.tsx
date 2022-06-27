@@ -4,9 +4,9 @@ import type { MouseEvent as ReactMouseEvent } from 'react'
 import Draggable, { DraggableEvent } from 'react-draggable'
 import { useSelectorTyped } from '@/redux/hooks'
 import { getCanvasZoom, screenToCanvas } from '@/components/NodeCanvas'
-import { Vec2D } from '@/types/util'
 import { fixedTheme } from '@/styles/theme_canvas'
 import { socketPositions as socketPos, onMoveNode, removeOnMoveNode } from '@/redux/socketsSlice'
+import type { Vec2D } from '@/types/util'
 
 const handleSize = fixedTheme.handleDraggableSize
 let isDragging = false // is true when user began to drag and(!) moved his mouse
@@ -38,6 +38,7 @@ type NoodleProps = {
 export default function Noodle(props: NoodleProps) {
   if (!props.defaultSocketKeyLeft && !props.defaultSocketKeyRight)
     throw new Error('Noodle: at least one default socket key is required')
+
   let isMounted = true
 
   // Styles
@@ -59,9 +60,7 @@ export default function Noodle(props: NoodleProps) {
   const [socketKeyLeft, setSocketKeyLeft] = useState<string | undefined>(undefined)
   const [socketKeyRight, setSocketKeyRight] = useState<string | undefined>(undefined)
   // is true when user began to drag, even if he didnt move his mouse yet
-  const [beganDragging, setBeganDragging] = useState<boolean>(
-    props.defaultSocketKeyLeft && props.defaultSocketKeyRight ? false : true,
-  )
+  const [beganDragging, setBeganDragging] = useState<boolean>(false)
 
   // If a node that the noodle is connected to is moved, update the path of the noodle
   onMoveNode((nodeKey: string, by: Vec2D) => {
@@ -237,9 +236,9 @@ export default function Noodle(props: NoodleProps) {
         onStop={() => {
           isMounted && setBeganDragging(false)
           isDragging = false
-          props.onSocketUpdate && props.onSocketUpdate(socketKeyLeft, socketKeyRight)
+          isMounted && props.onSocketUpdate && props.onSocketUpdate(socketKeyLeft, socketKeyRight)
         }}
-        onDrag={(event) => handleDrag(true, event)}
+        onDrag={(event) => isMounted && handleDrag(true, event)}
         scale={getCanvasZoom()}
       >
         <div
@@ -259,9 +258,9 @@ export default function Noodle(props: NoodleProps) {
         onStop={() => {
           isMounted && setBeganDragging(false)
           isDragging = false
-          props.onSocketUpdate && props.onSocketUpdate(socketKeyLeft, socketKeyRight)
+          isMounted && props.onSocketUpdate && props.onSocketUpdate(socketKeyLeft, socketKeyRight)
         }}
-        onDrag={(event) => handleDrag(false, event)}
+        onDrag={(event) => isMounted && handleDrag(false, event)}
         scale={getCanvasZoom()}
       >
         <div

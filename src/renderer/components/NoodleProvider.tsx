@@ -9,6 +9,9 @@ type NoodleInfo = {
   right: string | undefined
 }
 
+let counter = 0
+const getNewNoodleKey = () => counter++
+
 const getNoodleKey = (info: NoodleInfo) => `${info.left}:${info.right}`
 
 export type NoodleProviderProps = {}
@@ -23,6 +26,7 @@ export default function NoodleProvider(props: NoodleProviderProps) {
   // TODO: replace keys with indices that are generated on the fly
   //       reuse old noodles whenever possible
   //       write update methods that add and remove noodles
+  // or move state to redux?
 
   // callback for when a noodle is moved such that a socket key is updated
   const handleSocketUpdate = (
@@ -43,17 +47,18 @@ export default function NoodleProvider(props: NoodleProviderProps) {
     let newNoodleInfos = { ...noodleInfos }
     const newKey = getNoodleKey({ left: leftSocketKey, right: rightSocketKey })
     // update which sockets the noodle is connected to in internal state
-    delete newNoodleInfos[noodleKey]
     if (!newNoodleInfos[newKey])
       newNoodleInfos[newKey] = { left: leftSocketKey, right: rightSocketKey }
+    delete newNoodleInfos[noodleKey]
 
     // fix collisions where e.g. the updated noodle is now overlapping with another noodle
     if (rightSocketKey !== right)
       if (!rightSocketKey) {
         // TODO: "Warning: Can't perform a React state update on an unmounted component."
-        // case: noodle was connected on both ends before and got disconnected on the right side)
+        // case: noodle was connected on both ends before and got disconnected on the right side
         // spawn a new collapsed noodle at the socket the noodle was previously connected to on the right side
         const newCollapsedInfo = { left: undefined, right: right }
+        console.log('noodle got disconnected on the right side', newNoodleInfos[getNoodleKey(newCollapsedInfo)])
         newNoodleInfos[getNoodleKey(newCollapsedInfo)] = newCollapsedInfo
       } else {
         // case: either right was freshly connected from a collapsed noodle
@@ -68,12 +73,12 @@ export default function NoodleProvider(props: NoodleProviderProps) {
           // TODO: "Warning: Can't perform a React state update on an unmounted component."
           // case: right was moved from one socket to another
           const newCollapsedInfo = { left: undefined, right: right }
-          console.log('collapsed noodle', newCollapsedInfo, noodleInfos[getNoodleKey(newCollapsedInfo)])
+          console.log('right was moved from one socket to another', newNoodleInfos[getNoodleKey(newCollapsedInfo)])
           newNoodleInfos[getNoodleKey(newCollapsedInfo)] = newCollapsedInfo
         } else {
           // case: right was freshly connected from a collapsed noodle
           const newCollapsedInfo = { left: left, right: undefined }
-          console.log('collapsed noodle', newCollapsedInfo, noodleInfos[getNoodleKey(newCollapsedInfo)])
+          console.log('right was freshly connected from a collapsed noodle', newNoodleInfos[getNoodleKey(newCollapsedInfo)])
           newNoodleInfos[getNoodleKey(newCollapsedInfo)] = newCollapsedInfo
         }
       }
@@ -89,15 +94,15 @@ export default function NoodleProvider(props: NoodleProviderProps) {
       <Noodle
         defaultSocketKeyLeft={noodleInfos[key].left}
         defaultSocketKeyRight={noodleInfos[key].right}
-        key={key}
+        key={getNewNoodleKey()}
         noodleID={key}
-        onSocketUpdate={(l, r) => handleSocketUpdate(key, l, r)}
+        onSocketUpdate={(l, r) => handleSocketUpdate(key, l, r)} // TODO: Problem(?): this callback changes when its called which triggers a state update
       />
   )
 
   useEffect(() => {
     console.log('useEffect')
-    // TODO: if a node gets added or removed, the noodles are reset
+    // TODO: if a node gets added or removed, all the noodles are reset
     //        -> keep all non-collapsed noodles instead
     setNoodleInfos(Object
       .keys(allSockets)
