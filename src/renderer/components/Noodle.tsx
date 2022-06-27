@@ -39,8 +39,6 @@ export default function Noodle(props: NoodleProps) {
   if (!props.defaultSocketKeyLeft && !props.defaultSocketKeyRight)
     throw new Error('Noodle: at least one default socket key is required')
 
-  let isMounted = true
-
   // Styles
   const { classes } = useStyles()
   const theme = useMantineTheme()
@@ -62,26 +60,16 @@ export default function Noodle(props: NoodleProps) {
   // is true when user began to drag, even if he didnt move his mouse yet
   const [beganDragging, setBeganDragging] = useState<boolean>(false)
 
-  // If a node that the noodle is connected to is moved, update the path of the noodle
-  onMoveNode((nodeKey: string, by: Vec2D) => {
-    if (!socketKeyLeft || !socketKeyRight || !refPath.current)
-      return
-    const leftNodeKey = allSockets[socketKeyLeft].nodeKey
-    const rightNodeKey = allSockets[socketKeyRight].nodeKey
-    if (nodeKey === leftNodeKey || nodeKey === rightNodeKey)
-      refPath.current.setAttribute('d', getCurve())
-  }, props.noodleID)
-
   // TODO: remove if isMounted is not needed
   const setKeyLeft = (key: string | undefined) => {
     if (!key && !socketKeyRight)
       throw new Error('Noodle: socketKeyLeft must be defined if socketKeyRight is undefined')
-    isMounted && setSocketKeyLeft(key)
+    setSocketKeyLeft(key)
   }
   const setKeyRight = (key: string | undefined) => {
     if (!key && !socketKeyLeft)
       throw new Error('Noodle: socketKeyRight must be defined if socketKeyLeft is undefined')
-    isMounted && setSocketKeyRight(key)
+    setSocketKeyRight(key)
   }
 
   // takes a unique id for a socket and looks up the position
@@ -125,7 +113,7 @@ export default function Noodle(props: NoodleProps) {
       // stick to mouse
       setSocketKey(undefined)
     }
-    isMounted && setMousePos(newMousePos)
+    setMousePos(newMousePos)
   }
 
   // defines the position of the two Draggable handles if they are not currently being dragged
@@ -197,11 +185,22 @@ export default function Noodle(props: NoodleProps) {
   }
 
   useEffect(() => {
-    // console.log('Noodle: useEffect', props.noodleID)
+    console.log('Noodle: useEffect', props.noodleID)
+
+    // If a node that the noodle is connected to is moved, update the path of the noodle
+    onMoveNode((nodeKey: string, by: Vec2D) => {
+      if (!socketKeyLeft || !socketKeyRight || !refPath.current)
+        return
+      const leftNodeKey = allSockets[socketKeyLeft].nodeKey
+      const rightNodeKey = allSockets[socketKeyRight].nodeKey
+      if (nodeKey === leftNodeKey || nodeKey === rightNodeKey)
+        refPath.current.setAttribute('d', getCurve())
+    }, props.noodleID)
+
     setSocketKeyLeft(props.defaultSocketKeyLeft)
     setSocketKeyRight(props.defaultSocketKeyRight)
     return () => {
-      isMounted = false // TODO: remove if it does not prevent the warning
+      console.log('Noodle: useEffect cleanup', props.noodleID)
       removeOnMoveNode(props.noodleID)
     }
   }, [props])
@@ -232,13 +231,13 @@ export default function Noodle(props: NoodleProps) {
         handle={'.handleLeft'}
         position={getHandlePos(true)}
         nodeRef={refLeft}
-        onStart={() => isMounted && setBeganDragging(true)}
+        onStart={() => setBeganDragging(true)}
         onStop={() => {
-          isMounted && setBeganDragging(false)
+          setBeganDragging(false)
           isDragging = false
-          isMounted && props.onSocketUpdate && props.onSocketUpdate(socketKeyLeft, socketKeyRight)
+          props.onSocketUpdate && props.onSocketUpdate(socketKeyLeft, socketKeyRight)
         }}
-        onDrag={(event) => isMounted && handleDrag(true, event)}
+        onDrag={(event) => handleDrag(true, event)}
         scale={getCanvasZoom()}
       >
         <div
@@ -254,13 +253,13 @@ export default function Noodle(props: NoodleProps) {
         handle={'.handleRight'}
         position={getHandlePos(false)}
         nodeRef={refRight}
-        onStart={() => isMounted && setBeganDragging(true)}
+        onStart={() => setBeganDragging(true)}
         onStop={() => {
-          isMounted && setBeganDragging(false)
+          setBeganDragging(false)
           isDragging = false
-          isMounted && props.onSocketUpdate && props.onSocketUpdate(socketKeyLeft, socketKeyRight)
+          props.onSocketUpdate && props.onSocketUpdate(socketKeyLeft, socketKeyRight)
         }}
-        onDrag={(event) => isMounted && handleDrag(false, event)}
+        onDrag={(event) => handleDrag(false, event)}
         scale={getCanvasZoom()}
       >
         <div

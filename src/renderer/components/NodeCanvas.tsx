@@ -240,7 +240,7 @@ export default function NodeCanvas() {
           {isLoaded && (
             <>
               <div className={classes.nodesContainer}>{nodes}</div>
-              <NoodleProvider socketPairs={{}} />
+              <NoodleProvider />
             </>
           )}
         </directstyled.div>
