@@ -77,12 +77,12 @@ ipcMain.handle('requestPublicFile', (event, filePath, fsOptions) => {
   const relative = path.relative('/public', filePath)
   // check if path exists and if it is a subdir of /public
   if (!relative || relative.startsWith('..') || path.isAbsolute(relative))
-    throw Error('Path has to refer to a file in the /public directory: ' + filePath)
+    throw new Error('Path has to refer to a file in the /public directory: ' + filePath)
 
   // check if path refers to file
   const fullPath = path.join('public', relative)
   if (!fs.lstatSync(fullPath).isFile())
-    throw Error('Path does not refer to a file: ' + fullPath)
+    throw new Error('Path does not refer to a file: ' + fullPath)
 
   const options = fsOptions ? { flag: 'r', ...fsOptions } : { flag: 'r' }
   const data = fs.readFileSync(fullPath, options)

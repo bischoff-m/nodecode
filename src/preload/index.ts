@@ -23,7 +23,7 @@ const fromMainChannels: string[] = [
 
 const channelExists = (channels: string[], channel: string) => {
   if (!channels.includes(channel))
-    throw Error('IPC Channel does not exist.')
+    throw new Error('IPC Channel does not exist.')
   return true
 }
 // https://www.electronjs.org/de/docs/latest/api/ipc-renderer

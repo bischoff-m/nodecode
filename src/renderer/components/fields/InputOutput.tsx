@@ -55,7 +55,7 @@ type InputOutputFieldProps = {
 
 export default function InputOutputField(props: InputOutputFieldProps) {
   if (!props.inputLabel && !props.outputLabel)
-    throw Error('No inputLabel and no outputLabel given to InputOutputField. It needs at least one of them.')
+    throw new Error('No inputLabel and no outputLabel given to InputOutputField. It needs at least one of them.')
 
   const { classes } = useStyles()
   const leftHandleRef = useRef<HTMLDivElement>(null)

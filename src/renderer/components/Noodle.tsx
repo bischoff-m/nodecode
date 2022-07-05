@@ -86,7 +86,7 @@ export default function Noodle(props: NoodleProps) {
   // takes a unique id for a socket and looks up the position
   function posFromSocketKey(socketKey: string): Vec2D {
     if (socketPos[socketKey]) return socketPos[socketKey]
-    else throw Error(`Socket key not found: ${socketKey}`)
+    else throw new Error(`Socket key not found: ${socketKey}`)
   }
 
   // calculates the distance to all sockets

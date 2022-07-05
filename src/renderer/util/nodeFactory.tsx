@@ -32,17 +32,17 @@ export function getNodeComponent(
 ): JSX.Element {
   // check if config file has been loaded
   if (!nodeConfig)
-    throw Error(
+    throw new Error(
       'Node configuration file is still loading. Register a callback using onNodesLoaded()',
     )
 
   // check if nodeID exists
   const nodeIDs = nodeConfig.nodes.map((node) => node.id)
-  if (!nodeIDs.includes(nodeID)) throw Error(`NodeID \"${nodeID}\" could not be found.`)
+  if (!nodeIDs.includes(nodeID)) throw new Error(`NodeID \"${nodeID}\" could not be found.`)
 
   // build node from config
   const node = nodeConfig.nodes.find((node) => node.id === nodeID)
-  if (!node) throw Error('')
+  if (!node) throw new Error('')
 
   return (
     <Node
@@ -75,6 +75,6 @@ export function getFieldComponent(
     case 'List':
       return <List {...allProps} />
     default:
-      throw Error(`Field type "${fieldType}" could not be found.`)
+      throw new Error(`Field type "${fieldType}" could not be found.`)
   }
 }
