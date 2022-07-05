@@ -8,6 +8,7 @@ import {
   TextInput,
   useMantineTheme,
 } from '@mantine/core'
+import { useListState } from '@mantine/hooks'
 import { IconPlus } from '@tabler/icons'
 import { useState } from 'react'
 
@@ -57,7 +58,7 @@ export default function ListField(props: ListFieldProps) {
   const { classes } = useStyles()
   const theme = useMantineTheme()
 
-  const [listItems, setListItems] = useState<string[]>([
+  const [listItems, listHandlers] = useListState<string>([
     'charttime',
     'terseform',
     'unitofmeasure',
@@ -66,7 +67,7 @@ export default function ListField(props: ListFieldProps) {
 
   function handleAddItem() {
     if (inputValue.trim() !== '') {
-      setListItems([inputValue, ...listItems])
+      listHandlers.prepend(inputValue)
       setInputValue('')
     }
   }
@@ -97,7 +98,7 @@ export default function ListField(props: ListFieldProps) {
           <div key={i} className={classes.listItem}>
             <div>{item}</div>
             <CloseButton
-              onClick={() => setListItems(listItems.slice(0, i).concat(listItems.slice(i + 1)))}
+              onClick={() => listHandlers.remove(i)}
               iconSize={fixedTheme.iconSize}
               style={{ color: theme.other.iconColor }}
             />
