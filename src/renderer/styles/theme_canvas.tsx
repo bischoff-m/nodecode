@@ -21,8 +21,6 @@ const fixedTheme = {
   iconSize: 18,
   // radius
   fieldContainerRadius: 'md' as MantineSize, // only visible if theme.other.fieldBorder is set
-  // fonts
-  // fontWeight: 300, // TODO: Roboto font only supports normal and bold
   // debugging
   handleDraggableOpacity: 0,
   noodleBackgroundOpacity: 0,

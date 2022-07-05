@@ -1,13 +1,19 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
+import React, { useEffect } from 'react'
+import ReactDOM from 'react-dom/client'
 import App from '@/App'
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root'),
-  () => {
+function AppContainer() {
+  useEffect(() => {
     window.loading.removeLoading()
-  },
-)
+  })
+
+  return (
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>
+  )
+}
+
+const container = document.getElementById('root')
+const root = ReactDOM.createRoot(container!)
+root.render(<AppContainer />)
