@@ -11,6 +11,7 @@ import {
 import { useListState } from '@mantine/hooks'
 import { IconPlus } from '@tabler/icons'
 import { useState } from 'react'
+import MaxHeightScrollArea from '@/components/util/MaxHeightScrollArea'
 
 const useStyles = createStyles((theme) => ({
   container: {
@@ -36,13 +37,14 @@ const useStyles = createStyles((theme) => ({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    paddingLeft: fixedTheme.fieldInnerMargin + 6,
+    paddingLeft: fixedTheme.fieldInnerMargin,
     paddingRight: fixedTheme.fieldInnerMargin,
     height: fixedTheme.fieldDefaultHeight,
     '& > div': {
       width: '100%',
       fontSize: theme.fontSizes.md,
       color: theme.other.textColor,
+      paddingLeft: 3,
     },
   },
 }))
@@ -93,18 +95,20 @@ export default function ListField(props: ListFieldProps) {
         rightSection={addButton}
         variant="filled"
       />
-      <Stack spacing={0}>
-        {listItems.map((item, i) => (
-          <div key={i} className={classes.listItem}>
-            <div>{item}</div>
-            <CloseButton
-              onClick={() => listHandlers.remove(i)}
-              iconSize={fixedTheme.iconSize}
-              style={{ color: theme.other.iconColor }}
-            />
-          </div>
-        ))}
-      </Stack>
+      <MaxHeightScrollArea>
+        <Stack spacing={0}>
+          {listItems.map((item, i) => (
+            <div key={i} className={classes.listItem}>
+              <CloseButton
+                onClick={() => listHandlers.remove(i)}
+                iconSize={fixedTheme.iconSize}
+                style={{ color: theme.other.iconColor }}
+              />
+              <div>{item}</div>
+            </div>
+          ))}
+        </Stack>
+      </MaxHeightScrollArea>
     </div>
   )
 }
