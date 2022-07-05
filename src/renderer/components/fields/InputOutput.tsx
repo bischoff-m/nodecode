@@ -4,7 +4,7 @@ import { useDispatchTyped } from '@/redux/hooks'
 import { useEffect, useRef } from 'react'
 import type { FieldProps } from '@/types/util'
 import { screenToCanvas } from '@/components/NodeCanvas'
-import { fixedTheme } from '@/styles/theme_canvas'
+import { fixedTheme } from '@/styles/themeCanvas'
 
 // TODO: implement multiple connections on the same socket and datatypes
 // TODO: add aditional checks for properties

@@ -1,4 +1,4 @@
-import { fixedTheme } from '@/styles/theme_canvas'
+import { fixedTheme } from '@/styles/themeCanvas'
 import {
   ScrollArea,
   ScrollAreaProps,

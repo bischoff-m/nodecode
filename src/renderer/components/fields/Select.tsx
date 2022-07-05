@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { createStyles, Select, useMantineTheme } from '@mantine/core'
 import type { FieldProps } from '@/types/util'
-import { fixedTheme } from '@/styles/theme_canvas'
+import { fixedTheme } from '@/styles/themeCanvas'
 
 const useStyles = createStyles((theme) => ({
   container: {

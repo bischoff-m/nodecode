@@ -1,5 +1,5 @@
 import { createStyles, MantineProvider } from '@mantine/core'
-import { mantineTheme, styleOverrides, classNames } from '@/styles/theme_canvas'
+import { mantineTheme, styleOverrides, classNames } from '@/styles/themeCanvas'
 import {
   MouseEvent,
   WheelEvent,

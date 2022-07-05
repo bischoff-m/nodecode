@@ -4,7 +4,7 @@ import { moveNode, moveNodeStop } from '@/redux/socketsSlice'
 import { useRef, useState } from 'react'
 import Draggable from 'react-draggable'
 import { getCanvasZoom, getSelectedNode, onNodeSelected, onZoomChanged, setSelectedNode } from '@/components/NodeCanvas'
-import { fixedTheme } from '@/styles/theme_canvas'
+import { fixedTheme } from '@/styles/themeCanvas'
 import type { DraggableData, DraggableEvent } from 'react-draggable'
 import type { ReactNode } from 'react'
 

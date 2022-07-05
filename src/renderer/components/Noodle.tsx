@@ -4,7 +4,7 @@ import type { MouseEvent as ReactMouseEvent } from 'react'
 import Draggable, { DraggableEvent } from 'react-draggable'
 import { useSelectorTyped } from '@/redux/hooks'
 import { getCanvasZoom, screenToCanvas } from '@/components/NodeCanvas'
-import { fixedTheme } from '@/styles/theme_canvas'
+import { fixedTheme } from '@/styles/themeCanvas'
 import { socketPositions as socketPos, onMoveNode, removeOnMoveNode } from '@/redux/socketsSlice'
 import type { Vec2D } from '@/types/util'
 
