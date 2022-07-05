@@ -16,9 +16,10 @@ import NoodleProvider from '@/components/NoodleProvider'
 
 // Global constants and variables
 const zoomFactor = 0.8
+const keysPressed: string[] = [] // keys currently pressed
+const prevDragPos: Vec2D = { x: 0, y: 0 } // screen position of mouse, updated while dragging
+const innerOffset: Vec2D = { x: 0, y: 0 } // offset of canvas relative to its parent component in pixels, can be changed by dragging
 let isDragging = false // whether the user is currently dragging
-let prevDragPos: Vec2D = { x: 0, y: 0 } // screen position of mouse, updated while dragging
-let innerOffset: Vec2D = { x: 0, y: 0 } // offset of canvas relative to its parent component in pixels, can be changed by dragging
 
 // Refs
 let canvasDiv: HTMLDivElement | null = null // ref.current of the canvas component that can be dragged
@@ -132,7 +133,8 @@ export default function NodeCanvas() {
   }
 
   function handleMouseDown(e: MouseEvent<'div'>) {
-    prevDragPos = { x: e.clientX, y: e.clientY }
+    prevDragPos.x = e.clientX
+    prevDragPos.y = e.clientY
     // if wheel was pressed
     isDragging = e.button === 1
     if (isDragging) {
@@ -166,7 +168,8 @@ export default function NodeCanvas() {
 
   function handleWheel(e: WheelEvent<'div'>) {
     // TODO: min und max für zoom
-    if (containerRef.current == null || isDragging) return
+    if (containerRef.current == null || isDragging || !keysPressed.includes('Control')) return
+    e.stopPropagation()
     const { left, top, width, height } = containerRef.current.getBoundingClientRect()
 
     // Calculations from https://stackoverflow.com/a/46833254/16953263
@@ -195,6 +198,21 @@ export default function NodeCanvas() {
   }
 
   useEffect(() => {
+    // listen for keys
+    const onKeyDown = (e: KeyboardEvent) => {
+      if ([
+        'Control'
+      ].includes(e.key) && !keysPressed.includes(e.key))
+        keysPressed.push(e.key)
+    }
+    const onKeyUp = (e: KeyboardEvent) => {
+      if (keysPressed.includes(e.key))
+        keysPressed.splice(keysPressed.indexOf(e.key), 1)
+    }
+    document.addEventListener('keydown', onKeyDown)
+    document.addEventListener('keyup', onKeyUp)
+
+    // add nodes
     onNodesLoaded(() => {
       setNodes([
         getNodeComponent('node1', 'input_list', { x: 40, y: 100 }),
@@ -206,6 +224,11 @@ export default function NodeCanvas() {
       setIsLoaded(true)
       updateCanvasStyle()
     })
+
+    return () => {
+      document.removeEventListener('keydown', onKeyDown)
+      document.removeEventListener('keyup', onKeyUp)
+    }
   }, [])
 
   containerRef.current && (containerDiv = containerRef.current)
