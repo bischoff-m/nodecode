@@ -9,7 +9,7 @@ import {
   useRef,
 } from 'react'
 import gridSvg from '@/assets/gridSvg.svg'
-import { getNodeComponent, onNodesLoaded } from '@/components/NodeFactory'
+import { getNodeComponent, onNodesLoaded } from '@/util/nodeFactory'
 import { directstyled, useDirectStyle } from '@/lib/direct-styled' // https://github.com/everweij/direct-styled
 import { Vec2D } from '@/types/util'
 import NoodleProvider from '@/components/NoodleProvider'

@@ -7,7 +7,7 @@
             "fields": [
                 {
                     "id": "in-select_out-query",
-                    "type": "InputOutputField",
+                    "type": "InputOutput",
                     "arguments": {
                         "inputLabel": "Select",
                         "outputLabel": "Query"
@@ -15,7 +15,7 @@
                 },
                 {
                     "id": "in-from_out-columns",
-                    "type": "InputOutputField",
+                    "type": "InputOutput",
                     "arguments": {
                         "inputLabel": "From",
                         "outputLabel": "Columns"
@@ -23,28 +23,28 @@
                 },
                 {
                     "id": "in-groupby",
-                    "type": "InputOutputField",
+                    "type": "InputOutput",
                     "arguments": {
                         "inputLabel": "Group by"
                     }
                 },
                 {
                     "id": "in-orderby",
-                    "type": "InputOutputField",
+                    "type": "InputOutput",
                     "arguments": {
                         "inputLabel": "Order by"
                     }
                 },
                 {
                     "id": "in-where",
-                    "type": "InputOutputField",
+                    "type": "InputOutput",
                     "arguments": {
                         "inputLabel": "Where"
                     }
                 },
                 {
                     "id": "in-having",
-                    "type": "InputOutputField",
+                    "type": "InputOutput",
                     "arguments": {
                         "inputLabel": "Having"
                     }
@@ -57,7 +57,7 @@
             "fields": [
                 {
                     "id": "input-output",
-                    "type": "InputOutputField",
+                    "type": "InputOutput",
                     "arguments": {
                         "inputLabel": "Columns",
                         "outputLabel": "Columns"
@@ -65,7 +65,7 @@
                 },
                 {
                     "id": "select",
-                    "type": "SelectField",
+                    "type": "Select",
                     "arguments": {
                         "values": [
                             "Count",
@@ -84,7 +84,7 @@
             "fields": [
                 {
                     "id": "in-columns_out-columns",
-                    "type": "InputOutputField",
+                    "type": "InputOutput",
                     "arguments": {
                         "inputLabel": "Columns",
                         "outputLabel": "Columns"
@@ -98,7 +98,7 @@
             "fields": [
                 {
                     "id": "output",
-                    "type": "InputOutputField",
+                    "type": "InputOutput",
                     "arguments": {
                         "outputLabel": "List",
                         "outputDatatype": "array"
@@ -106,7 +106,7 @@
                 },
                 {
                     "id": "datatype",
-                    "type": "SelectField",
+                    "type": "Select",
                     "arguments": {
                         "label": "Datatype",
                         "values": [
@@ -120,7 +120,7 @@
                 },
                 {
                     "id": "item_list",
-                    "type": "ListField"
+                    "type": "List"
                 }
             ]
         },
@@ -130,7 +130,7 @@
             "fields": [
                 {
                     "id": "input",
-                    "type": "InputOutputField",
+                    "type": "InputOutput",
                     "arguments": {
                         "inputLabel": "Output",
                         "inputDatatype": "any",

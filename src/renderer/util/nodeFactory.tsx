@@ -1,8 +1,9 @@
 import Node from '@/components/Node'
-import SelectField from '@/components/fields/Select'
 import { Arguments, NodeCollectionSchema } from '@/types/nodeCollection'
-import InputOutputField from '@/components/fields/InputOutput'
-import ListField from '@/components/fields/List'
+
+import Select from '@/components/fields/Select'
+import InputOutput from '@/components/fields/InputOutput'
+import List from '@/components/fields/List'
 
 var callbacks: (() => void)[] = []
 var nodeConfig: NodeCollectionSchema | null
@@ -67,12 +68,12 @@ export function getFieldComponent(
 ) {
   const allProps = { key, nodeKey, fieldKey, ...fieldProps }
   switch (fieldType) {
-    case 'SelectField':
-      return <SelectField {...allProps} />
-    case 'InputOutputField':
-      return <InputOutputField {...allProps} />
-    case 'ListField':
-      return <ListField {...allProps} />
+    case 'Select':
+      return <Select {...allProps} />
+    case 'InputOutput':
+      return <InputOutput {...allProps} />
+    case 'List':
+      return <List {...allProps} />
     default:
       throw Error(`Field type "${fieldType}" could not be found.`)
   }
