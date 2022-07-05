@@ -9,16 +9,12 @@ var callbacks: (() => void)[] = []
 var nodeConfig: NodeCollectionSchema | null
 
 window.ipc
-  .invoke('requestPublicFile', '/public/config/nodeCollections/basic_nodes.json', {
-    encoding: 'utf-8',
-  })
+  .invoke('requestPublicFile', '/public/config/nodeCollections/basic_nodes.json', { encoding: 'utf-8', })
   .then((data) => {
     nodeConfig = JSON.parse(data) as NodeCollectionSchema
     callbacks.forEach((fn) => fn())
   })
-  .catch((err) => {
-    throw err
-  })
+  .catch((err) => { throw err })
 
 export function onNodesLoaded(callback: () => void): void {
   if (nodeConfig) callback()
@@ -32,9 +28,7 @@ export function getNodeComponent(
 ): JSX.Element {
   // check if config file has been loaded
   if (!nodeConfig)
-    throw new Error(
-      'Node configuration file is still loading. Register a callback using onNodesLoaded()',
-    )
+    throw new Error('Node configuration file is still loading. Register a callback using onNodesLoaded()')
 
   // check if nodeID exists
   const nodeIDs = nodeConfig.nodes.map((node) => node.id)
@@ -53,7 +47,7 @@ export function getNodeComponent(
       y={position.y}
     >
       {node.fields.map((field, j) =>
-        getFieldComponent(field.id, field.type, field.arguments, j, nodeKey),
+        getFieldComponent(field.id, field.type, field.arguments, j, nodeKey)
       )}
     </Node>
   )
