@@ -24,7 +24,7 @@ const fixedTheme = {
   fieldInnerMargin: 0,
   fieldLabelMargin: 8,
   fieldDefaultHeight: 30,
-  fieldMaxHeight: 180,
+  fieldMaxHeight: 150,
   // radius
   fieldContainerRadius: 'md' as MantineSize, // only visible if theme.other.fieldBorder is set
   // debugging

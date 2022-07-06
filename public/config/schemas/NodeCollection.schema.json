@@ -57,7 +57,8 @@
                     "enum": [
                         "InputOutput",
                         "Select",
-                        "List"
+                        "List",
+                        "Radio"
                     ]
                 },
                 "props": {
@@ -77,6 +78,9 @@
                 },
                 {
                     "$ref": "fields/List.schema.json#/definitions/ListField"
+                },
+                {
+                    "$ref": "fields/Radio.schema.json#/definitions/RadioField"
                 }
             ]
         }

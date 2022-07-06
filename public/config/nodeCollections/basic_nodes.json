@@ -142,6 +142,64 @@
                     }
                 }
             ]
+        },
+        {
+            "id": "sql_mysql-table",
+            "title": "MySQL Table",
+            "fields": [
+                {
+                    "id": "output",
+                    "type": "InputOutput",
+                    "props": {
+                        "outputLabel": "Output"
+                    }
+                },
+                {
+                    "id": "server",
+                    "type": "Select",
+                    "props": {
+                        "label": "Server",
+                        "values": [
+                            "i11 MariaDB Server"
+                        ],
+                        "default": "i11 MariaDB Server"
+                    }
+                },
+                {
+                    "id": "database",
+                    "type": "Select",
+                    "props": {
+                        "label": "Database",
+                        "values": [
+                            "Mimic4",
+                            "Mimic3"
+                        ],
+                        "default": "Mimic4"
+                    }
+                },
+                {
+                    "id": "table",
+                    "type": "Radio",
+                    "props": {
+                        "label": "Table",
+                        "valueLabelPairs": {
+                            "admissions": "Admissions",
+                            "chartevents": "Chart Events",
+                            "icustays": "ICU Stays",
+                            "labevents": "Lab Events",
+                            "microbiologyevents": "Microbiology Events",
+                            "observations": "Observations",
+                            "procedures": "Procedures",
+                            "procedureevents": "Procedure Events",
+                            "prescriptions": "Prescriptions",
+                            "readmissions": "Readmissions",
+                            "transfers": "Transfers",
+                            "vitals": "Vitals"
+                        },
+                        "defaultValue": "chartevents"
+                    }
+                }
+            ]
         }
     ]
 }

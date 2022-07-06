@@ -216,6 +216,7 @@ export default function NodeCanvas() {
     onNodesLoaded(() => {
       setNodes([
         getNodeComponent('node1', 'input_list', { x: 40, y: 100 }),
+        getNodeComponent('node6', 'sql_mysql-table', { x: 40, y: 380 }),
         getNodeComponent('node2', 'output', { x: 500, y: 100 }),
         getNodeComponent('node3', 'sql_query', { x: 500, y: 240 }),
         getNodeComponent('node4', 'sql_aggregate', { x: 500, y: 600 }),

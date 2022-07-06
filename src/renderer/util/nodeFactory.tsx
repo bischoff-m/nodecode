@@ -4,12 +4,14 @@ import type {
   NodeCollectionSchema,
   InputOutputFieldProps,
   SelectFieldProps,
-  ListFieldProps
+  ListFieldProps,
+  RadioFieldProps
 } from '@/types/NodeCollection'
 
-import Select from '@/components/fields/Select'
 import InputOutput from '@/components/fields/InputOutput'
+import Select from '@/components/fields/Select'
 import List from '@/components/fields/List'
+import Radio from '@/components/fields/Radio'
 
 var callbacks: (() => void)[] = []
 var nodeConfig: NodeCollectionSchema | null
@@ -74,7 +76,9 @@ export function getFieldComponent(
       return <Select {...extraProps} {...field.props as SelectFieldProps} />
     case 'List':
       return <List {...extraProps} {...field.props as ListFieldProps} />
+    case 'Radio':
+      return <Radio {...extraProps} {...field.props as RadioFieldProps} />
     default:
-      return <></>
+      throw new Error('Unknown field type')
   }
 }

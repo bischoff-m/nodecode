@@ -8,10 +8,10 @@
 export type NodeCollectionSchema = NodeCollection
 export type Field = {
   id: string
-  type: 'InputOutput' | 'Select' | 'List'
+  type: 'InputOutput' | 'Select' | 'List' | 'Radio'
   props?: {}
 } & Field1
-export type Field1 = InputOutputField | SelectField | ListField
+export type Field1 = InputOutputField | SelectField | ListField | RadioField
 export type InputOutputFieldProps = (
   | {
       [k: string]: unknown
@@ -56,4 +56,15 @@ export interface ListField {
 export interface ListFieldProps {
   label?: string
   placeholder?: string
+}
+export interface RadioField {
+  type?: 'Radio'
+  props: RadioFieldProps
+}
+export interface RadioFieldProps {
+  label?: string
+  valueLabelPairs: {
+    [k: string]: string
+  }
+  defaultValue?: string
 }

@@ -32,6 +32,8 @@ const useStyles = createStyles((theme) => ({
   },
 }))
 
+// TODO: make labels wrap if they are too long, to avoid horizontal scrollbar which blocks last element
+
 export default function ListField(props: ListFieldProps & FieldProps) {
   const { classes } = useStyles()
   const theme = useMantineTheme()

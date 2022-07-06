@@ -1,0 +1,39 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "definitions": {
+        "RadioField": {
+            "properties": {
+                "type": {
+                    "const": "Radio"
+                },
+                "props": {
+                    "$ref": "#/definitions/RadioFieldProps"
+                }
+            },
+            "required": [
+                "props"
+            ]
+        },
+        "RadioFieldProps": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "label": {
+                    "type": "string"
+                },
+                "valueLabelPairs": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "defaultValue": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "valueLabelPairs"
+            ]
+        }
+    }
+}
