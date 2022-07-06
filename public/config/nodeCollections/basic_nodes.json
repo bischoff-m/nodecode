@@ -151,7 +151,7 @@
                     "id": "output",
                     "type": "InputOutput",
                     "props": {
-                        "outputLabel": "Output"
+                        "outputLabel": "Table"
                     }
                 },
                 {
