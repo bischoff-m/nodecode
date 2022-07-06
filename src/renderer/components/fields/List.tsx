@@ -13,26 +13,9 @@ import { useState } from 'react'
 import MaxHeightScrollArea from '@/components/util/MaxHeightScrollArea'
 import type { FieldProps } from '@/types/util'
 import type { ListFieldProps } from '@/types/NodeCollection'
+import FieldBase from '@/components/util/FieldBase'
 
 const useStyles = createStyles((theme) => ({
-  container: {
-    backgroundColor: theme.other.fieldBackgroundColor,
-    borderRadius: theme.radius[fixedTheme.fieldContainerRadius],
-    border: theme.other.fieldBorder,
-    boxShadow: theme.other.fieldContainerShadow,
-    paddingBottom: fixedTheme.fieldInnerMargin,
-  },
-  input: {
-    marginLeft: fixedTheme.fieldInnerMargin,
-    marginRight: fixedTheme.fieldInnerMargin,
-  },
-  label: {
-    padding: 5,
-    paddingLeft: fixedTheme.fieldLabelMargin,
-    fontSize: theme.fontSizes.lg,
-    color: theme.other.textColor,
-    fontWeight: 500,
-  },
   listItem: {
     display: 'flex',
     flexDirection: 'row',
@@ -68,13 +51,10 @@ export default function ListField(props: ListFieldProps & FieldProps) {
       <IconPlus size={fixedTheme.iconSize} color={theme.other.iconColor} />
     </ActionIcon>
   )
-  const label = <div className={classes.label}>{props.label}</div>
 
   return (
-    <div className={classes.container}>
-      {props.label ? label : undefined}
+    <FieldBase label={props.label}>
       <TextInput
-        className={classes.input}
         value={inputValue}
         onKeyDown={(event) => event.key === 'Enter' && handleAddItem()}
         onChange={(event) => setInputValue(event.target.value)}
@@ -97,6 +77,6 @@ export default function ListField(props: ListFieldProps & FieldProps) {
           ))}
         </Stack>
       </MaxHeightScrollArea>
-    </div>
+    </FieldBase>
   )
 }

@@ -83,6 +83,8 @@ export default function InputOutputField(props: InputOutputFieldProps & FieldPro
         dispatch(updateSocket(socket))
       }
     })
+
+    // TODO: remove socket on unmount
   }, [])
 
   return (
