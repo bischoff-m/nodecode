@@ -200,6 +200,41 @@
                     }
                 }
             ]
+        },
+        {
+            "id": "sql_column-select",
+            "title": "Column Select",
+            "fields": [
+                {
+                    "id": "inputoutput",
+                    "type": "InputOutput",
+                    "props": {
+                        "inputLabel": "Table",
+                        "outputLabel": "Columns"
+                    }
+                },
+                {
+                    "id": "multiselect",
+                    "type": "MultiSelect",
+                    "props": {
+                        "placeholder": "Add column",
+                        "valueLabelPairs": {
+                            "admissions": "Admissions",
+                            "chartevents": "Chart Events",
+                            "icustays": "ICU Stays",
+                            "labevents": "Lab Events",
+                            "microbiologyevents": "Microbiology Events",
+                            "observations": "Observations",
+                            "procedures": "Procedures",
+                            "procedureevents": "Procedure Events",
+                            "prescriptions": "Prescriptions",
+                            "readmissions": "Readmissions",
+                            "transfers": "Transfers",
+                            "vitals": "Vitals"
+                        }
+                    }
+                }
+            ]
         }
     ]
 }

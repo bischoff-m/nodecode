@@ -58,7 +58,8 @@
                         "InputOutput",
                         "Select",
                         "List",
-                        "Radio"
+                        "Radio",
+                        "MultiSelect"
                     ]
                 },
                 "props": {
@@ -81,6 +82,9 @@
                 },
                 {
                     "$ref": "fields/Radio.schema.json#/definitions/RadioField"
+                },
+                {
+                    "$ref": "fields/MultiSelect.schema.json#/definitions/MultiSelectField"
                 }
             ]
         }

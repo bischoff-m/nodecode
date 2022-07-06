@@ -46,3 +46,24 @@ Graphical Node Editor
 
 		// For message to renderer
     	win?.webContents.send('mymessage', ...args)
+
+
+## Adding a field
+
+1. Add props definition in new file under `/public/config/schemas/fields`
+
+2. Add new field as `Field` type in `NodeCollection.schema.json`
+
+3. Compile types using `npm run prebuild`
+
+4. Implement field component under `/src/renderer/components/fields`
+
+5. Add case in `getFieldComponent` in `/src/renderer/util/nodeFactory.tsx`
+
+6. Add node that uses the new field
+
+## Adding a node
+
+1. Add definition in a file under `/public/config/nodeCollections`
+
+2. (Currently it is necessary to reload the app)

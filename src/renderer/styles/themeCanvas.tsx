@@ -1,7 +1,8 @@
-import {
+import type {
   InputVariant,
   MantineProviderProps,
   MantineSize,
+  MantineTheme,
   MantineThemeOverride,
 } from '@mantine/core'
 import defaultTheme from '@/styles/mantineDefaultTheme'
@@ -94,25 +95,20 @@ declare module '@mantine/core' {
   }
 }
 
+const inputOverrides = (theme: MantineTheme) => ({
+  filledVariant: {
+    backgroundColor: theme.colors.dark[7],
+  },
+  input: {
+    fontSize: theme.fontSizes.md,
+    color: theme.other.textColor,
+  },
+})
+
 const styleOverrides: MantineProviderProps['styles'] = {
-  Select: (theme) => ({
-    filledVariant: {
-      backgroundColor: theme.colors.dark[7],
-    },
-    input: {
-      fontSize: theme.fontSizes.md,
-      color: theme.other.textColor,
-    },
-  }),
-  TextInput: (theme) => ({
-    filledVariant: {
-      backgroundColor: theme.colors.dark[7],
-    },
-    input: {
-      fontSize: theme.fontSizes.md,
-      color: theme.other.textColor,
-    },
-  }),
+  Select: inputOverrides,
+  TextInput: inputOverrides,
+  MultiSelect: inputOverrides,
 }
 
 const classNames = {
