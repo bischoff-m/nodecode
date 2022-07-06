@@ -1,5 +1,11 @@
 import Node from '@/components/Node'
-import { Arguments, NodeCollectionSchema } from '@/types/nodeCollection'
+import type {
+  Field,
+  NodeCollectionSchema,
+  InputOutputFieldProps,
+  SelectFieldProps,
+  ListFieldProps
+} from '@/types/NodeCollection'
 
 import Select from '@/components/fields/Select'
 import InputOutput from '@/components/fields/InputOutput'
@@ -46,29 +52,29 @@ export function getNodeComponent(
       x={position.x}
       y={position.y}
     >
-      {node.fields.map((field, j) =>
-        getFieldComponent(field.id, field.type, field.arguments, j, nodeKey)
-      )}
+      {node.fields.map((field, j) => getFieldComponent(field, j, nodeKey))}
     </Node>
   )
 }
 
 export function getFieldComponent(
-  fieldKey: string,
-  fieldType: string,
-  fieldProps: Arguments,
+  field: Field,
   key: React.Key | undefined | null,
   nodeKey: string,
 ) {
-  const allProps = { key, nodeKey, fieldKey, ...fieldProps }
-  switch (fieldType) {
-    case 'Select':
-      return <Select {...allProps} />
+  const extraProps = {
+    key,
+    nodeKey,
+    fieldKey: field.id
+  }
+  switch (field.type) {
     case 'InputOutput':
-      return <InputOutput {...allProps} />
+      return <InputOutput {...extraProps} {...field.props as InputOutputFieldProps} />
+    case 'Select':
+      return <Select {...extraProps} {...field.props as SelectFieldProps} />
     case 'List':
-      return <List {...allProps} />
+      return <List {...extraProps} {...field.props as ListFieldProps} />
     default:
-      throw new Error(`Field type "${fieldType}" could not be found.`)
+      return <></>
   }
 }

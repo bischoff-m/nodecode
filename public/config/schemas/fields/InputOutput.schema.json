@@ -1,0 +1,51 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "definitions": {
+        "InputOutputField": {
+            "properties": {
+                "type": {
+                    "const": "InputOutput"
+                },
+                "props": {
+                    "$ref": "#/definitions/InputOutputFieldProps"
+                }
+            },
+            "required": [
+                "props"
+            ]
+        },
+        "InputOutputFieldProps": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "inputLabel": {
+                    "type": "string"
+                },
+                "outputLabel": {
+                    "type": "string"
+                },
+                "inputDatatype": {
+                    "type": "string"
+                },
+                "outputDatatype": {
+                    "type": "string"
+                },
+                "inputMulti": {
+                    "type": "boolean"
+                }
+            },
+            "anyOf": [
+                {
+                    "required": [
+                        "inputLabel"
+                    ]
+                },
+                {
+                    "required": [
+                        "outputLabel"
+                    ]
+                }
+            ]
+        }
+    }
+}

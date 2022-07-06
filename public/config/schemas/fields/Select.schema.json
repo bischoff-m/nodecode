@@ -1,0 +1,40 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "definitions": {
+        "SelectField": {
+            "properties": {
+                "type": {
+                    "const": "Select"
+                },
+                "props": {
+                    "$ref": "#/definitions/SelectFieldProps"
+                }
+            },
+            "required": [
+                "props"
+            ]
+        },
+        "SelectFieldProps": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "label": {
+                    "type": "string"
+                },
+                "values": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "default": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "values",
+                "default"
+            ]
+        }
+    }
+}

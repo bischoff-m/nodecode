@@ -2,9 +2,10 @@ import { createStyles } from '@mantine/core'
 import { updateSocket, addSocketPos } from '@/redux/socketsSlice'
 import { useDispatchTyped } from '@/redux/hooks'
 import { useEffect, useRef } from 'react'
-import type { FieldProps } from '@/types/util'
 import { screenToCanvas } from '@/components/NodeCanvas'
 import { fixedTheme } from '@/styles/themeCanvas'
+import type { FieldProps } from '@/types/util'
+import type { InputOutputFieldProps } from '@/types/NodeCollection'
 
 // TODO: implement multiple connections on the same socket and datatypes
 // TODO: add aditional checks for properties
@@ -48,12 +49,7 @@ const useStyles = createStyles((theme) => ({
 }))
 
 
-type InputOutputFieldProps = {
-  inputLabel?: string,
-  outputLabel?: string,
-} & FieldProps
-
-export default function InputOutputField(props: InputOutputFieldProps) {
+export default function InputOutputField(props: InputOutputFieldProps & FieldProps) {
   if (!props.inputLabel && !props.outputLabel)
     throw new Error('No inputLabel and no outputLabel given to InputOutputField. It needs at least one of them.')
 

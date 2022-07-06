@@ -8,7 +8,7 @@
                 {
                     "id": "in-select_out-query",
                     "type": "InputOutput",
-                    "arguments": {
+                    "props": {
                         "inputLabel": "Select",
                         "outputLabel": "Query"
                     }
@@ -16,7 +16,7 @@
                 {
                     "id": "in-from_out-columns",
                     "type": "InputOutput",
-                    "arguments": {
+                    "props": {
                         "inputLabel": "From",
                         "outputLabel": "Columns"
                     }
@@ -24,28 +24,28 @@
                 {
                     "id": "in-groupby",
                     "type": "InputOutput",
-                    "arguments": {
+                    "props": {
                         "inputLabel": "Group by"
                     }
                 },
                 {
                     "id": "in-orderby",
                     "type": "InputOutput",
-                    "arguments": {
+                    "props": {
                         "inputLabel": "Order by"
                     }
                 },
                 {
                     "id": "in-where",
                     "type": "InputOutput",
-                    "arguments": {
+                    "props": {
                         "inputLabel": "Where"
                     }
                 },
                 {
                     "id": "in-having",
                     "type": "InputOutput",
-                    "arguments": {
+                    "props": {
                         "inputLabel": "Having"
                     }
                 }
@@ -58,7 +58,7 @@
                 {
                     "id": "input-output",
                     "type": "InputOutput",
-                    "arguments": {
+                    "props": {
                         "inputLabel": "Columns",
                         "outputLabel": "Columns"
                     }
@@ -66,7 +66,7 @@
                 {
                     "id": "select",
                     "type": "Select",
-                    "arguments": {
+                    "props": {
                         "values": [
                             "Count",
                             "Sum",
@@ -85,7 +85,7 @@
                 {
                     "id": "in-columns_out-columns",
                     "type": "InputOutput",
-                    "arguments": {
+                    "props": {
                         "inputLabel": "Columns",
                         "outputLabel": "Columns"
                     }
@@ -99,7 +99,7 @@
                 {
                     "id": "output",
                     "type": "InputOutput",
-                    "arguments": {
+                    "props": {
                         "outputLabel": "List",
                         "outputDatatype": "array"
                     }
@@ -107,7 +107,7 @@
                 {
                     "id": "datatype",
                     "type": "Select",
-                    "arguments": {
+                    "props": {
                         "label": "Datatype",
                         "values": [
                             "String",
@@ -131,7 +131,7 @@
                 {
                     "id": "input",
                     "type": "InputOutput",
-                    "arguments": {
+                    "props": {
                         "inputLabel": "Output",
                         "inputDatatype": "any",
                         "inputMulti": true

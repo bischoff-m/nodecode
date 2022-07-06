@@ -1,5 +1,4 @@
 import { fixedTheme } from '@/styles/themeCanvas'
-import type { FieldProps } from '@/types/util'
 import {
   ActionIcon,
   CloseButton,
@@ -12,6 +11,8 @@ import { useListState } from '@mantine/hooks'
 import { IconPlus } from '@tabler/icons'
 import { useState } from 'react'
 import MaxHeightScrollArea from '@/components/util/MaxHeightScrollArea'
+import type { FieldProps } from '@/types/util'
+import type { ListFieldProps } from '@/types/NodeCollection'
 
 const useStyles = createStyles((theme) => ({
   container: {
@@ -52,11 +53,7 @@ const useStyles = createStyles((theme) => ({
 // TODO: add maximum height and scroll container to list
 // TODO: implement props: label, defaultItems, placeholder(?)
 
-type ListFieldProps = {
-  label?: string
-} & FieldProps
-
-export default function ListField(props: ListFieldProps) {
+export default function ListField(props: ListFieldProps & FieldProps) {
   const { classes } = useStyles()
   const theme = useMantineTheme()
 

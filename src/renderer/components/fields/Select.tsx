@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { createStyles, Select, useMantineTheme } from '@mantine/core'
-import type { FieldProps } from '@/types/util'
 import { fixedTheme } from '@/styles/themeCanvas'
+import type { FieldProps } from '@/types/util'
+import type { SelectFieldProps } from '@/types/NodeCollection'
 
 const useStyles = createStyles((theme) => ({
   container: {
@@ -24,16 +25,8 @@ const useStyles = createStyles((theme) => ({
 // TODO: These props should be required. Is there a way to define is in nodeCollection.schema.json?
 //        -> Yes, define a schema for each possible field?
 // TODO: transform "values" prop into value-label pairs to support e.g. timezone selection
-type SelectFieldProps = {
-  values?: string[],
-  default?: string,
-  label?: string,
-} & FieldProps
 
-export default function SelectField(props: SelectFieldProps) {
-  if (!props.values) throw new Error('SelectField: "values" prop is required')
-  if (!props.default) throw new Error('SelectField: "default" prop is required')
-
+export default function SelectField(props: SelectFieldProps & FieldProps) {
   const { classes } = useStyles()
   const theme = useMantineTheme()
   const [value, setValue] = useState<string>(props.default)

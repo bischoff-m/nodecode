@@ -1,7 +1,9 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema",
+    "title": "NodeCollectionSchema",
     "definitions": {
         "NodeCollection": {
+            "title": "NodeCollection",
             "type": "object",
             "additionalProperties": false,
             "properties": {
@@ -18,10 +20,10 @@
             "required": [
                 "name",
                 "nodes"
-            ],
-            "title": "NodeCollection"
+            ]
         },
         "Node": {
+            "title": "Node",
             "type": "object",
             "additionalProperties": false,
             "properties": {
@@ -42,8 +44,7 @@
                 "id",
                 "title",
                 "fields"
-            ],
-            "title": "Node"
+            ]
         },
         "Field": {
             "type": "object",
@@ -53,53 +54,31 @@
                     "type": "string"
                 },
                 "type": {
-                    "type": "string"
+                    "enum": [
+                        "InputOutput",
+                        "Select",
+                        "List"
+                    ]
                 },
-                "arguments": {
-                    "$ref": "#/definitions/Arguments"
+                "props": {
+                    "type": "object"
                 }
             },
             "required": [
                 "id",
-                "type",
-                "arguments"
+                "type"
             ],
-            "title": "Field"
-        },
-        "Arguments": {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-                "label": {
-                    "type": "string"
+            "oneOf": [
+                {
+                    "$ref": "fields/InputOutput.schema.json#/definitions/InputOutputField"
                 },
-                "inputLabel": {
-                    "type": "string"
+                {
+                    "$ref": "fields/Select.schema.json#/definitions/SelectField"
                 },
-                "outputLabel": {
-                    "type": "string"
-                },
-                "inputDatatype": {
-                    "type": "string"
-                },
-                "outputDatatype": {
-                    "type": "string"
-                },
-                "inputMulti": {
-                    "type": "boolean"
-                },
-                "values": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
-                "default": {
-                    "type": "string"
+                {
+                    "$ref": "fields/List.schema.json#/definitions/ListField"
                 }
-            },
-            "required": [],
-            "title": "Arguments"
+            ]
         }
     },
     "allOf": [
