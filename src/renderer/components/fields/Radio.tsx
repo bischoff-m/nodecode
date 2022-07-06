@@ -10,6 +10,9 @@ const useStyles = createStyles((theme) => ({
   container: {
     paddingLeft: 8,
     paddingRight: 8,
+    '& > .mantine-Group-root': {
+      paddingTop: '0px !important',
+    },
   },
   item: {
     height: fixedTheme.fieldDefaultHeight,
