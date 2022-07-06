@@ -10,7 +10,6 @@ const useStyles = createStyles((theme) => ({
   container: {
     paddingLeft: 8,
     paddingRight: 8,
-    paddingBottom: 5,
   },
   item: {
     height: fixedTheme.fieldDefaultHeight,
