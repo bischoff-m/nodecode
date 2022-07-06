@@ -22,8 +22,6 @@ const useStyles = createStyles((theme) => ({
 
 // TODO: close dropdown when canvas is moved or scaled (or move and scale dropdown as well?)
 //        -> better option: use redux to track canvas state and pass canvasOrigin to positionDependencies prop of SelectField
-// TODO: These props should be required. Is there a way to define is in nodeCollection.schema.json?
-//        -> Yes, define a schema for each possible field?
 // TODO: transform "values" prop into value-label pairs to support e.g. timezone selection
 
 export default function SelectField(props: SelectFieldProps & FieldProps) {

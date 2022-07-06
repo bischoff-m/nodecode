@@ -25,7 +25,6 @@ const useStyles = createStyles((theme) => ({
   input: {
     marginLeft: fixedTheme.fieldInnerMargin,
     marginRight: fixedTheme.fieldInnerMargin,
-    marginBottom: 4,
   },
   label: {
     padding: 5,
@@ -50,23 +49,17 @@ const useStyles = createStyles((theme) => ({
   },
 }))
 
-// TODO: add maximum height and scroll container to list
-// TODO: implement props: label, defaultItems, placeholder(?)
-
 export default function ListField(props: ListFieldProps & FieldProps) {
   const { classes } = useStyles()
   const theme = useMantineTheme()
 
-  const [listItems, listHandlers] = useListState<string>([
-    'charttime',
-    'terseform',
-    'unitofmeasure',
-  ])
+  const [listItems, listHandlers] = useListState<string>([])
   const [inputValue, setInputValue] = useState('')
 
   function handleAddItem() {
-    if (inputValue.trim() !== '') {
-      listHandlers.prepend(inputValue)
+    const trimmed = inputValue.trim()
+    if (trimmed !== '') {
+      listHandlers.prepend(trimmed)
       setInputValue('')
     }
   }
@@ -75,15 +68,11 @@ export default function ListField(props: ListFieldProps & FieldProps) {
       <IconPlus size={fixedTheme.iconSize} color={theme.other.iconColor} />
     </ActionIcon>
   )
-  // TODO: replace content by an actual option to set a label
-  const label = (
-    <div className={classes.label}>{props.label ? props.label : 'Values'}</div>
-  )
+  const label = <div className={classes.label}>{props.label}</div>
 
   return (
     <div className={classes.container}>
-      {label}
-      {/* {props.label ? label : undefined} TODO: use this once label is implemented */}
+      {props.label ? label : undefined}
       <TextInput
         className={classes.input}
         value={inputValue}
@@ -91,6 +80,8 @@ export default function ListField(props: ListFieldProps & FieldProps) {
         onChange={(event) => setInputValue(event.target.value)}
         rightSection={addButton}
         variant="filled"
+        placeholder={props.placeholder}
+        style={{ marginBottom: listItems.length > 0 ? 3 : 0 }}
       />
       <MaxHeightScrollArea>
         <Stack spacing={0}>

@@ -120,7 +120,11 @@
                 },
                 {
                     "id": "item_list",
-                    "type": "List"
+                    "type": "List",
+                    "props": {
+                        "label": "Items",
+                        "placeholder": "Add item"
+                    }
                 }
             ]
         },

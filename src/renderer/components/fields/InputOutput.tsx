@@ -8,7 +8,6 @@ import type { FieldProps } from '@/types/util'
 import type { InputOutputFieldProps } from '@/types/NodeCollection'
 
 // TODO: implement multiple connections on the same socket and datatypes
-// TODO: add aditional checks for properties
 // TODO: handle position needs to updated when node is updated (for example a list is expanded)
 
 const { handleSize, fieldDefaultHeight, nodePadding } = fixedTheme

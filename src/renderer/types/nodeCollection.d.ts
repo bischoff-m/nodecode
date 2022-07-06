@@ -55,4 +55,5 @@ export interface ListField {
 }
 export interface ListFieldProps {
   label?: string
+  placeholder?: string
 }
