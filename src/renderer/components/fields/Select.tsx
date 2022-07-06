@@ -9,6 +9,9 @@ import FieldBase from '@/components/util/FieldBase'
 // TODO: transform "values" prop into value-label pairs to support e.g. timezone selection
 
 export default function SelectField(props: SelectFieldProps & FieldProps) {
+  if (!props.values.includes(props.default))
+    throw new Error('SelectField: default value is not included in values')
+
   const theme = useMantineTheme()
   const [value, setValue] = useState<string>(props.default)
 
