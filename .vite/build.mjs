@@ -1,6 +1,5 @@
 import { build as viteBuild } from 'vite'
 import chalk from 'chalk'
-import prebuild from './prebuild.mjs'
 
 const TAG = chalk.bgBlue('[build.mjs]')
 
@@ -23,5 +22,5 @@ async function buildElectron() {
 }
 
 // bootstrap
-prebuild()
+import './prebuild.mjs'
 await buildElectron()
