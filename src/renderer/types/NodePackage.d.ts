@@ -14,11 +14,11 @@ export type Field = {
 export type Field1 = InputOutputField | SelectField | ListField | RadioField | MultiSelectField
 export type InputOutputFieldProps = (
   | {
-    [k: string]: unknown
-  }
+      [k: string]: unknown
+    }
   | {
-    [k: string]: unknown
-  }
+      [k: string]: unknown
+    }
 ) & {
   inputLabel?: string
   outputLabel?: string
@@ -28,8 +28,15 @@ export type InputOutputFieldProps = (
 }
 
 export interface NodePackage {
+  /**
+   * TODO: Document the schema using the description property.
+   */
   name: string
   nodes: Node[]
+  /**
+   * This should point to the file NodePackage.schema.json.
+   */
+  $schema?: string
 }
 export interface Node {
   id: string
