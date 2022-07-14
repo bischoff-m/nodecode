@@ -8,13 +8,19 @@
             "additionalProperties": false,
             "properties": {
                 "name": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "TODO: Document the schema using the description property."
                 },
                 "nodes": {
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/Node"
                     }
+                },
+                "$schema": {
+                    "type": "string",
+                    "format": "uri-reference",
+                    "description": "This should point to the file NodeCollection.schema.json."
                 }
             },
             "required": [

@@ -1,4 +1,5 @@
 {
+    "$schema": "../schemas/NodeCollection.schema.json",
     "name": "Basic Nodes",
     "nodes": [
         {

@@ -23,7 +23,8 @@
   "dependencies": {
     "@mantine/core": "^4.2.12",
     "@mantine/hooks": "^4.2.12",
-    "@tabler/icons": "^1.72.0"
+    "@tabler/icons": "^1.72.0",
+    "fuse.js": "^6.6.2"
   },
   "devDependencies": {
     "@reduxjs/toolkit": "^1.8.3",
