@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { createStyles, Radio, RadioGroup, useMantineTheme } from '@mantine/core'
 import type { FieldProps } from '@/types/util'
-import type { RadioFieldProps } from '@/types/NodeCollection'
+import type { RadioFieldProps } from '@/types/NodePackage'
 import FieldBase from '@/components/util/FieldBase'
 import MaxHeightScrollArea from '@/components/util/MaxHeightScrollArea'
 import { fixedTheme } from '@/styles/themeCanvas'

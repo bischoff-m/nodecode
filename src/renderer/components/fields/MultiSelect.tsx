@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { MultiSelect, useMantineTheme } from '@mantine/core'
 import type { FieldProps } from '@/types/util'
-import type { MultiSelectFieldProps } from '@/types/NodeCollection'
+import type { MultiSelectFieldProps } from '@/types/NodePackage'
 import FieldBase from '@/components/util/FieldBase'
 
 

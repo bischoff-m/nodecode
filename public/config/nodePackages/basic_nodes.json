@@ -1,5 +1,5 @@
 {
-    "$schema": "../schemas/NodeCollection.schema.json",
+    "$schema": "../schemas/NodePackage.schema.json",
     "name": "Basic Nodes",
     "nodes": [
         {

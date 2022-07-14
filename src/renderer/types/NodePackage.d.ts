@@ -5,7 +5,7 @@
  * JSONSchema file, and run json-schema-to-typescript to regenerate this file.
  */
 
-export type NodeCollectionSchema = NodeCollection
+export type NodePackageSchema = NodePackage
 export type Field = {
   id: string
   type: 'InputOutput' | 'Select' | 'List' | 'Radio' | 'MultiSelect'
@@ -14,11 +14,11 @@ export type Field = {
 export type Field1 = InputOutputField | SelectField | ListField | RadioField | MultiSelectField
 export type InputOutputFieldProps = (
   | {
-      [k: string]: unknown
-    }
+    [k: string]: unknown
+  }
   | {
-      [k: string]: unknown
-    }
+    [k: string]: unknown
+  }
 ) & {
   inputLabel?: string
   outputLabel?: string
@@ -27,7 +27,7 @@ export type InputOutputFieldProps = (
   inputMulti?: boolean
 }
 
-export interface NodeCollection {
+export interface NodePackage {
   name: string
   nodes: Node[]
 }

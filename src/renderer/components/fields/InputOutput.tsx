@@ -5,7 +5,7 @@ import { useEffect, useRef } from 'react'
 import { screenToCanvas } from '@/components/NodeCanvas'
 import { fixedTheme } from '@/styles/themeCanvas'
 import type { FieldProps } from '@/types/util'
-import type { InputOutputFieldProps } from '@/types/NodeCollection'
+import type { InputOutputFieldProps } from '@/types/NodePackage'
 
 // TODO: implement multiple connections on the same socket and datatypes
 // TODO: handle position needs to updated when node is updated (for example a list is expanded)

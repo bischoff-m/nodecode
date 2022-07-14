@@ -1,13 +1,13 @@
 import Node from '@/components/Node'
 import type {
   Field,
-  NodeCollectionSchema,
+  NodePackageSchema,
   InputOutputFieldProps,
   SelectFieldProps,
   ListFieldProps,
   RadioFieldProps,
   MultiSelectFieldProps
-} from '@/types/NodeCollection'
+} from '@/types/NodePackage'
 
 import InputOutput from '@/components/fields/InputOutput'
 import Select from '@/components/fields/Select'
@@ -16,12 +16,12 @@ import Radio from '@/components/fields/Radio'
 import MultiSelect from '@/components/fields/MultiSelect'
 
 var callbacks: (() => void)[] = []
-var nodeConfig: NodeCollectionSchema | null
+var nodeConfig: NodePackageSchema | null
 
 window.ipc
-  .invoke('requestPublicFile', '/public/config/nodeCollections/basic_nodes.json', { encoding: 'utf-8', })
+  .invoke('requestPublicFile', '/public/config/nodePackages/basic_nodes.json', { encoding: 'utf-8', })
   .then((data) => {
-    nodeConfig = JSON.parse(data) as NodeCollectionSchema
+    nodeConfig = JSON.parse(data) as NodePackageSchema
     callbacks.forEach((fn) => fn())
   })
   .catch((err) => { throw err })

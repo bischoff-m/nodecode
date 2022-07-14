@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Select, useMantineTheme } from '@mantine/core'
 import type { FieldProps } from '@/types/util'
-import type { SelectFieldProps } from '@/types/NodeCollection'
+import type { SelectFieldProps } from '@/types/NodePackage'
 import FieldBase from '@/components/util/FieldBase'
 
 // TODO: close dropdown when canvas is moved or scaled (or move and scale dropdown as well?)

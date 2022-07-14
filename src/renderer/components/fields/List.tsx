@@ -12,7 +12,7 @@ import { IconPlus } from '@tabler/icons'
 import { useState } from 'react'
 import MaxHeightScrollArea from '@/components/util/MaxHeightScrollArea'
 import type { FieldProps } from '@/types/util'
-import type { ListFieldProps } from '@/types/NodeCollection'
+import type { ListFieldProps } from '@/types/NodePackage'
 import FieldBase from '@/components/util/FieldBase'
 
 const useStyles = createStyles((theme) => ({

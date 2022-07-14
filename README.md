@@ -52,7 +52,7 @@ Graphical Node Editor
 
 1. Add props definition in new file under `/public/config/schemas/fields`
 
-2. Add new field as `Field` type in `NodeCollection.schema.json`
+2. Add new field as `Field` type in `NodePackage.schema.json`
 
 3. Compile types using `npm run prebuild`
 
@@ -64,6 +64,6 @@ Graphical Node Editor
 
 ## Adding a node
 
-1. Add definition in a file under `/public/config/nodeCollections`
+1. Add definition in a file under `/public/config/nodePackages`
 
 2. (Currently it is necessary to reload the app)

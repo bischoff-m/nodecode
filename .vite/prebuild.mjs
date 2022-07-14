@@ -12,11 +12,11 @@ const comment = `
  */
 `
 
-compileFromFile('./public/config/schemas/NodeCollection.schema.json', {
+compileFromFile('./public/config/schemas/NodePackage.schema.json', {
   additionalProperties: false,
   style: {
     singleQuote: true,
     semi: false,
   },
   bannerComment: comment,
-}).then((ts) => fs.writeFileSync('./src/renderer/types/NodeCollection.d.ts', ts))
+}).then((ts) => fs.writeFileSync('./src/renderer/types/NodePackage.d.ts', ts))
