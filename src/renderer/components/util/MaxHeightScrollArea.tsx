@@ -5,14 +5,29 @@ import {
   useMantineTheme,
 } from '@mantine/core'
 
-export default function MaxHeightScrollArea(props: ScrollAreaProps) {
+interface MaxHeightScrollAreaProps extends React.HTMLAttributes<HTMLDivElement> {
+  maxHeight?: number,
+  scrollAreaProps?: ScrollAreaProps,
+}
+
+export default function MaxHeightScrollArea(props: MaxHeightScrollAreaProps) {
   const theme = useMantineTheme()
 
+  const {
+    maxHeight,
+    scrollAreaProps,
+    children,
+    ...divProps
+  } = props
+
   return (
-    <div style={{ display: 'flex' }}>
+    <div style={{ display: 'flex' }} {...divProps}>
       <ScrollArea
-        {...props}
-        style={{ flexGrow: 1, maxHeight: fixedTheme.fieldMaxHeight, ...props.style }}
+        {...scrollAreaProps}
+        style={{
+          flexGrow: 1,
+          maxHeight: maxHeight ? maxHeight : fixedTheme.fieldMaxHeight,
+        }}
         offsetScrollbars
         scrollHideDelay={0}
         scrollbarSize={fixedTheme.scrollbarSize}
@@ -28,7 +43,7 @@ export default function MaxHeightScrollArea(props: ScrollAreaProps) {
           },
         }}
       >
-        {props.children}
+        {children}
       </ScrollArea>
     </div>
   )

@@ -13,6 +13,8 @@ import { getNodeComponent, onNodesLoaded } from '@/util/nodeFactory'
 import { directstyled, useDirectStyle } from '@/lib/direct-styled' // https://github.com/everweij/direct-styled
 import { Vec2D } from '@/types/util'
 import NoodleProvider from '@/components/NoodleProvider'
+import { useHotkeys } from '@mantine/hooks'
+import NewNodeList from '@/components/NewNodeList'
 
 // Global constants and variables
 const zoomFactor = 0.8
@@ -56,7 +58,6 @@ export const setSelectedNode = (nodeKey: string | null) => {
   onNodeSelectedCallbacks.forEach((callback) => callback(nodeKey))
 }
 
-// TODO: auf dem Surface Pro 4 werden scroll bars angezeigt (vielleicht ist das Canvas zu groß)
 // TODO: replace vector math by something where you dont need to write x and y for each calculation
 //       - https://mathjs.org/ Problem: code is less readable because of math.add(...) instead of ... + ...
 //       - https://www.sweetjs.org/doc/tutorial.html Define own operators (maybe in combination with mathjs)
@@ -111,6 +112,13 @@ export default function NodeCanvas() {
   // React state
   const [nodes, setNodes] = useState<ReactElement[]>()
   const [isLoaded, setIsLoaded] = useState(false)
+
+  // Hotkeys
+  useHotkeys([
+    ['space', () => {
+      console.log('yep')
+    }],
+  ])
 
   function updateCanvasStyle() {
     // calculate and set position of canvas and background of canvas based on
@@ -266,6 +274,7 @@ export default function NodeCanvas() {
             <>
               <div className={classes.nodesContainer}>{nodes}</div>
               <NoodleProvider />
+              <NewNodeList />
             </>
           )}
         </directstyled.div>
