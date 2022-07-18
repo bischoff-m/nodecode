@@ -13,7 +13,7 @@ import { getNodeComponent, onNodesLoaded } from '@/util/nodeFactory'
 import { directstyled, useDirectStyle } from '@/lib/direct-styled' // https://github.com/everweij/direct-styled
 import { Vec2D } from '@/types/util'
 import NoodleProvider from '@/components/NoodleProvider'
-import { useHotkeys } from '@mantine/hooks'
+import { useBooleanToggle, useHotkeys } from '@mantine/hooks'
 import NewNodeList from '@/components/NewNodeList'
 
 // Global constants and variables
@@ -112,12 +112,11 @@ export default function NodeCanvas() {
   // React state
   const [nodes, setNodes] = useState<ReactElement[]>()
   const [isLoaded, setIsLoaded] = useState(false)
+  const [isNewNodeListOpen, toggleNewNodeListOpen] = useBooleanToggle(false)
 
   // Hotkeys
   useHotkeys([
-    ['space', () => {
-      console.log('yep')
-    }],
+    ['space', (event) => toggleNewNodeListOpen()],
   ])
 
   function updateCanvasStyle() {
@@ -224,12 +223,12 @@ export default function NodeCanvas() {
     onNodesLoaded(() => {
       setNodes([
         getNodeComponent('node1', 'input_list', { x: 40, y: 100 }),
-        getNodeComponent('node6', 'sql_mysql-table', { x: 40, y: 380 }),
-        getNodeComponent('node7', 'sql_column-select', { x: 760, y: 100 }),
-        getNodeComponent('node2', 'output', { x: 400, y: 100 }),
-        getNodeComponent('node3', 'sql_query', { x: 400, y: 240 }),
-        getNodeComponent('node4', 'sql_aggregate', { x: 400, y: 520 }),
-        getNodeComponent('node5', 'sql_distinct', { x: 400, y: 680 }),
+        // getNodeComponent('node6', 'sql_mysql-table', { x: 40, y: 380 }),
+        // getNodeComponent('node7', 'sql_column-select', { x: 760, y: 100 }),
+        // getNodeComponent('node2', 'output', { x: 400, y: 100 }),
+        // getNodeComponent('node3', 'sql_query', { x: 400, y: 240 }),
+        // getNodeComponent('node4', 'sql_aggregate', { x: 400, y: 520 }),
+        // getNodeComponent('node5', 'sql_distinct', { x: 400, y: 680 }),
       ])
       setIsLoaded(true)
       updateCanvasStyle()
@@ -274,7 +273,7 @@ export default function NodeCanvas() {
             <>
               <div className={classes.nodesContainer}>{nodes}</div>
               <NoodleProvider />
-              <NewNodeList />
+              {isNewNodeListOpen && <NewNodeList screenPosition={{ x: 400, y: 300 }} />}
             </>
           )}
         </directstyled.div>

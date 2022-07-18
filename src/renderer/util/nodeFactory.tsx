@@ -1,7 +1,7 @@
 import Node from '@/components/Node'
 import type {
   Field,
-  NodePackageSchema,
+  NodePackage,
   InputOutputFieldProps,
   SelectFieldProps,
   ListFieldProps,
@@ -15,19 +15,19 @@ import List from '@/components/fields/List'
 import Radio from '@/components/fields/Radio'
 import MultiSelect from '@/components/fields/MultiSelect'
 
-var callbacks: (() => void)[] = []
-var nodeConfig: NodePackageSchema | null
+var callbacks: ((nodePackage: NodePackage) => void)[] = []
+var nodePackage: NodePackage | null
 
 window.ipc
   .invoke('requestPublicFile', '/public/config/nodePackages/basic_nodes.json', { encoding: 'utf-8', })
   .then((data) => {
-    nodeConfig = JSON.parse(data) as NodePackageSchema
-    callbacks.forEach((fn) => fn())
+    nodePackage = JSON.parse(data) as NodePackage
+    callbacks.forEach((fn) => nodePackage && fn(nodePackage))
   })
   .catch((err) => { throw err })
 
-export function onNodesLoaded(callback: () => void): void {
-  if (nodeConfig) callback()
+export function onNodesLoaded(callback: (nodePackage: NodePackage) => void): void {
+  if (nodePackage) callback(nodePackage)
   else callbacks.push(callback)
 }
 
@@ -37,15 +37,15 @@ export function getNodeComponent(
   position: { x: number; y: number },
 ): JSX.Element {
   // check if config file has been loaded
-  if (!nodeConfig)
+  if (!nodePackage)
     throw new Error('Node configuration file is still loading. Register a callback using onNodesLoaded()')
 
   // check if nodeID exists
-  const nodeIDs = nodeConfig.nodes.map((node) => node.id)
+  const nodeIDs = nodePackage.nodes.map((node) => node.id)
   if (!nodeIDs.includes(nodeID)) throw new Error(`NodeID \"${nodeID}\" could not be found.`)
 
   // build node from config
-  const node = nodeConfig.nodes.find((node) => node.id === nodeID)
+  const node = nodePackage.nodes.find((node) => node.id === nodeID)
   if (!node) throw new Error('')
 
   return (

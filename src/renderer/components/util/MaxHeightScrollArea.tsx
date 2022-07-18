@@ -5,10 +5,10 @@ import {
   useMantineTheme,
 } from '@mantine/core'
 
-interface MaxHeightScrollAreaProps extends React.HTMLAttributes<HTMLDivElement> {
+type MaxHeightScrollAreaProps = {
   maxHeight?: number,
   scrollAreaProps?: ScrollAreaProps,
-}
+} & React.HTMLAttributes<HTMLDivElement>
 
 export default function MaxHeightScrollArea(props: MaxHeightScrollAreaProps) {
   const theme = useMantineTheme()
