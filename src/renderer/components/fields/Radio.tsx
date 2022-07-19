@@ -33,7 +33,7 @@ export default function RadioField(props: RadioFieldProps & FieldProps) {
 
   return (
     <FieldBase label={props.label}>
-      <MaxHeightScrollArea>
+      <MaxHeightScrollArea scrollAreaProps={{ offsetScrollbars: true }}>
         <RadioGroup
           value={value}
           onChange={setValue}

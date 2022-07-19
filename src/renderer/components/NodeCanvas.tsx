@@ -67,7 +67,6 @@ export const setSelectedNode = (nodeKey: string | null) => {
 //////////////////////////////////////////////////////////////////////////////////////////////
 const useStyles = createStyles((theme) => ({
   container: {
-    // position: 'absolute',
     overflow: 'hidden',
     width: '100%',
     height: '100%',
@@ -77,8 +76,8 @@ const useStyles = createStyles((theme) => ({
     backgroundPosition: '0px 0px',
   },
   nodesContainer: {
-    position: 'absolute',
     zIndex: 100,
+    cursor: 'default',
   },
   draggable: {
     width: '100%',
@@ -224,7 +223,7 @@ export default function NodeCanvas() {
       setNodes([
         getNodeComponent('node1', 'input_list', { x: 40, y: 100 }),
         // getNodeComponent('node6', 'sql_mysql-table', { x: 40, y: 380 }),
-        // getNodeComponent('node7', 'sql_column-select', { x: 760, y: 100 }),
+        getNodeComponent('node7', 'sql_column-select', { x: 760, y: 100 }),
         // getNodeComponent('node2', 'output', { x: 400, y: 100 }),
         // getNodeComponent('node3', 'sql_query', { x: 400, y: 240 }),
         // getNodeComponent('node4', 'sql_aggregate', { x: 400, y: 520 }),
@@ -273,7 +272,10 @@ export default function NodeCanvas() {
             <>
               <div className={classes.nodesContainer}>{nodes}</div>
               <NoodleProvider />
-              {isNewNodeListOpen && <NewNodeList screenPosition={{ x: 400, y: 300 }} />}
+              {isNewNodeListOpen && <NewNodeList
+                screenPosition={{ x: 400, y: 300 }}
+                toggleOpen={toggleNewNodeListOpen}
+              />}
             </>
           )}
         </directstyled.div>

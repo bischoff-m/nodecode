@@ -64,8 +64,9 @@ export default function ListField(props: ListFieldProps & FieldProps) {
         variant="filled"
         placeholder={props.placeholder}
         style={{ marginBottom: listItems.length > 0 ? 3 : 0 }}
+        wrapperProps={{ spellCheck: false }}
       />
-      <MaxHeightScrollArea>
+      <MaxHeightScrollArea scrollAreaProps={{ offsetScrollbars: true }}>
         <Stack spacing={0}>
           {listItems.map((item, i) => (
             <div key={i} className={classes.listItem}>

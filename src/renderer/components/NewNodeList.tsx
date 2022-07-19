@@ -6,14 +6,27 @@ import { IconSearch } from '@tabler/icons'
 import { Vec2D } from '@/types/util'
 import { useEffect, useRef, useState } from 'react'
 import { onNodesLoaded } from '@/util/nodeFactory'
-import { NodePackage } from '@/types/NodePackage'
+import { Node } from '@/types/NodePackage'
+import Fuse from 'fuse.js'
+
+// TODO: indexActive as state sets which list entry is highlighted
+// TODO: add node to canvas when clicked
+// TODO: move popup to desired position
+// TODO: rename NewNodeList to NewNodePopup
+
+let fuse: Fuse<Node> | null = null
+let allNodes: Fuse.FuseResult<Node>[] = []
+
+const fuseOptions = {
+  keys: ['title'],
+}
 
 const useStyles = createStyles((theme) => ({
   container: {
     position: 'absolute',
     width: fixedTheme.nodeWidth,
     zIndex: 2000,
-    backgroundColor: theme.other.nodeBackgroundColor,
+    backgroundColor: '#25262b', // TODO: use in (app-)theme to set color of all dropdowns
     borderRadius: theme.radius[theme.defaultRadius as MantineSize],
     padding: fixedTheme.nodePadding,
     boxShadow: theme.other.nodeContainerShadow,
@@ -21,7 +34,7 @@ const useStyles = createStyles((theme) => ({
     top: 300,
   },
   stack: {
-    padding: 5,
+    paddingTop: fixedTheme.nodePadding,
   },
   loadingContainer: {
     display: 'flex',
@@ -29,21 +42,75 @@ const useStyles = createStyles((theme) => ({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  stackItem: {
+    height: 30,
+    display: 'flex',
+    alignItems: 'center',
+    fontSize: theme.fontSizes.md,
+    borderRadius: theme.radius.sm,
+    paddingLeft: 8,
+    '&:hover': {
+      backgroundColor: 'rgba(255, 255, 255, 0.1)',
+      cursor: 'pointer',
+    },
+  },
 }))
 
 type NewNodeListProps = {
   screenPosition: Vec2D
+  toggleOpen: () => void
 }
 
 export default function NewNodeList(props: NewNodeListProps) {
   const { classes } = useStyles()
   const refInput = useRef<HTMLInputElement>(null)
-  let [searchResults, setSearchResults] = useState<NodePackage | null>(null)
+  let [searchResults, setSearchResults] = useState<Fuse.FuseResult<Node>[] | null>(null)
 
   useEffect(() => {
     refInput.current?.focus()
-    onNodesLoaded((nodes) => setSearchResults(nodes))
+    onNodesLoaded((nodePackage) => {
+      fuse = new Fuse(nodePackage.nodes, fuseOptions)
+      allNodes = nodePackage.nodes.map((node, idx) => ({
+        item: node,
+        refIndex: idx,
+        score: 1,
+        matches: [],
+      }))
+      setSearchResults(allNodes)
+    })
   }, [])
+
+  function getContent() {
+    if (!fuse || !searchResults || !refInput.current)
+      return (
+        <div className={classes.loadingContainer}>
+          <Loader variant='dots' />
+        </div>
+      )
+
+    let results: Fuse.FuseResult<Node>[] = []
+    if (refInput.current.value.length > 0)
+      results = searchResults
+    else
+      results = allNodes
+
+    return (
+      <Stack className={classes.stack} spacing={0}>
+        {results
+          .map((result) => (
+            <div
+              key={result.item.id}
+              className={classes.stackItem}
+              onClick={() => {
+                props.toggleOpen()
+              }}
+            >
+              {result.item.title}
+            </div>
+          ))}
+      </Stack>
+    )
+  }
 
   return (
     <div
@@ -56,22 +123,15 @@ export default function NewNodeList(props: NewNodeListProps) {
       <TextInput
         ref={refInput}
         icon={<IconSearch size={fixedTheme.iconSize} />}
+        wrapperProps={{ spellCheck: false }}
         type='search'
+        onChange={() => {
+          if (fuse && refInput.current)
+            setSearchResults(fuse.search(refInput.current.value))
+        }}
       />
-      <MaxHeightScrollArea maxHeight={300}>
-        {
-          searchResults
-            ?
-            <Stack className={classes.stack} spacing={3}>
-              {searchResults.nodes.map((node) => (
-                <div key={node.id}>{node.title}</div>
-              ))}
-            </Stack>
-            :
-            <div className={classes.loadingContainer}>
-              <Loader variant='dots' />
-            </div>
-        }
+      <MaxHeightScrollArea maxHeight={200}>
+        {getContent()}
       </MaxHeightScrollArea>
     </div>
   )

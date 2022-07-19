@@ -28,7 +28,6 @@ export default function MaxHeightScrollArea(props: MaxHeightScrollAreaProps) {
           flexGrow: 1,
           maxHeight: maxHeight ? maxHeight : fixedTheme.fieldMaxHeight,
         }}
-        offsetScrollbars
         scrollHideDelay={0}
         scrollbarSize={fixedTheme.scrollbarSize}
         styles={{
