@@ -3,18 +3,17 @@ import { mantineTheme, styleOverrides, classNames } from '@/styles/themeCanvas'
 import {
   MouseEvent,
   WheelEvent,
-  ReactElement,
   useEffect,
   useState,
   useRef,
 } from 'react'
 import gridSvg from '@/assets/gridSvg.svg'
-import { getNodeComponent, onNodesLoaded } from '@/util/nodeFactory'
 import { directstyled, useDirectStyle } from '@/lib/direct-styled' // https://github.com/everweij/direct-styled
 import { Vec2D } from '@/types/util'
 import NoodleProvider from '@/components/NoodleProvider'
 import { useBooleanToggle, useHotkeys } from '@mantine/hooks'
 import NewNodePopup from '@/components/NewNodePopup'
+import NodeProvider from '@/components/NodeProvider'
 
 // Global constants and variables
 const zoomFactor = 0.8
@@ -109,13 +108,11 @@ export default function NodeCanvas() {
   const draggableRef = useRef<HTMLDivElement>(null)
 
   // React state
-  const [nodes, setNodes] = useState<ReactElement[]>()
-  const [isLoaded, setIsLoaded] = useState(false)
   const [isNewNodePopupOpen, toggleNewNodePopupOpen] = useBooleanToggle(false)
 
   // Hotkeys
   useHotkeys([
-    ['space', (event) => toggleNewNodePopupOpen()],
+    ['space', () => toggleNewNodePopupOpen()],
   ])
 
   function updateCanvasStyle() {
@@ -218,21 +215,6 @@ export default function NodeCanvas() {
     document.addEventListener('keydown', onKeyDown)
     document.addEventListener('keyup', onKeyUp)
 
-    // add nodes
-    onNodesLoaded(() => {
-      setNodes([
-        getNodeComponent('node1', 'input_list', { x: 40, y: 100 }),
-        // getNodeComponent('node6', 'sql_mysql-table', { x: 40, y: 380 }),
-        getNodeComponent('node7', 'sql_column-select', { x: 760, y: 100 }),
-        // getNodeComponent('node2', 'output', { x: 400, y: 100 }),
-        // getNodeComponent('node3', 'sql_query', { x: 400, y: 240 }),
-        // getNodeComponent('node4', 'sql_aggregate', { x: 400, y: 520 }),
-        // getNodeComponent('node5', 'sql_distinct', { x: 400, y: 680 }),
-      ])
-      setIsLoaded(true)
-      updateCanvasStyle()
-    })
-
     return () => {
       document.removeEventListener('keydown', onKeyDown)
       document.removeEventListener('keyup', onKeyUp)
@@ -268,16 +250,12 @@ export default function NodeCanvas() {
           ref={draggableRef}
           style={dragStyle}
         >
-          {isLoaded && (
-            <>
-              <div className={classes.nodesContainer}>{nodes}</div>
-              <NoodleProvider />
-              {isNewNodePopupOpen && <NewNodePopup
-                screenPosition={{ x: 400, y: 300 }}
-                toggleOpen={toggleNewNodePopupOpen}
-              />}
-            </>
-          )}
+          <NodeProvider />
+          <NoodleProvider />
+          {isNewNodePopupOpen && <NewNodePopup
+            screenPosition={{ x: 400, y: 300 }}
+            toggleOpen={toggleNewNodePopupOpen}
+          />}
         </directstyled.div>
       </directstyled.div>
     </MantineProvider>

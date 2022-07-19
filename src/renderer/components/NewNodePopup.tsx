@@ -12,6 +12,7 @@ import Fuse from 'fuse.js'
 // TODO: indexActive as state sets which list entry is highlighted
 // TODO: add node to canvas when clicked
 // TODO: move popup to desired position
+// TODO: implement multiple node packages
 
 let fuse: Fuse<Node> | null = null
 let allNodes: Fuse.FuseResult<Node>[] = []
