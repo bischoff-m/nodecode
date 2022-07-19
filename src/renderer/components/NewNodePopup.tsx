@@ -12,7 +12,6 @@ import Fuse from 'fuse.js'
 // TODO: indexActive as state sets which list entry is highlighted
 // TODO: add node to canvas when clicked
 // TODO: move popup to desired position
-// TODO: rename NewNodeList to NewNodePopup
 
 let fuse: Fuse<Node> | null = null
 let allNodes: Fuse.FuseResult<Node>[] = []
@@ -56,12 +55,12 @@ const useStyles = createStyles((theme) => ({
   },
 }))
 
-type NewNodeListProps = {
+type NewNodePopupProps = {
   screenPosition: Vec2D
   toggleOpen: () => void
 }
 
-export default function NewNodeList(props: NewNodeListProps) {
+export default function NewNodePopup(props: NewNodePopupProps) {
   const { classes } = useStyles()
   const refInput = useRef<HTMLInputElement>(null)
   let [searchResults, setSearchResults] = useState<Fuse.FuseResult<Node>[] | null>(null)

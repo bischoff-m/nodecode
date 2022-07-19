@@ -14,7 +14,7 @@ import { directstyled, useDirectStyle } from '@/lib/direct-styled' // https://gi
 import { Vec2D } from '@/types/util'
 import NoodleProvider from '@/components/NoodleProvider'
 import { useBooleanToggle, useHotkeys } from '@mantine/hooks'
-import NewNodeList from '@/components/NewNodeList'
+import NewNodePopup from '@/components/NewNodePopup'
 
 // Global constants and variables
 const zoomFactor = 0.8
@@ -111,11 +111,11 @@ export default function NodeCanvas() {
   // React state
   const [nodes, setNodes] = useState<ReactElement[]>()
   const [isLoaded, setIsLoaded] = useState(false)
-  const [isNewNodeListOpen, toggleNewNodeListOpen] = useBooleanToggle(false)
+  const [isNewNodePopupOpen, toggleNewNodePopupOpen] = useBooleanToggle(false)
 
   // Hotkeys
   useHotkeys([
-    ['space', (event) => toggleNewNodeListOpen()],
+    ['space', (event) => toggleNewNodePopupOpen()],
   ])
 
   function updateCanvasStyle() {
@@ -272,9 +272,9 @@ export default function NodeCanvas() {
             <>
               <div className={classes.nodesContainer}>{nodes}</div>
               <NoodleProvider />
-              {isNewNodeListOpen && <NewNodeList
+              {isNewNodePopupOpen && <NewNodePopup
                 screenPosition={{ x: 400, y: 300 }}
-                toggleOpen={toggleNewNodeListOpen}
+                toggleOpen={toggleNewNodePopupOpen}
               />}
             </>
           )}
