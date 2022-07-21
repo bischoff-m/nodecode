@@ -94,7 +94,7 @@
             ]
         },
         {
-            "id": "input_list",
+            "id": "list_input",
             "title": "List Input",
             "fields": [
                 {

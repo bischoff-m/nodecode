@@ -26,7 +26,7 @@ export default function NodeProvider(props: NodeProviderProps) {
   useEffect(() => {
     onNodesLoaded(() => {
       setNodes([
-        getNodeComponent('node1', 'input_list', { x: 40, y: 100 }),
+        getNodeComponent('node1', 'list_input', { x: 40, y: 100 }),
         // getNodeComponent('node6', 'sql_mysql-table', { x: 40, y: 380 }),
         getNodeComponent('node7', 'sql_column-select', { x: 760, y: 100 }),
         // getNodeComponent('node2', 'output', { x: 400, y: 100 }),

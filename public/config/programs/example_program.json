@@ -1,36 +1,42 @@
-[
-    {
-        "id": 0,
-        "nodeid": "input_list",
-        "styles": {
-            "width": 200,
-            "x": 10,
-            "y": 10
+{
+    "nodes": {
+        "node0": {
+            "type": "list_input",
+            "display": {
+                "width": 200,
+                "x": 10,
+                "y": 10
+            },
+            "state": {
+                "datatype_dropdown": "String",
+                "item_list": [
+                    "charttime",
+                    "terseform",
+                    "unitofmeasure"
+                ]
+            }
         },
-        "arguments": {
-            "datatype_dropdown": "String",
-            "item_list": [
-                "charttime",
-                "terseform",
-                "unitofmeasure"
-            ]
+        "node1": {
+            "type": "output",
+            "display": {
+                "width": 200,
+                "x": 300,
+                "y": 10
+            },
+            "connections": {
+                "input": [
+                    {
+                        "id": "node0",
+                        "field": "output"
+                    }
+                ]
+            }
         }
     },
-    {
-        "id": 1,
-        "nodeid": "output",
-        "styles": {
-            "width": 200,
-            "x": 300,
-            "y": 10
-        },
-        "connections": {
-            "input": [
-                {
-                    "id": 0,
-                    "field": "output"
-                }
-            ]
+    "connections": {
+        "node0.list_input.output:node1.output.input": {
+            "source": "node0.list_input.output",
+            "target": "node1.output.input"
         }
     }
-]
+}
