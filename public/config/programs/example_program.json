@@ -1,4 +1,5 @@
 {
+    "$schema": "../schemas/NodeProgram.schema.json",
     "nodes": {
         "node0": {
             "type": "list_input",

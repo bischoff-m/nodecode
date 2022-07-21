@@ -109,7 +109,7 @@ export default function NodeProvider(props: NodeProviderProps) {
         },
       })
     })
-  })
+  }, [])
 
   return (
     <div className={classes.container}>{

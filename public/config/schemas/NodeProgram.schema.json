@@ -1,0 +1,88 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "title": "NodeProgramSchema",
+    "definitions": {
+        "NodeProgram": {
+            "title": "NodeProgram",
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "nodes": {
+                    "type": "object",
+                    "description": "TODO: add [key: string] for node array",
+                    "additionalProperties": {
+                        "$ref": "#/definitions/NodeInstance"
+                    }
+                },
+                "connections": {
+                    "type": "object",
+                    "description": "TODO: add [key: string] for connection array",
+                    "additionalProperties": {
+                        "$ref": "#/definitions/Connection"
+                    }
+                },
+                "$schema": {
+                    "type": "string",
+                    "format": "uri-reference",
+                    "description": "This should point to the file NodeProgram.schema.json."
+                }
+            },
+            "required": [
+                "nodes",
+                "connections"
+            ]
+        },
+        "NodeInstance": {
+            "title": "NodeInstance",
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "type": {
+                    "type": "string"
+                },
+                "display": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                        "width": {
+                            "type": "number"
+                        },
+                        "x": {
+                            "type": "number"
+                        },
+                        "y": {
+                            "type": "number"
+                        }
+                    }
+                },
+                "state": {
+                    "type": "object",
+                    "description": "TODO: keys have to be string"
+                }
+            },
+            "required": [
+                "type",
+                "display",
+                "state"
+            ]
+        },
+        "Connection": {
+            "title": "Connection",
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "source": {
+                    "type": "string"
+                },
+                "target": {
+                    "type": "string"
+                }
+            }
+        }
+    },
+    "allOf": [
+        {
+            "$ref": "#/definitions/NodeProgram"
+        }
+    ]
+}
