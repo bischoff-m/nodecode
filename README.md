@@ -64,6 +64,6 @@ Graphical Node Editor
 
 ## Adding a node
 
-1. Add definition in a file under `/public/config/nodePackages`
+1. Add definition in a file under `/public/config/packages`
 
 2. (Currently it is necessary to reload the app)

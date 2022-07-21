@@ -19,7 +19,7 @@ var callbacks: ((nodePackage: NodePackage) => void)[] = []
 var nodePackage: NodePackage | null
 
 window.ipc
-  .invoke('requestPublicFile', '/public/config/nodePackages/basic_nodes.json', { encoding: 'utf-8', })
+  .invoke('requestPublicFile', '/public/config/packages/basic_nodes.json', { encoding: 'utf-8', })
   .then((data) => {
     nodePackage = JSON.parse(data) as NodePackage
     callbacks.forEach((fn) => nodePackage && fn(nodePackage))
