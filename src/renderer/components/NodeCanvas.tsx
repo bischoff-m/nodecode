@@ -4,7 +4,6 @@ import {
   MouseEvent,
   WheelEvent,
   useEffect,
-  useState,
   useRef,
 } from 'react'
 import gridSvg from '@/assets/gridSvg.svg'
@@ -215,14 +214,16 @@ export default function NodeCanvas() {
     document.addEventListener('keydown', onKeyDown)
     document.addEventListener('keyup', onKeyUp)
 
+    // Set refs that are needed for converting between screen and canvas coordinates
+    containerRef.current && (containerDiv = containerRef.current)
+    draggableRef.current && (canvasDiv = draggableRef.current)
+
     return () => {
       document.removeEventListener('keydown', onKeyDown)
       document.removeEventListener('keyup', onKeyUp)
     }
   }, [])
 
-  containerRef.current && (containerDiv = containerRef.current)
-  draggableRef.current && (canvasDiv = draggableRef.current)
   return (
     <MantineProvider
       theme={mantineTheme}
@@ -253,7 +254,7 @@ export default function NodeCanvas() {
           <NodeProvider />
           <NoodleProvider />
           {isNewNodePopupOpen && <NewNodePopup
-            screenPosition={{ x: 400, y: 300 }}
+            screenPosition={{ x: 760, y: 300 }}
             toggleOpen={toggleNewNodePopupOpen}
           />}
         </directstyled.div>

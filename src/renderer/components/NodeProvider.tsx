@@ -3,6 +3,10 @@ import { useEffect, useState } from 'react'
 import type { ReactElement } from 'react'
 import { getNodeComponent, onNodesLoaded } from '@/util/nodeFactory'
 
+// TODO: write JSON schema for nodeProgram and compile to typescript
+// TODO: use nodeProgram as state instead of the actual components
+// TODO: merge nodeFactory and NodeProvider
+
 const useStyles = createStyles((theme) => ({
   container: {
     zIndex: 100,

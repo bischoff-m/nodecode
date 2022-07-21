@@ -18,7 +18,7 @@ export default function NoodleProvider(props: NoodleProviderProps) {
 
   // React state
   // the socket pairs in the form of { left: leftSocketKey, right: rightSocketKey } for each noodle
-  const [socketPairs, setSocketPairs] = useState({} as { [key: string]: SocketPair })
+  const [socketPairs, setSocketPairs] = useState<{ [key: string]: SocketPair }>({})
   // the noodle components, set in useEffect
   // (react kept warning me of a memory leak and i couldn't figure out any other way other than useState with components)
   const [noodles, setNoodles] = useState<JSX.Element[]>([])
