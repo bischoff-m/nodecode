@@ -9,14 +9,12 @@
             "properties": {
                 "nodes": {
                     "type": "object",
-                    "description": "TODO: add [key: string] for node array",
                     "additionalProperties": {
                         "$ref": "#/definitions/NodeInstance"
                     }
                 },
                 "connections": {
                     "type": "object",
-                    "description": "TODO: add [key: string] for connection array",
                     "additionalProperties": {
                         "$ref": "#/definitions/Connection"
                     }
@@ -53,11 +51,16 @@
                         "y": {
                             "type": "number"
                         }
-                    }
+                    },
+                    "required": [
+                        "width",
+                        "x",
+                        "y"
+                    ]
                 },
                 "state": {
                     "type": "object",
-                    "description": "TODO: keys have to be string"
+                    "additionalProperties": true
                 }
             },
             "required": [
@@ -77,7 +80,11 @@
                 "target": {
                     "type": "string"
                 }
-            }
+            },
+            "required": [
+                "source",
+                "target"
+            ]
         }
     },
     "allOf": [

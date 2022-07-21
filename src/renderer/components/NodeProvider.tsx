@@ -1,6 +1,7 @@
 import { createStyles } from '@mantine/core'
 import { useEffect, useState } from 'react'
 import { getNodeComponent, onNodesLoaded } from '@/util/nodeFactory'
+import { NodeProgram } from '@/types/NodeProgram'
 
 // TODO: write JSON schema for nodeProgram and compile to typescript
 // TODO: use nodeProgram as state instead of the actual components
@@ -12,28 +13,6 @@ const useStyles = createStyles((theme) => ({
     cursor: 'default',
   },
 }))
-
-type NodeProgram = {
-  nodes: {
-    [key: string]: {
-      type: string
-      display: {
-        width: number
-        x: number
-        y: number
-      }
-      state: {
-        [key: string]: any
-      }
-    }
-  }
-  connections: {
-    [key: string]: {
-      source: string
-      target: string
-    }
-  }
-}
 
 export type NodeProviderProps = {}
 

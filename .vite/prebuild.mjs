@@ -20,3 +20,12 @@ compileFromFile('./public/config/schemas/NodePackage.schema.json', {
   },
   bannerComment: comment,
 }).then((ts) => fs.writeFileSync('./src/renderer/types/NodePackage.d.ts', ts))
+
+compileFromFile('./public/config/schemas/NodeProgram.schema.json', {
+  additionalProperties: false,
+  style: {
+    singleQuote: true,
+    semi: false,
+  },
+  bannerComment: comment,
+}).then((ts) => fs.writeFileSync('./src/renderer/types/NodeProgram.d.ts', ts))
