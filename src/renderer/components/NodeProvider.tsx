@@ -1,6 +1,5 @@
 import { createStyles } from '@mantine/core'
 import { useEffect, useState } from 'react'
-import type { ReactElement } from 'react'
 import { getNodeComponent, onNodesLoaded } from '@/util/nodeFactory'
 
 // TODO: write JSON schema for nodeProgram and compile to typescript
@@ -14,32 +13,109 @@ const useStyles = createStyles((theme) => ({
   },
 }))
 
-export type NodeProviderProps = {
-
+type NodeProgram = {
+  nodes: {
+    [key: string]: {
+      type: string
+      display: {
+        width: number
+        x: number
+        y: number
+      }
+      state: {
+        [key: string]: any
+      }
+    }
+  }
+  connections: {
+    [key: string]: {
+      source: string
+      target: string
+    }
+  }
 }
+
+export type NodeProviderProps = {}
 
 export default function NodeProvider(props: NodeProviderProps) {
   const { classes } = useStyles()
-  // const [program, setProgram] = useState<string>()
-  const [nodes, setNodes] = useState<ReactElement[]>()
+  const [nodes, setNodes] = useState<NodeProgram['nodes']>({})
 
   useEffect(() => {
     onNodesLoaded(() => {
-      setNodes([
-        getNodeComponent('node1', 'list_input', { x: 40, y: 100 }),
-        // getNodeComponent('node6', 'sql_mysql-table', { x: 40, y: 380 }),
-        getNodeComponent('node7', 'sql_column-select', { x: 760, y: 100 }),
-        // getNodeComponent('node2', 'output', { x: 400, y: 100 }),
-        // getNodeComponent('node3', 'sql_query', { x: 400, y: 240 }),
-        // getNodeComponent('node4', 'sql_aggregate', { x: 400, y: 520 }),
-        // getNodeComponent('node5', 'sql_distinct', { x: 400, y: 680 }),
-      ])
+      setNodes({
+        node1: {
+          type: 'list_input',
+          display: {
+            width: 100,
+            x: 40,
+            y: 100,
+          },
+          state: {},
+        },
+        node2: {
+          type: 'output',
+          display: {
+            width: 100,
+            x: 400,
+            y: 100,
+          },
+          state: {},
+        },
+        node3: {
+          type: 'sql_query',
+          display: {
+            width: 100,
+            x: 400,
+            y: 240,
+          },
+          state: {},
+        },
+        node4: {
+          type: 'sql_aggregate',
+          display: {
+            width: 100,
+            x: 400,
+            y: 520,
+          },
+          state: {},
+        },
+        node5: {
+          type: 'sql_distinct',
+          display: {
+            width: 100,
+            x: 400,
+            y: 680,
+          },
+          state: {},
+        },
+        node6: {
+          type: 'sql_mysql-table',
+          display: {
+            width: 100,
+            x: 40,
+            y: 380,
+          },
+          state: {},
+        },
+        node7: {
+          type: 'sql_column-select',
+          display: {
+            width: 100,
+            x: 760,
+            y: 100,
+          },
+          state: {},
+        },
+      })
     })
-  }, [])
+  })
 
   return (
     <div className={classes.container}>{
-      nodes
+      Object
+        .keys(nodes)
+        .map((key) => getNodeComponent(key, nodes[key].type, nodes[key].display))
     }</div>
   )
 }

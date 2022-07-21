@@ -23,14 +23,7 @@
                 "x": 300,
                 "y": 10
             },
-            "connections": {
-                "input": [
-                    {
-                        "id": "node0",
-                        "field": "output"
-                    }
-                ]
-            }
+            "state": {}
         }
     },
     "connections": {
