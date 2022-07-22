@@ -8,6 +8,8 @@ import { useEffect, useRef, useState } from 'react'
 import { onNodesLoaded } from '@/util/nodeFactory'
 import { Node } from '@/types/NodePackage'
 import Fuse from 'fuse.js'
+import { useDispatchTyped } from '@/redux/hooks'
+import { addNode } from '@/redux/programSlice'
 
 // TODO: indexActive as state sets which list entry is highlighted
 // TODO: add node to canvas when clicked
@@ -65,6 +67,7 @@ export default function NewNodePopup(props: NewNodePopupProps) {
   const { classes } = useStyles()
   const refInput = useRef<HTMLInputElement>(null)
   let [searchResults, setSearchResults] = useState<Fuse.FuseResult<Node>[] | null>(null)
+  const dispatch = useDispatchTyped()
 
   useEffect(() => {
     refInput.current?.focus()
@@ -103,6 +106,15 @@ export default function NewNodePopup(props: NewNodePopupProps) {
               className={classes.stackItem}
               onClick={() => {
                 props.toggleOpen()
+                dispatch(addNode({
+                  type: result.item.id,
+                  display: {
+                    width: 200,
+                    x: 200,
+                    y: 200,
+                  },
+                  state: {},
+                }))
               }}
             >
               {result.item.title}

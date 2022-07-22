@@ -13,7 +13,6 @@ export const programSlice = createSlice({
   reducers: {
     addNode: (state, action: PayloadAction<NodeInstance>) => {
       state.nodes[action.payload.type] = action.payload
-      console.log('addNode', state.nodes[action.payload.type])
     },
   },
 })
