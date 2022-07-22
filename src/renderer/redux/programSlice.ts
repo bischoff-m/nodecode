@@ -1,7 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import type { NodeInstance, NodeProgram } from '@/types/NodeProgram'
 
-
 const initialState: NodeProgram = {
   nodes: {},
   connections: {},
