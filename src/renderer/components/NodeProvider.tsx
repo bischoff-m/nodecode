@@ -32,24 +32,24 @@ const initNodes: NodeInstance[] = [
     },
     state: {},
   },
-  {
-    type: 'sql_query',
-    display: {
-      width: 100,
-      x: 400,
-      y: 240,
-    },
-    state: {},
-  },
-  {
-    type: 'sql_aggregate',
-    display: {
-      width: 100,
-      x: 400,
-      y: 520,
-    },
-    state: {},
-  },
+  // {
+  //   type: 'sql_query',
+  //   display: {
+  //     width: 100,
+  //     x: 400,
+  //     y: 240,
+  //   },
+  //   state: {},
+  // },
+  // {
+  //   type: 'sql_aggregate',
+  //   display: {
+  //     width: 100,
+  //     x: 400,
+  //     y: 520,
+  //   },
+  //   state: {},
+  // },
   // {
   //   type: 'sql_distinct',
   //   display: {

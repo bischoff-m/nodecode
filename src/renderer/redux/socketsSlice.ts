@@ -66,7 +66,6 @@ export function moveNode(nodeKey: string, by: Vec2D): void {
 
 type MoveNodePayload = {
   nodeKey: string,
-  by: Vec2D,
 }
 
 type AddSocketPayload = {
@@ -85,10 +84,8 @@ export const positionSlice = createSlice({
         .keys(state)
         .filter(k => k.startsWith(action.payload.nodeKey))
         .forEach(k => {
-          state[k].x += action.payload.by.x
-          state[k].y += action.payload.by.y
-          socketPositions[k].x = state[k].x
-          socketPositions[k].y = state[k].y
+          state[k].x = socketPositions[k].x
+          state[k].y = socketPositions[k].y
         })
     },
     addSocketPos: (state, action: PayloadAction<AddSocketPayload>) => {

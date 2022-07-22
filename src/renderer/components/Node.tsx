@@ -7,6 +7,7 @@ import { getCanvasZoom, getSelectedNode, onNodeSelected, onZoomChanged, setSelec
 import { fixedTheme } from '@/styles/themeCanvas'
 import type { DraggableData, DraggableEvent } from 'react-draggable'
 import type { ReactNode } from 'react'
+import { Vec2D } from '@/types/util'
 
 const useStyles = createStyles((theme) => ({
   card: {
@@ -46,32 +47,14 @@ export default function Node(props: NodeProps) {
   const theme = useMantineTheme()
   const nodeRef = useRef<HTMLDivElement>(null)
   const [canvasZoom, setCanvasZoom] = useState<number>(getCanvasZoom()) // variable is mirrored from NodeCanvas to enable state updates
-  const moveDelta = { x: 0, y: 0 }
+  let lastNodePos: Vec2D | null = null // position of node before being dragged
+  let nodePos: Vec2D | null = null // position of node while being dragged
   let isHovering = false
 
   const dispatch = useDispatchTyped()
 
-  onZoomChanged((newZoom: number) => {
-    setCanvasZoom(newZoom)
-  })
+  onZoomChanged((newZoom: number) => setCanvasZoom(newZoom))
   onNodeSelected(() => setHighlight())
-
-  function onDrag(event: DraggableEvent, data: DraggableData) {
-    moveDelta.x += data.deltaX
-    moveDelta.y += data.deltaY
-    moveNode(props.nodeKey, { x: data.deltaX, y: data.deltaY })
-  }
-
-  function onStop(event: DraggableEvent, data: DraggableData) {
-    if (moveDelta.x === 0 && moveDelta.y === 0)
-      return
-    dispatch(moveNodeStop({
-      nodeKey: props.nodeKey,
-      by: moveDelta,
-    }))
-    moveDelta.x = 0
-    moveDelta.y = 0
-  }
 
   function setHighlight() {
     if (!nodeRef.current)
@@ -84,6 +67,29 @@ export default function Node(props: NodeProps) {
       nodeRef.current.style.outline = 'none'
   }
 
+  function onStart(event: DraggableEvent, data: DraggableData) {
+    lastNodePos = { x: data.x, y: data.y }
+    nodePos = { x: data.x, y: data.y }
+  }
+
+  function onDrag(event: DraggableEvent, data: DraggableData) {
+    if (!nodePos)
+      return
+    moveNode(props.nodeKey, {
+      x: data.x - nodePos.x,
+      y: data.y - nodePos.y
+    })
+    nodePos = { x: data.x, y: data.y }
+  }
+
+  function onStop(event: DraggableEvent, data: DraggableData) {
+    if (lastNodePos && lastNodePos.x === data.x && lastNodePos.y === data.y)
+      return
+    dispatch(moveNodeStop({ nodeKey: props.nodeKey }))
+    nodePos = { x: data.x, y: data.y }
+    lastNodePos = { x: data.x, y: data.y }
+  }
+
   return (
     <Draggable
       handle={'.' + classes.header}
@@ -93,6 +99,7 @@ export default function Node(props: NodeProps) {
         fixedTheme.gridSize * canvasZoom,
       ]}
       nodeRef={nodeRef}
+      onStart={onStart}
       onDrag={onDrag}
       onStop={onStop}
       scale={canvasZoom}
