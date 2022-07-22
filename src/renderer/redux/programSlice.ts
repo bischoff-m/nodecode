@@ -1,5 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import type { NodeInstance, NodeProgram } from '@/types/NodeProgram'
+import { customAlphabet, urlAlphabet } from 'nanoid'
+
+const nanoid = customAlphabet(urlAlphabet, 10)
 
 const initialState: NodeProgram = {
   nodes: {},
@@ -11,7 +14,8 @@ export const programSlice = createSlice({
   initialState: initialState,
   reducers: {
     addNode: (state, action: PayloadAction<NodeInstance>) => {
-      state.nodes[action.payload.type] = action.payload
+      const newNodeKey = action.payload.type + '#' + nanoid()
+      state.nodes[newNodeKey] = action.payload
     },
   },
 })
