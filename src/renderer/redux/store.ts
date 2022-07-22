@@ -1,9 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit'
 import socketsReducer from '@/redux/socketsSlice'
+import programReducer from '@/redux/programSlice'
 
 const store = configureStore({
   reducer: {
     sockets: socketsReducer,
+    program: programReducer,
   },
 })
 export default store
