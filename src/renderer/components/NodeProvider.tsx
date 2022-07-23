@@ -7,7 +7,6 @@ import { useEffect } from 'react'
 
 // TODO: merge nodeFactory and NodeProvider
 // TODO: update display and state properties in Node and Field component
-// TODO: fix bug where socket position deviates from node position
 // TODO: transform nodes and connection properties to arrays instead of objects
 //         -> or use proper keys for every node and connection
 // TODO: implement connections in redux state (currently noodles despawn)
@@ -78,7 +77,7 @@ const initNodes: NodeInstance[] = [
   //   state: {},
   // },
 ]
-
+let isInitialized = false
 
 
 
@@ -98,6 +97,9 @@ export default function NodeProvider(props: NodeProviderProps) {
 
   // uncomment this if debugging nodes should be used
   useEffect(() => {
+    if (isInitialized) return
+    isInitialized = true
+
     if (Object.keys(nodes).length === 0)
       initNodes.forEach(node => dispatch(addNode(node)))
   }, [])
