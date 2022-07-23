@@ -19,9 +19,6 @@ export default function NoodleProvider(props: NoodleProviderProps) {
   // React state
   // the socket pairs in the form of { left: leftSocketKey, right: rightSocketKey } for each noodle
   const [socketPairs, setSocketPairs] = useState<{ [key: string]: SocketPair }>({})
-  // the noodle components, set in useEffect
-  // (react kept warning me of a memory leak and i couldn't figure out any other way other than useState with components)
-  const [noodles, setNoodles] = useState<JSX.Element[]>([])
 
   // callback for when a noodle is moved such that a socket key is updated
   const handleSocketUpdate = (
@@ -90,24 +87,21 @@ export default function NoodleProvider(props: NoodleProviderProps) {
     )
   }, [allSockets])
 
-  useEffect(() => {
-    // create noodle components for the current state
-    setNoodles(Object
-      .keys(socketPairs)
-      .map((key) =>
-        <Noodle
-          defaultSocketKeyLeft={socketPairs[key].left}
-          defaultSocketKeyRight={socketPairs[key].right}
-          key={key}
-          noodleID={key}
-          onSocketUpdate={(l, r) => handleSocketUpdate(key, l, r)}
-        />
-      ))
-  }, [allSockets, socketPairs])
-
   return (
     <div>
-      {noodles}
+      {
+        Object
+          .keys(socketPairs)
+          .map((key) =>
+            <Noodle
+              defaultSocketKeyLeft={socketPairs[key].left}
+              defaultSocketKeyRight={socketPairs[key].right}
+              key={key}
+              noodleID={key}
+              onSocketUpdate={(l, r) => handleSocketUpdate(key, l, r)}
+            />
+        )
+      }
     </div>
   )
 }
