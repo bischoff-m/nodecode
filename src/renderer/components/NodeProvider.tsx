@@ -98,10 +98,8 @@ export default function NodeProvider(props: NodeProviderProps) {
 
   // uncomment this if debugging nodes should be used
   useEffect(() => {
-    while (initNodes.length > 0) {
-      const node = initNodes.pop()
-      node && dispatch(addNode(node))
-    }
+    if (Object.keys(nodes).length === 0)
+      initNodes.forEach(node => dispatch(addNode(node)))
   }, [])
 
   return (
