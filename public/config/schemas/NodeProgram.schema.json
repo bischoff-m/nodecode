@@ -75,15 +75,36 @@
             "additionalProperties": false,
             "properties": {
                 "source": {
-                    "type": "string"
+                    "$ref": "#/definitions/Socket"
                 },
                 "target": {
-                    "type": "string"
+                    "$ref": "#/definitions/Socket"
                 }
             },
             "required": [
                 "source",
                 "target"
+            ]
+        },
+        "Socket": {
+            "title": "Socket",
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "nodeKey": {
+                    "type": "string"
+                },
+                "fieldKey": {
+                    "type": "string"
+                },
+                "isInput": {
+                    "type": "boolean"
+                }
+            },
+            "required": [
+                "nodeKey",
+                "fieldKey",
+                "isInput"
             ]
         }
     },

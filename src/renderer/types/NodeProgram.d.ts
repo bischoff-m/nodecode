@@ -31,6 +31,11 @@ export interface NodeInstance {
   }
 }
 export interface Connection {
-  source: string
-  target: string
+  source: Socket
+  target: Socket
+}
+export interface Socket {
+  nodeKey: string
+  fieldKey: string
+  isInput: boolean
 }
