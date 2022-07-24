@@ -29,14 +29,14 @@ const useStyles = createStyles({
 })
 
 type NoodleProps = {
-  defaultSocketKeyLeft?: string
-  defaultSocketKeyRight?: string
+  keyLeft?: string
+  keyRight?: string
   noodleID: string
   onSocketUpdate?: (leftSocketKey: string | undefined, rightSocketKey: string | undefined) => void
 }
 
 export default function Noodle(props: NoodleProps) {
-  if (!props.defaultSocketKeyLeft && !props.defaultSocketKeyRight)
+  if (!props.keyLeft && !props.keyRight)
     throw new Error('Noodle: at least one default socket key is required')
 
   // Styles
@@ -83,14 +83,14 @@ export default function Noodle(props: NoodleProps) {
     setSocketKeyRight(key)
   }
 
-  // takes a unique id for a socket and looks up the position
+  // Takes a unique id for a socket and looks up the position
   function posFromSocketKey(socketKey: string): Vec2D {
     if (socketPos[socketKey]) return socketPos[socketKey]
     else throw new Error(`Socket key not found: ${socketKey}`)
   }
 
-  // calculates the distance to all sockets
-  // then returns the position of the closest socket if its distance is below the snap threshold
+  // Calculates the distance to all sockets
+  // Then returns the position of the closest socket if its distance is below the snap threshold
   // and returns undefined otherwise
   function snapsToSocket(handlePos: Vec2D, excludeNode: string | undefined): string | undefined {
     if (!socketPosAfterMove || !allSockets) return undefined
@@ -106,7 +106,7 @@ export default function Noodle(props: NoodleProps) {
     return minDistance <= handleSize / 2 ? minSocketKey : undefined
   }
 
-  // updates state when one of the handles is dragged
+  // Updates state when one of the handles is dragged
   function handleDrag(isLeft: boolean, event: DraggableEvent): void {
     beganDragging && (isDragging = true)
     const e = event as ReactMouseEvent
@@ -118,17 +118,25 @@ export default function Noodle(props: NoodleProps) {
     const snapSocketKey = snapsToSocket(newMousePos, excludeNode)
     const snapSocket = snapSocketKey ? allSockets[snapSocketKey] : undefined
     if (snapSocketKey && (isLeft ? !snapSocket?.isInput : snapSocket?.isInput)) {
-      // stick to nearest socket
+      // Stick to nearest socket
       setSocketKey(snapSocketKey)
     } else {
-      // stick to mouse
+      // Stick to mouse
       setSocketKey(undefined)
     }
     setMousePos(newMousePos)
   }
 
-  // defines the position of the two Draggable handles if they are not currently being dragged
-  // after drag: if own socket is defined, stick to it
+  function onStop(): void {
+    setBeganDragging(false)
+    isDragging = false
+    props.onSocketUpdate && props.onSocketUpdate(socketKeyLeft, socketKeyRight)
+    setSocketKeyLeft(props.keyLeft)
+    setSocketKeyRight(props.keyRight)
+  }
+
+  // Defines the position of the two Draggable handles if they are not currently being dragged
+  // After drag: if own socket is defined, stick to it
   //             otherwise if opposite socket is defined, stick to it
   //             otherwise return placeholder position (only happens during loading)
   function getHandlePos(isLeft: boolean) {
@@ -140,12 +148,12 @@ export default function Noodle(props: NoodleProps) {
     return { x: handlePos.x - handleSize / 2, y: handlePos.y - handleSize / 2 }
   }
 
-  // calculates the path (d-Attribute of svg.path) of the noodle for the current state (socketKeyLeft, socketKeyRight)
+  // Calculates the path (d-Attribute of svg.path) of the noodle for the current state (socketKeyLeft, socketKeyRight)
   function getCurve() {
     if (!refSVG.current || !(isDragging || (socketKeyLeft && socketKeyRight)))
       return 'M0 0 C 0 0, 0 0, 0 0'
 
-    // left and right anchor of bezier curve
+    // Left and right anchor of bezier curve
     let posLeft: Vec2D
     let posRight: Vec2D
 
@@ -162,7 +170,7 @@ export default function Noodle(props: NoodleProps) {
       posRight = mousePos
     }
 
-    // move svg container to top left handle position
+    // Move svg container to top left handle position
     const minX = Math.min(posLeft.x, posRight.x)
     const minY = Math.min(posLeft.y, posRight.y)
     const maxX = Math.max(posLeft.x, posRight.x)
@@ -174,13 +182,13 @@ export default function Noodle(props: NoodleProps) {
       `transform: translate(${minX - paddingX}px, ${minY - paddingY}px)`,
     )
 
-    // set width and height for svg
+    // Set width and height for svg
     const width = maxX - minX + paddingX * 2
     const height = maxY - minY + paddingY * 2
     refSVG.current.setAttribute('width', `${width}px`)
     refSVG.current.setAttribute('height', `${height}px`)
 
-    // update path https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths
+    // Update path https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths
     const isInvertedX = posLeft.x > posRight.x
     const isInvertedY = posLeft.y > posRight.y
     const x1 = !isInvertedX ? paddingX : width - paddingX
@@ -202,8 +210,8 @@ export default function Noodle(props: NoodleProps) {
   }, [])
 
   useEffect(() => {
-    setSocketKeyLeft(props.defaultSocketKeyLeft)
-    setSocketKeyRight(props.defaultSocketKeyRight)
+    setSocketKeyLeft(props.keyLeft)
+    setSocketKeyRight(props.keyRight)
   }, [props])
 
   return (
@@ -233,11 +241,7 @@ export default function Noodle(props: NoodleProps) {
         position={getHandlePos(true)}
         nodeRef={refLeft}
         onStart={() => setBeganDragging(true)}
-        onStop={() => {
-          setBeganDragging(false)
-          isDragging = false
-          props.onSocketUpdate && props.onSocketUpdate(socketKeyLeft, socketKeyRight)
-        }}
+        onStop={onStop}
         onDrag={(event) => handleDrag(true, event)}
         scale={getCanvasZoom()}
       >
@@ -255,11 +259,7 @@ export default function Noodle(props: NoodleProps) {
         position={getHandlePos(false)}
         nodeRef={refRight}
         onStart={() => setBeganDragging(true)}
-        onStop={() => {
-          setBeganDragging(false)
-          isDragging = false
-          props.onSocketUpdate && props.onSocketUpdate(socketKeyLeft, socketKeyRight)
-        }}
+        onStop={onStop}
         onDrag={(event) => handleDrag(false, event)}
         scale={getCanvasZoom()}
       >

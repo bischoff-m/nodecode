@@ -38,4 +38,5 @@ export interface Socket {
   nodeKey: string
   fieldKey: string
   isInput: boolean
+  socketKey: string
 }

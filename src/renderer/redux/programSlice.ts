@@ -5,6 +5,8 @@ import { customAlphabet, urlAlphabet } from 'nanoid'
 
 const nanoid = customAlphabet(urlAlphabet, 10)
 
+const getConnectionKey = (pair: Connection) => `${pair.source.socketKey}:${pair.target.socketKey}`
+
 const initialState: NodeProgram = {
   nodes: {},
   connections: {},
@@ -25,16 +27,19 @@ export const programSlice = createSlice({
     },
     addConnection: (state, action: PayloadAction<Connection>) => {
       // TODO: check if connection ...
-      //        ...is valid
-      //        ...does not already exist
+      //        ...is valid (source and target exist)
       //        ...has output as source and input as target
-      const newKey = 'noodle#' + nanoid()
+      const newKey = getConnectionKey(action.payload)
+      for (const key in state.connections)
+        if (state.connections[key].target.socketKey === action.payload.target.socketKey)
+          delete state.connections[key]
       state.connections[newKey] = action.payload
     },
-    removeConnection: (state, action: PayloadAction<string>) => {
-      if (!state.connections[action.payload])
+    removeConnection: (state, action: PayloadAction<Connection>) => {
+      const key = getConnectionKey(action.payload)
+      if (!state.connections[key])
         throw new Error('Connection does not exist')
-      delete state.connections[action.payload]
+      delete state.connections[key]
     },
   },
 })

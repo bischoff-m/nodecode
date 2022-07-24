@@ -99,12 +99,16 @@
                 },
                 "isInput": {
                     "type": "boolean"
+                },
+                "socketKey": {
+                    "type": "string"
                 }
             },
             "required": [
                 "nodeKey",
                 "fieldKey",
-                "isInput"
+                "isInput",
+                "socketKey"
             ]
         }
     },

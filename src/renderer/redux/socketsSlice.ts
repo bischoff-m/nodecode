@@ -5,7 +5,7 @@ import type { Socket } from '@/types/NodeProgram'
 
 
 // helper function to generate a unique key for a socket
-function keyFromSocket(socket: Socket): string {
+function keyFromSocket(socket: Omit<Socket, 'socketKey'>): string {
   return [
     socket.nodeKey,
     socket.fieldKey,
@@ -53,7 +53,7 @@ type MoveNodePayload = {
 }
 
 type AddSocketPayload = {
-  socket: Socket,
+  socket: Omit<Socket, 'socketKey'>,
   pos: Vec2D,
 }
 
@@ -94,9 +94,9 @@ export const socketsSlice = createSlice({
   name: 'identifiers',
   initialState: initialStateIDs,
   reducers: {
-    updateSocket: (state, action: PayloadAction<Socket>) => {
+    updateSocket: (state, action: PayloadAction<Omit<Socket, 'socketKey'>>) => {
       const key = keyFromSocket(action.payload)
-      state[key] = action.payload
+      state[key] = { socketKey: key, ...action.payload }
     },
   },
 })
