@@ -2,8 +2,9 @@ import { createStyles } from '@mantine/core'
 import { getNodeComponent } from '@/util/nodeFactory'
 import { useDispatchTyped, useSelectorTyped } from '@/redux/hooks'
 import type { NodeInstance } from '@/types/NodeProgram'
-import { addNode } from '@/redux/programSlice'
+import { addNode, removeNode } from '@/redux/programSlice'
 import { useEffect } from 'react'
+import { useHotkeys } from '@mantine/hooks'
 
 // TODO: merge nodeFactory and NodeProvider
 // TODO: update display and state properties in Node and Field component
@@ -80,6 +81,19 @@ const initNodes: NodeInstance[] = [
 let isInitialized = false
 
 
+// Node selection state: getter
+let selectedNode: string | null = null // key of the node that is currently selected
+export const getSelectedNode = () => selectedNode
+const onNodeSelectedCallbacks: ((nodeKey: string | null) => void)[] = [] // functions that should be called when user selected a node
+export const onNodeSelected = (callback: (nodeKey: string | null) => void) => {
+  onNodeSelectedCallbacks.push(callback)
+}
+// Node selection state: setter
+export const setSelectedNode = (nodeKey: string | null) => {
+  selectedNode = nodeKey
+  onNodeSelectedCallbacks.forEach((callback) => callback(nodeKey))
+}
+
 
 const useStyles = createStyles((theme) => ({
   container: {
@@ -94,6 +108,14 @@ export default function NodeProvider(props: NodeProviderProps) {
   const { classes } = useStyles()
   const dispatch = useDispatchTyped()
   const nodes = useSelectorTyped((state) => state.program.nodes)
+  useHotkeys([
+    ['Delete', () => {
+      if (selectedNode) {
+        dispatch(removeNode(selectedNode))
+        setSelectedNode(null)
+      }
+    }]
+  ])
 
   // uncomment this if debugging nodes should be used
   useEffect(() => {

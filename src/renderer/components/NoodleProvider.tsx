@@ -98,6 +98,12 @@ export default function NoodleProvider(props: NoodleProviderProps) {
       {[
         ...Object
           .keys(looseNoodles)
+          .filter(key => {
+            // When a node is deleted, the noodles are unmounted before the sockets of the node are removed
+            // To prevent a "socket not found" error, only valid noodles are rendered
+            const pair = looseNoodles[key]
+            return (!pair.source || allSockets[pair.source]) && (!pair.target || allSockets[pair.target])
+          })
           .map((key) =>
             <Noodle
               keyLeft={looseNoodles[key].source}
@@ -114,6 +120,12 @@ export default function NoodleProvider(props: NoodleProviderProps) {
           ),
         ...Object
           .keys(connections)
+          .filter(key => {
+            // When a node is deleted, the noodles are unmounted before the sockets of the node are removed
+            // To prevent a "socket not found" error, only valid noodles are rendered
+            const pair = connections[key]
+            return allSockets[pair.source.socketKey] && allSockets[pair.target.socketKey]
+          })
           .map((key) =>
             <Noodle
               keyLeft={connections[key].source.socketKey}

@@ -12,7 +12,7 @@ import { Vec2D } from '@/types/util'
 import NoodleProvider from '@/components/NoodleProvider'
 import { useBooleanToggle, useHotkeys } from '@mantine/hooks'
 import NewNodePopup from '@/components/NewNodePopup'
-import NodeProvider from '@/components/NodeProvider'
+import NodeProvider, { setSelectedNode } from '@/components/NodeProvider'
 
 // Global constants and variables
 const zoomFactor = 0.8
@@ -42,19 +42,6 @@ let zoom = 1 // relative size of elements on canvas in percent
 export const getCanvasZoom = () => zoom
 const onZoomCallbacks: ((newZoom: number) => void)[] = [] // functions that should be called when user zoomed in/out
 export const onZoomChanged = (callback: (newZoom: number) => void) => onZoomCallbacks.push(callback)
-
-// Node selection state: getter
-let selectedNode: string | null = null // key of the node that is currently selected
-export const getSelectedNode = () => selectedNode
-const onNodeSelectedCallbacks: ((nodeKey: string | null) => void)[] = [] // functions that should be called when user selected a node
-export const onNodeSelected = (callback: (nodeKey: string | null) => void) => {
-  onNodeSelectedCallbacks.push(callback)
-}
-// Node selection state: setter
-export const setSelectedNode = (nodeKey: string | null) => {
-  selectedNode = nodeKey
-  onNodeSelectedCallbacks.forEach((callback) => callback(nodeKey))
-}
 
 // TODO: replace vector math by something where you dont need to write x and y for each calculation
 //       - https://mathjs.org/ Problem: code is less readable because of math.add(...) instead of ... + ...

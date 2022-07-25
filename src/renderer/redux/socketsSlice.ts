@@ -48,10 +48,6 @@ export function moveNode(nodeKey: string, by: Vec2D): void {
 // ## POSITION SLICE THAT IS UPDATED ONLY WHEN NEEDED
 // #############################################################################
 
-type MoveNodePayload = {
-  nodeKey: string,
-}
-
 type AddSocketPayload = {
   socket: Omit<Socket, 'socketKey'>,
   pos: Vec2D,
@@ -63,10 +59,10 @@ export const positionSlice = createSlice({
   name: 'positions',
   initialState: initialStatePos,
   reducers: {
-    moveNodeStop: (state, action: PayloadAction<MoveNodePayload>) => {
+    moveNodeStop: (state, action: PayloadAction<string>) => {
       Object
         .keys(state)
-        .filter(k => k.startsWith(action.payload.nodeKey))
+        .filter(k => k.startsWith(action.payload))
         .forEach(k => {
           state[k].x = socketPositions[k].x
           state[k].y = socketPositions[k].y
@@ -78,10 +74,15 @@ export const positionSlice = createSlice({
         state[key] = action.payload.pos
       if (!socketPositions[key])
         socketPositions[key] = action.payload.pos
-    }
+    },
+    removeSocketPos: (state, action: PayloadAction<Omit<Socket, 'socketKey'>>) => {
+      const key = keyFromSocket(action.payload)
+      delete state[key]
+      delete socketPositions[key]
+    },
   },
 })
-export const { moveNodeStop, addSocketPos } = positionSlice.actions
+export const { moveNodeStop, addSocketPos, removeSocketPos } = positionSlice.actions
 
 
 // #############################################################################
@@ -98,10 +99,13 @@ export const socketsSlice = createSlice({
       const key = keyFromSocket(action.payload)
       state[key] = { socketKey: key, ...action.payload }
     },
+    removeSocket: (state, action: PayloadAction<Omit<Socket, 'socketKey'>>) => {
+      delete state[keyFromSocket(action.payload)]
+    },
   },
 })
 
-export const { updateSocket } = socketsSlice.actions
+export const { updateSocket, removeSocket } = socketsSlice.actions
 
 
 export default combineReducers({

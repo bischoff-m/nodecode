@@ -3,11 +3,12 @@ import { useDispatchTyped } from '@/redux/hooks'
 import { moveNode, moveNodeStop } from '@/redux/socketsSlice'
 import { useRef, useState } from 'react'
 import Draggable from 'react-draggable'
-import { getCanvasZoom, getSelectedNode, onNodeSelected, onZoomChanged, setSelectedNode } from '@/components/NodeCanvas'
+import { getCanvasZoom, onZoomChanged } from '@/components/NodeCanvas'
 import { fixedTheme } from '@/styles/themeCanvas'
 import type { DraggableData, DraggableEvent } from 'react-draggable'
 import type { ReactNode } from 'react'
 import { Vec2D } from '@/types/util'
+import { getSelectedNode, onNodeSelected, setSelectedNode } from '@/components/NodeProvider'
 
 const useStyles = createStyles((theme) => ({
   card: {
@@ -85,7 +86,7 @@ export default function Node(props: NodeProps) {
   function onStop(event: DraggableEvent, data: DraggableData) {
     if (lastNodePos && lastNodePos.x === data.x && lastNodePos.y === data.y)
       return
-    dispatch(moveNodeStop({ nodeKey: props.nodeKey }))
+    dispatch(moveNodeStop(props.nodeKey))
     nodePos = { x: data.x, y: data.y }
     lastNodePos = { x: data.x, y: data.y }
   }
@@ -107,7 +108,10 @@ export default function Node(props: NodeProps) {
       <div
         className={classes.card}
         ref={nodeRef}
-        onClick={(e) => { e.stopPropagation(); setSelectedNode(props.nodeKey) }}
+        onClick={(e) => {
+          e.stopPropagation()
+          setSelectedNode(props.nodeKey)
+        }}
       >
         <div
           className={classes.header}

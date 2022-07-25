@@ -1,5 +1,5 @@
 import { createStyles } from '@mantine/core'
-import { updateSocket, addSocketPos } from '@/redux/socketsSlice'
+import { updateSocket, addSocketPos, removeSocket, removeSocketPos } from '@/redux/socketsSlice'
 import { useDispatchTyped } from '@/redux/hooks'
 import { useEffect, useRef } from 'react'
 import { screenToCanvas } from '@/components/NodeCanvas'
@@ -84,7 +84,17 @@ export default function InputOutputField(props: InputOutputFieldProps & FieldPro
       }
     })
 
-    // TODO: remove socket on unmount
+    return () => {
+      Array(true, false).forEach(isLeft => {
+        const socket = {
+          nodeKey: props.nodeKey,
+          fieldKey: props.fieldKey,
+          isInput: isLeft,
+        }
+        dispatch(removeSocketPos(socket))
+        dispatch(removeSocket(socket))
+      })
+    }
   }, [])
 
   return (

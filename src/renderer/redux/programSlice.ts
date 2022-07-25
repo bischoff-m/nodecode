@@ -24,6 +24,12 @@ export const programSlice = createSlice({
       if (!state.nodes[action.payload])
         throw new Error('Node does not exist')
       delete state.nodes[action.payload]
+      for (const key in state.connections) {
+        if (state.connections[key].source.socketKey === action.payload)
+          delete state.connections[key]
+        if (state.connections[key].target.socketKey === action.payload)
+          delete state.connections[key]
+      }
     },
     addConnection: (state, action: PayloadAction<Connection>) => {
       // TODO: check if connection ...
