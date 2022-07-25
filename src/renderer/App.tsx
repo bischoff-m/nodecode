@@ -6,7 +6,7 @@ import { MantineProvider, AppShell } from '@mantine/core'
 import Navbar from '@/components/Navbar'
 import Header from '@/components/Header'
 import '@/styles/global.scss'
-import PackageProvider from '@/components/PackageProvider'
+import NodePackageProvider from '@/components/NodePackageProvider'
 
 export default function App() {
   return (
@@ -14,9 +14,9 @@ export default function App() {
       <ReduxProvider store={store}>
         <MantineProvider theme={theme} withNormalizeCSS withGlobalStyles>
           <AppShell padding={0} navbar={<Navbar />} header={<Header />}>
-            <PackageProvider>
+            <NodePackageProvider>
               <NodeCanvas />
-            </PackageProvider>
+            </NodePackageProvider>
           </AppShell>
         </MantineProvider>
       </ReduxProvider>
