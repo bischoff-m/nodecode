@@ -1,4 +1,3 @@
-import Node from '@/components/Node'
 import type {
   Field,
   NodePackage,
@@ -8,7 +7,7 @@ import type {
   RadioFieldProps,
   MultiSelectFieldProps
 } from '@/types/NodePackage'
-
+import Node from '@/components/Node'
 import InputOutput from '@/components/fields/InputOutput'
 import Select from '@/components/fields/Select'
 import List from '@/components/fields/List'
