@@ -25,6 +25,7 @@ async function createWindow() {
     webPreferences: {
       preload: join(__dirname, '../preload/index.cjs')
     },
+    show: false,
   })
 
   if (!isDev) {
@@ -41,10 +42,9 @@ async function createWindow() {
     win?.show()
     if (!isDev)
       win?.maximize()
-
-    // TODO: only start server, if not already created (reload throws error)
-    win && startServer(win)
   })
+
+  win && startServer(win)
 }
 
 app.whenReady().then(createWindow)
