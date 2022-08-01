@@ -4,6 +4,7 @@ import isDev from 'electron-is-dev'
 import fs from 'fs'
 import path from 'path'
 import startServer from './server'
+import pkg from '../../package.json'
 
 if (isDev)
   app.disableHardwareAcceleration()
@@ -31,7 +32,6 @@ async function createWindow() {
   if (!isDev) {
     win.loadFile(join(__dirname, '../renderer/index.html'))
   } else {
-    const pkg = await import('../../package.json')
     const url = `http://${pkg.env.HOST || '127.0.0.1'}:${pkg.env.PORT || 3000}`
 
     win.loadURL(url)

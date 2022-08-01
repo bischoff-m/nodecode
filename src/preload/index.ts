@@ -4,11 +4,24 @@ import { useLoading } from './loading'
 
 const { appendLoading, removeLoading } = useLoading();
 
-(async () => {
-  await domReady()
+domReady().then(appendLoading)
 
-  appendLoading()
-})()
+
+// interface Window {
+//   /** Expose some functionality through preload script */
+//   ipc: {
+//     send: (channel: string, ...args: any[]) => void
+//     invoke: (channel: string, ...args: any[]) => Promise<any>
+//     on: (channel: string, func: (...args: any[]) => void) => void
+//     once: (channel: string, func: (...args: any[]) => void) => void
+//     removeAllListeners: (channel: string) => void
+//     listenerCount: (channel: string) => number
+//   }
+//   loading: {
+//     appendLoading: () => void
+//     removeLoading: () => void
+//   }
+// }
 
 
 const toMainChannels: string[] = [
