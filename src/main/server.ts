@@ -3,11 +3,15 @@
 const express = require('express')
 import { createServer } from 'http'
 import { Server } from 'socket.io'
-import { ServerToClientEvents, ClientToServerEvents, InterServerEvents, SocketData } from '@/types/server'
-import { BrowserWindow, ipcMain } from 'electron'
+import type { ServerToClientEvents, ClientToServerEvents, InterServerEvents, SocketData } from '@/types/server'
+import type { BrowserWindow } from 'electron'
+import { getIpcMain } from '../ipc'
 
 // Doc: https://stackoverflow.com/questions/66686377/how-to-tie-socket-io-width-express-an-typescript
 export default function startServer(win: BrowserWindow) {
+  // Get typesafe IpcMain
+  const ipcMain = getIpcMain(win)
+
   // Express server
   const expressApp = express()
   const httpServer = createServer(expressApp)
@@ -45,13 +49,13 @@ export default function startServer(win: BrowserWindow) {
 
     // SEND WITHOUT RETURN VALUE
     // relay event from renderer process to backend without expecting a response
-    ipcMain.on('toBackend', (_, channel, ...args) => {
+    ipcMain.on.toBackend((event, channel, args) => {
       socket.emit(channel, ...args)
     })
 
     // SEND WITH RETURN VALUE
     // relay event from renderer process to backend and pass response from backend back to renderer
-    ipcMain.handle('toBackend', (_, channel, timeout, ...args) => {
+    ipcMain.handle.toBackend((event, channel, timeout, ...args) => {
       // return a promise that resolves to the data returned by the backend on success
       return new Promise((resolve, reject) => {
         // send event to backend and resolve using the data returned by the backend

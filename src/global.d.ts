@@ -1,5 +1,7 @@
 /// <reference types="vite/client" />
 
+import { ipcRenderer } from './ipc'
+
 declare namespace NodeJS {
   interface ProcessEnv {
     NODE_ENV: 'development' | 'production'
@@ -9,18 +11,12 @@ declare namespace NodeJS {
 }
 
 // Extends global Window type
-interface Window {
-  /** Expose some functionality through preload script */
-  ipc: {
-    send: (channel: string, ...args: any[]) => void
-    invoke: (channel: string, ...args: any[]) => Promise<any>
-    on: (channel: string, func: (...args: any[]) => void) => void
-    once: (channel: string, func: (...args: any[]) => void) => void
-    removeAllListeners: (channel: string) => void
-    listenerCount: (channel: string) => number
-  }
-  loading: {
-    appendLoading: () => void
-    removeLoading: () => void
+declare global {
+  interface Window {
+    ipc: typeof ipcRenderer
+    loading: {
+      appendLoading: () => void
+      removeLoading: () => void
+    }
   }
 }

@@ -14,8 +14,8 @@ export default function PackageProvider(props: PackageProviderProps) {
   const [packageData, setPackageData] = useState<NodePackage | null>(null)
 
   useEffect(() => {
-    window.ipc
-      .invoke('requestPublicFile', '/public/config/packages/basic_nodes.json', { encoding: 'utf-8', })
+    window.ipc.invoke
+      .requestPublicFile('/public/config/packages/basic_nodes.json', 'utf-8')
       .then((data) => setPackageData(JSON.parse(data) as NodePackage))
       .catch((err) => { throw err })
   }, [])

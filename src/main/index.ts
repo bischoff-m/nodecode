@@ -1,10 +1,11 @@
 import { join } from 'path'
-import { app, BrowserWindow, ipcMain } from 'electron'
+import { app, BrowserWindow } from 'electron'
 import isDev from 'electron-is-dev'
 import fs from 'fs'
 import path from 'path'
 import startServer from './server'
 import pkg from '../../package.json'
+import { getIpcMain } from '../ipc'
 
 if (isDev)
   app.disableHardwareAcceleration()
@@ -44,7 +45,27 @@ async function createWindow() {
       win?.maximize()
   })
 
-  win && startServer(win)
+  if (!win) return
+
+  startServer(win)
+
+  const ipcMain = getIpcMain(win)
+
+  ipcMain.handle.requestPublicFile(async (event, filePath, encoding) => {
+    const relative = path.relative('/public', filePath)
+    // check if path exists and if it is a subdir of /public
+    if (!relative || relative.startsWith('..') || path.isAbsolute(relative))
+      throw new Error('Path has to refer to a file in the /public directory: ' + filePath)
+
+    // check if path refers to file
+    const fullPath = path.join('public', relative)
+    if (!fs.lstatSync(fullPath).isFile())
+      throw new Error('Path does not refer to a file: ' + fullPath)
+
+    const options = { flag: 'r', encoding }
+    const data = fs.readFileSync(fullPath, options)
+    return data.toString()
+  })
 }
 
 app.whenReady().then(createWindow)
@@ -71,20 +92,4 @@ app.on('activate', () => {
   } else {
     createWindow()
   }
-})
-
-ipcMain.handle('requestPublicFile', (event, filePath, fsOptions) => {
-  const relative = path.relative('/public', filePath)
-  // check if path exists and if it is a subdir of /public
-  if (!relative || relative.startsWith('..') || path.isAbsolute(relative))
-    throw new Error('Path has to refer to a file in the /public directory: ' + filePath)
-
-  // check if path refers to file
-  const fullPath = path.join('public', relative)
-  if (!fs.lstatSync(fullPath).isFile())
-    throw new Error('Path does not refer to a file: ' + fullPath)
-
-  const options = fsOptions ? { flag: 'r', ...fsOptions } : { flag: 'r' }
-  const data = fs.readFileSync(fullPath, options)
-  return data
 })
