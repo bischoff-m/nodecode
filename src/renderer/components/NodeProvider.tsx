@@ -1,9 +1,9 @@
 import { createStyles } from '@mantine/core'
-import { getNodeComponent } from '@/util/nodeFactory'
+import { getNodeComponent, NodePackageContext } from '@/components/NodePackageProvider'
 import { useDispatchTyped, useSelectorTyped } from '@/redux/hooks'
 import type { NodeInstance } from '@/types/NodeProgram'
 import { addNode, removeNode } from '@/redux/programSlice'
-import { useEffect } from 'react'
+import { useContext, useEffect } from 'react'
 import { useHotkeys } from '@mantine/hooks'
 
 // TODO: merge nodeFactory and NodeProvider
@@ -107,6 +107,7 @@ export type NodeProviderProps = {}
 export default function NodeProvider(props: NodeProviderProps) {
   const { classes } = useStyles()
   const dispatch = useDispatchTyped()
+  const nodePackage = useContext(NodePackageContext)
   const nodes = useSelectorTyped((state) => state.program.nodes)
   useHotkeys([
     ['Delete', () => {
@@ -130,7 +131,7 @@ export default function NodeProvider(props: NodeProviderProps) {
     <div className={classes.container}>{
       Object
         .keys(nodes)
-        .map((key) => getNodeComponent(key, nodes[key].type, nodes[key].display))
+        .map((key) => getNodeComponent(nodePackage, key, nodes[key].type, nodes[key].display))
     }</div>
   )
 }
