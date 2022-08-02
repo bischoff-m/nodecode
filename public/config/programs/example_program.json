@@ -1,36 +1,39 @@
 {
     "$schema": "../schemas/NodeProgram.schema.json",
     "nodes": {
-        "node0": {
+        "list_input#aoHTjKiqUY": {
             "type": "list_input",
             "display": {
-                "width": 200,
-                "x": 10,
-                "y": 10
+                "width": 100,
+                "x": 40,
+                "y": 100
             },
-            "state": {
-                "datatype_dropdown": "String",
-                "item_list": [
-                    "charttime",
-                    "terseform",
-                    "unitofmeasure"
-                ]
-            }
+            "state": {}
         },
-        "node1": {
+        "output#KS1KjIc9qz": {
             "type": "output",
             "display": {
-                "width": 200,
-                "x": 300,
-                "y": 10
+                "width": 100,
+                "x": 400,
+                "y": 100
             },
             "state": {}
         }
     },
     "connections": {
-        "node0.list_input.output:node1.output.input": {
-            "source": "node0.list_input.output",
-            "target": "node1.output.input"
+        "list_input#aoHTjKiqUY.output.right:output#KS1KjIc9qz.input.left": {
+            "source": {
+                "socketKey": "list_input#aoHTjKiqUY.output.right",
+                "nodeKey": "list_input#aoHTjKiqUY",
+                "fieldKey": "output",
+                "isInput": false
+            },
+            "target": {
+                "socketKey": "output#KS1KjIc9qz.input.left",
+                "nodeKey": "output#KS1KjIc9qz",
+                "fieldKey": "input",
+                "isInput": true
+            }
         }
     }
 }

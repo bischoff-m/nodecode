@@ -106,13 +106,15 @@ export default function NewNodePopup(props: NewNodePopupProps) {
               onClick={() => {
                 props.toggleOpen()
                 dispatch(addNode({
-                  type: result.item.id,
-                  display: {
-                    width: 200,
-                    x: 200,
-                    y: 200,
-                  },
-                  state: {},
+                  node: {
+                    type: result.item.id,
+                    display: {
+                      width: 200,
+                      x: 200,
+                      y: 200,
+                    },
+                    state: {},
+                  }
                 }))
               }}
             >

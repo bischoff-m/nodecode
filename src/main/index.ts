@@ -8,6 +8,7 @@ import pkg from '../../package.json'
 import { getIpcMain } from '../ipc'
 import type { NodePackage } from '@/types/NodePackage'
 import type { JSONSchema7 } from 'json-schema'
+import { NodeProgram } from '@/types/NodeProgram'
 
 if (isDev)
   app.disableHardwareAcceleration()
@@ -52,25 +53,15 @@ async function createWindow() {
   startServer(win)
 
   const ipcMain = getIpcMain(win)
+  const fsOptions: Parameters<(typeof fs.readFileSync)>[1] = { flag: 'r', encoding: 'utf-8' }
 
-  ipcMain.handle.requestPublicFile(async (event, filePath, encoding) => {
-    const relative = path.relative('/public', filePath)
-    // check if path exists and if it is a subdir of /public
-    if (!relative || relative.startsWith('..') || path.isAbsolute(relative))
-      throw new Error('Path has to refer to a file in the /public directory: ' + filePath)
-
-    // check if path refers to file
-    const fullPath = path.join('public', relative)
-    if (!fs.lstatSync(fullPath).isFile())
-      throw new Error('Path does not refer to a file: ' + fullPath)
-
-    const options = { flag: 'r', encoding }
-    const data = fs.readFileSync(fullPath, options)
-    return data.toString()
+  ipcMain.handle.getProgram(async (event) => {
+    const root = 'public/config/programs'
+    const data = fs.readFileSync(path.join(root, 'example_program.json'), fsOptions)
+    return JSON.parse(data.toString()) as NodeProgram
   })
 
 
-  const fsOptions: Parameters<(typeof fs.readFileSync)>[1] = { flag: 'r', encoding: 'utf-8' }
   const loadSchema = <T extends object>(...subpath: string[]): T =>
     JSON.parse(fs.readFileSync(path.join(...subpath), fsOptions).toString())
 

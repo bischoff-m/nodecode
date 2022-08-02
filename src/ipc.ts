@@ -1,4 +1,5 @@
 import type { NodePackage } from '@/types/NodePackage'
+import type { NodeProgram } from '@/types/NodeProgram'
 import { ClientToServerEvents, ServerToClientEvents } from '@/types/server'
 import {
   contextBridge as originalContextBridge,
@@ -25,10 +26,7 @@ type GetPackageSchemaPayload = {
 //       code below because then it is set to never below
 const fromRenderer = {
   invoke: {
-    requestPublicFile: (
-      file: string,
-      encoding?: BufferEncoding
-    ) => <Promise<string>>originalIpcRenderer.invoke('requestPublicFile', file, encoding),
+    getProgram: () => <Promise<NodeProgram>>originalIpcRenderer.invoke('getProgram'),
     getPackageSchema: () => <Promise<GetPackageSchemaPayload>>originalIpcRenderer.invoke('getPackageSchema'),
     getPackage: () => <Promise<NodePackage>>originalIpcRenderer.invoke('getPackage'),
     toBackend: (

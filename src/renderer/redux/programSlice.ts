@@ -16,9 +16,9 @@ export const programSlice = createSlice({
   name: 'program',
   initialState: initialState,
   reducers: {
-    addNode: (state, action: PayloadAction<NodeInstance>) => {
-      const newKey = action.payload.type + '#' + nanoid()
-      state.nodes[newKey] = action.payload
+    addNode: (state, action: PayloadAction<{ node: NodeInstance, key?: string }>) => {
+      const newKey = action.payload.key || action.payload.node.type + '#' + nanoid()
+      state.nodes[newKey] = action.payload.node
     },
     removeNode: (state, action: PayloadAction<string>) => {
       if (!state.nodes[action.payload])

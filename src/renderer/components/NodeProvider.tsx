@@ -123,8 +123,20 @@ export default function NodeProvider(props: NodeProviderProps) {
     if (isInitialized) return
     isInitialized = true
 
-    if (Object.keys(nodes).length === 0)
-      initNodes.forEach(node => dispatch(addNode(node)))
+    window.ipc.invoke
+      .getProgram()
+      .then((program) => Object
+        .keys(program.nodes)
+        .forEach((nodeKey) => dispatch(addNode({
+          node: program.nodes[nodeKey],
+          key: nodeKey,
+        })))
+      ).catch(() => {
+        console.warn('NodeProvider: Failed to get program. Loading debugging nodes.')
+        if (Object.keys(nodes).length === 0)
+          initNodes.forEach(node => dispatch(addNode({ node })))
+      })
+
   }, [])
 
   return (
