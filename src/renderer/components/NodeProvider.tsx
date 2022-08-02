@@ -5,7 +5,6 @@ import type { NodeInstance } from '@/types/NodeProgram'
 import { addConnection, addNode, removeNode } from '@/redux/programSlice'
 import { useContext, useEffect } from 'react'
 import { useHotkeys } from '@mantine/hooks'
-import Ajv from 'ajv'
 
 // TODO: merge nodeFactory and NodeProvider
 // TODO: update display and state properties in Node and Field component
@@ -110,7 +109,6 @@ export default function NodeProvider(props: NodeProviderProps) {
   const dispatch = useDispatchTyped()
   const nodePackage = useContext(NodePackageContext)
   const nodes = useSelectorTyped((state) => state.program.nodes)
-  let ajv = new Ajv({ allErrors: true })
 
   useHotkeys([
     ['Delete', () => {
@@ -127,33 +125,24 @@ export default function NodeProvider(props: NodeProviderProps) {
     isInitialized = true
 
     window.ipc.invoke
-      .getProgramSchema()
-      .then(async (schema) => ajv.compile(schema))
-      .then((validate) => window.ipc.invoke
-        .getProgram()
-        .then((program) => {
-          if (!validate(program))
-            throw new Error(`The program is not valid. ${JSON.stringify(validate.errors)}`)
-          Object
-            .keys(program.nodes)
-            .forEach((nodeKey) => dispatch(addNode({
-              node: program.nodes[nodeKey],
-              key: nodeKey,
-            })))
-          Object
-            .keys(program.connections)
-            .forEach((connKey) => dispatch(addConnection(program.connections[connKey])))
-        })
-      ).catch((err) => {
+      .getProgram()
+      .then((program) => {
+        Object
+          .keys(program.nodes)
+          .forEach((nodeKey) => dispatch(addNode({
+            node: program.nodes[nodeKey],
+            key: nodeKey,
+          })))
+        Object
+          .keys(program.connections)
+          .forEach((connKey) => dispatch(addConnection(program.connections[connKey])))
+      })
+      .catch((err) => {
         console.warn('NodeProvider: Failed to load or validate program file. Loading debugging nodes.')
         if (Object.keys(nodes).length === 0)
           initNodes.forEach(node => dispatch(addNode({ node })))
         throw err
       })
-
-    return () => {
-      ajv = new Ajv({ allErrors: true })
-    }
   }, [])
 
   return (

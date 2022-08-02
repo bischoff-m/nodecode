@@ -10,14 +10,8 @@ import {
   BrowserWindow,
   IpcMainEvent,
 } from 'electron'
-import type { JSONSchema7 } from 'json-schema'
 
 // TODO: implement once and listenerCount
-
-type GetPackageSchemaPayload = {
-  schema: JSONSchema7
-  dependencies: JSONSchema7[]
-}
 
 // Define the IPC channels here
 // WARN: The keys of the functions should match the channel names because they are used as
@@ -26,9 +20,7 @@ type GetPackageSchemaPayload = {
 //       code below because then it is set to never below
 const fromRenderer = {
   invoke: {
-    getProgramSchema: () => <Promise<JSONSchema7>>originalIpcRenderer.invoke('getProgramSchema'),
     getProgram: () => <Promise<NodeProgram>>originalIpcRenderer.invoke('getProgram'),
-    getPackageSchema: () => <Promise<GetPackageSchemaPayload>>originalIpcRenderer.invoke('getPackageSchema'),
     getPackage: () => <Promise<NodePackage>>originalIpcRenderer.invoke('getPackage'),
     toBackend: (
       channel: keyof ServerToClientEvents,
