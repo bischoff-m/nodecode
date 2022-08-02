@@ -73,15 +73,6 @@ export default function NoodleProvider(props: NoodleProviderProps) {
   }
 
   useEffect(() => {
-    window.ipc.invoke
-      .getProgram()
-      .then((program) => Object
-        .keys(program.connections)
-        .forEach((connKey) => dispatch(addConnection(program.connections[connKey])))
-      )
-  }, [])
-
-  useEffect(() => {
     // Get all sockets that are empty
     const emptySockets = { ...allSockets }
     Object

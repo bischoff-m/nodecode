@@ -26,6 +26,7 @@ type GetPackageSchemaPayload = {
 //       code below because then it is set to never below
 const fromRenderer = {
   invoke: {
+    getProgramSchema: () => <Promise<JSONSchema7>>originalIpcRenderer.invoke('getProgramSchema'),
     getProgram: () => <Promise<NodeProgram>>originalIpcRenderer.invoke('getProgram'),
     getPackageSchema: () => <Promise<GetPackageSchemaPayload>>originalIpcRenderer.invoke('getPackageSchema'),
     getPackage: () => <Promise<NodePackage>>originalIpcRenderer.invoke('getPackage'),

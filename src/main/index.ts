@@ -55,15 +55,20 @@ async function createWindow() {
   const ipcMain = getIpcMain(win)
   const fsOptions: Parameters<(typeof fs.readFileSync)>[1] = { flag: 'r', encoding: 'utf-8' }
 
+
+  const loadSchema = <T extends object>(...subpath: string[]): T =>
+    JSON.parse(fs.readFileSync(path.join(...subpath), fsOptions).toString())
+
   ipcMain.handle.getProgram(async (event) => {
     const root = 'public/config/programs'
     const data = fs.readFileSync(path.join(root, 'example_program.json'), fsOptions)
     return JSON.parse(data.toString()) as NodeProgram
   })
 
-
-  const loadSchema = <T extends object>(...subpath: string[]): T =>
-    JSON.parse(fs.readFileSync(path.join(...subpath), fsOptions).toString())
+  ipcMain.handle.getProgramSchema(async (event) => {
+    const root = 'public/config/schemas'
+    return loadSchema<JSONSchema7>(root, 'NodeProgram.schema.json')
+  })
 
   ipcMain.handle.getPackage(async (event) => {
     const root = 'public/config/packages'

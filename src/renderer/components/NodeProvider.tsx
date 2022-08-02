@@ -2,9 +2,10 @@ import { createStyles } from '@mantine/core'
 import { getNodeComponent, NodePackageContext } from '@/components/NodePackageProvider'
 import { useDispatchTyped, useSelectorTyped } from '@/redux/hooks'
 import type { NodeInstance } from '@/types/NodeProgram'
-import { addNode, removeNode } from '@/redux/programSlice'
+import { addConnection, addNode, removeNode } from '@/redux/programSlice'
 import { useContext, useEffect } from 'react'
 import { useHotkeys } from '@mantine/hooks'
+import Ajv from 'ajv'
 
 // TODO: merge nodeFactory and NodeProvider
 // TODO: update display and state properties in Node and Field component
@@ -14,24 +15,24 @@ import { useHotkeys } from '@mantine/hooks'
 
 
 const initNodes: NodeInstance[] = [
-  {
-    type: 'list_input',
-    display: {
-      width: 100,
-      x: 40,
-      y: 100,
-    },
-    state: {},
-  },
-  {
-    type: 'output',
-    display: {
-      width: 100,
-      x: 400,
-      y: 100,
-    },
-    state: {},
-  },
+  // {
+  //   type: 'list_input',
+  //   display: {
+  //     width: 100,
+  //     x: 40,
+  //     y: 100,
+  //   },
+  //   state: {},
+  // },
+  // {
+  //   type: 'output',
+  //   display: {
+  //     width: 100,
+  //     x: 400,
+  //     y: 100,
+  //   },
+  //   state: {},
+  // },
   // {
   //   type: 'sql_query',
   //   display: {
@@ -109,6 +110,8 @@ export default function NodeProvider(props: NodeProviderProps) {
   const dispatch = useDispatchTyped()
   const nodePackage = useContext(NodePackageContext)
   const nodes = useSelectorTyped((state) => state.program.nodes)
+  let ajv = new Ajv({ allErrors: true })
+
   useHotkeys([
     ['Delete', () => {
       if (selectedNode) {
@@ -124,19 +127,33 @@ export default function NodeProvider(props: NodeProviderProps) {
     isInitialized = true
 
     window.ipc.invoke
-      .getProgram()
-      .then((program) => Object
-        .keys(program.nodes)
-        .forEach((nodeKey) => dispatch(addNode({
-          node: program.nodes[nodeKey],
-          key: nodeKey,
-        })))
-      ).catch(() => {
-        console.warn('NodeProvider: Failed to get program. Loading debugging nodes.')
+      .getProgramSchema()
+      .then(async (schema) => ajv.compile(schema))
+      .then((validate) => window.ipc.invoke
+        .getProgram()
+        .then((program) => {
+          if (!validate(program))
+            throw new Error(`The program is not valid. ${JSON.stringify(validate.errors)}`)
+          Object
+            .keys(program.nodes)
+            .forEach((nodeKey) => dispatch(addNode({
+              node: program.nodes[nodeKey],
+              key: nodeKey,
+            })))
+          Object
+            .keys(program.connections)
+            .forEach((connKey) => dispatch(addConnection(program.connections[connKey])))
+        })
+      ).catch((err) => {
+        console.warn('NodeProvider: Failed to load or validate program file. Loading debugging nodes.')
         if (Object.keys(nodes).length === 0)
           initNodes.forEach(node => dispatch(addNode({ node })))
+        throw err
       })
 
+    return () => {
+      ajv = new Ajv({ allErrors: true })
+    }
   }, [])
 
   return (
