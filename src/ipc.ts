@@ -29,6 +29,7 @@ const fromRenderer = {
     ) => <Promise<any>>originalIpcRenderer.invoke('toBackend', channel, timeout, args),
   },
   send: {
+    saveProgram: (program: NodeProgram) => originalIpcRenderer.send('saveProgram', program),
     toBackend: (
       channel: keyof ServerToClientEvents,
       args: Parameters<ServerToClientEvents[keyof ServerToClientEvents]>

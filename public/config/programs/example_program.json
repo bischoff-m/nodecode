@@ -1,39 +1,57 @@
 {
     "$schema": "../schemas/NodeProgram.schema.json",
+    "connections": {
+        "list_input#aoHTjKiqUY.output.right:output#KS1KjIc9qz.input.left": {
+            "source": {
+                "fieldKey": "output",
+                "isInput": false,
+                "nodeKey": "list_input#aoHTjKiqUY",
+                "socketKey": "list_input#aoHTjKiqUY.output.right"
+            },
+            "target": {
+                "fieldKey": "input",
+                "isInput": true,
+                "nodeKey": "output#KS1KjIc9qz",
+                "socketKey": "output#KS1KjIc9qz.input.left"
+            }
+        }
+    },
     "nodes": {
         "list_input#aoHTjKiqUY": {
-            "type": "list_input",
             "display": {
                 "width": 100,
                 "x": 40,
                 "y": 100
             },
-            "state": {}
+            "state": {},
+            "type": "list_input"
         },
         "output#KS1KjIc9qz": {
-            "type": "output",
             "display": {
                 "width": 100,
                 "x": 400,
                 "y": 100
             },
-            "state": {}
-        }
-    },
-    "connections": {
-        "list_input#aoHTjKiqUY.output.right:output#KS1KjIc9qz.input.left": {
-            "source": {
-                "socketKey": "list_input#aoHTjKiqUY.output.right",
-                "nodeKey": "list_input#aoHTjKiqUY",
-                "fieldKey": "output",
-                "isInput": false
+            "state": {},
+            "type": "output"
+        },
+        "sql_aggregate#NKQxgE0Kgy": {
+            "display": {
+                "width": 200,
+                "x": 200,
+                "y": 200
             },
-            "target": {
-                "socketKey": "output#KS1KjIc9qz.input.left",
-                "nodeKey": "output#KS1KjIc9qz",
-                "fieldKey": "input",
-                "isInput": true
-            }
+            "state": {},
+            "type": "sql_aggregate"
+        },
+        "sql_query#2xGxgGj_49": {
+            "display": {
+                "width": 200,
+                "x": 200,
+                "y": 200
+            },
+            "state": {},
+            "type": "sql_query"
         }
     }
 }

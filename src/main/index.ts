@@ -7,6 +7,7 @@ import { getIpcMain } from '../ipc'
 import type { NodePackage } from '@/types/NodePackage'
 import type { NodeProgram } from '@/types/NodeProgram'
 import { readJSON, usePackageValidate, useProgramValidate } from './schemaValidator'
+import fs from 'fs'
 
 if (isDev)
   app.disableHardwareAcceleration()
@@ -51,11 +52,11 @@ async function createWindow() {
   startServer(win)
 
   const ipcMain = getIpcMain(win)
+  const root = 'public/config'
 
 
   ipcMain.handle.getProgram(async (event) => {
-    const root = 'public/config/programs'
-    const program = readJSON<NodeProgram>(root, 'example_program.json')
+    const program = readJSON<NodeProgram>(root, 'programs/example_program.json')
     const validate = await useProgramValidate()
     if (!validate(program))
       throw new Error(`The node program is invalid. ${JSON.stringify(validate.errors)}`)
@@ -63,12 +64,25 @@ async function createWindow() {
   })
 
   ipcMain.handle.getPackage(async (event) => {
-    const root = 'public/config/packages'
-    const nodePackage = readJSON<NodePackage>(root, 'basic_nodes.json')
+    const nodePackage = readJSON<NodePackage>(root, 'packages/basic_nodes.json')
     const validate = await usePackageValidate()
     if (!validate(nodePackage))
       throw new Error(`The node package is invalid. ${JSON.stringify(validate.errors)}`)
     return nodePackage
+  })
+
+  // TODO: ensure that only one listener is registered
+  ipcMain.on.saveProgram(async (event, program) => {
+    // Add $schema property to enable type validation
+    program['$schema'] = '../schemas/NodeProgram.schema.json'
+
+    // Sort keys
+    const allKeys = new Set<string>()
+    JSON.stringify(program, (key, value) => (allKeys.add(key), value))
+
+    // Write to file
+    const data = JSON.stringify(program, Array.from(allKeys).sort(), 4)
+    fs.writeFileSync(join(root, 'programs/example_program.json'), data)
   })
 }
 
@@ -82,11 +96,10 @@ app.on('window-all-closed', () => {
 })
 
 app.on('second-instance', () => {
-  if (win) {
-    // Someone tried to run a second instance, we should focus our window.
-    if (win.isMinimized()) win.restore()
-    win.focus()
-  }
+  if (!win) return
+  // Someone tried to run a second instance, we should focus our window.
+  win.isMinimized() && win.restore()
+  win.focus()
 })
 
 app.on('activate', () => {
