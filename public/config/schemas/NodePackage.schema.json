@@ -1,5 +1,6 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "/NodePackageSchema",
     "title": "NodePackageSchema",
     "definitions": {
         "NodePackage": {
@@ -78,19 +79,19 @@
             ],
             "oneOf": [
                 {
-                    "$ref": "fields/InputOutput.schema.json#/definitions/InputOutputField"
+                    "$ref": "/fields/InputOutput.schema.json#/definitions/InputOutputField"
                 },
                 {
-                    "$ref": "fields/Select.schema.json#/definitions/SelectField"
+                    "$ref": "/fields/Select.schema.json#/definitions/SelectField"
                 },
                 {
-                    "$ref": "fields/List.schema.json#/definitions/ListField"
+                    "$ref": "/fields/List.schema.json#/definitions/ListField"
                 },
                 {
-                    "$ref": "fields/Radio.schema.json#/definitions/RadioField"
+                    "$ref": "/fields/Radio.schema.json#/definitions/RadioField"
                 },
                 {
-                    "$ref": "fields/MultiSelect.schema.json#/definitions/MultiSelectField"
+                    "$ref": "/fields/MultiSelect.schema.json#/definitions/MultiSelectField"
                 }
             ]
         }

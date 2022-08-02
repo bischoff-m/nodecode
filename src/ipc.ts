@@ -1,3 +1,4 @@
+import type { NodePackage } from '@/types/NodePackage'
 import { ClientToServerEvents, ServerToClientEvents } from '@/types/server'
 import {
   contextBridge as originalContextBridge,
@@ -8,9 +9,14 @@ import {
   BrowserWindow,
   IpcMainEvent,
 } from 'electron'
+import type { JSONSchema7 } from 'json-schema'
 
 // TODO: implement once and listenerCount
 
+type GetPackageSchemaPayload = {
+  schema: JSONSchema7
+  dependencies: JSONSchema7[]
+}
 
 // Define the IPC channels here
 // WARN: The keys of the functions should match the channel names because they are used as
@@ -19,22 +25,23 @@ import {
 //       code below because then it is set to never below
 const fromRenderer = {
   invoke: {
+    requestPublicFile: (
+      file: string,
+      encoding?: BufferEncoding
+    ) => <Promise<string>>originalIpcRenderer.invoke('requestPublicFile', file, encoding),
+    getPackageSchema: () => <Promise<GetPackageSchemaPayload>>originalIpcRenderer.invoke('getPackageSchema'),
+    getPackage: () => <Promise<NodePackage>>originalIpcRenderer.invoke('getPackage'),
     toBackend: (
       channel: keyof ServerToClientEvents,
       timeout: number,
       args: Parameters<ServerToClientEvents[keyof ServerToClientEvents]>
     ) => <Promise<any>>originalIpcRenderer.invoke('toBackend', channel, timeout, args),
-    requestPublicFile: (
-      file: string,
-      encoding?: BufferEncoding
-    ) => <Promise<string>>originalIpcRenderer.invoke('requestPublicFile', file, encoding),
   },
   send: {
     toBackend: (
       channel: keyof ServerToClientEvents,
       args: Parameters<ServerToClientEvents[keyof ServerToClientEvents]>
     ) => originalIpcRenderer.send('toBackend', channel, args),
-    sendQuit: () => originalIpcRenderer.send('sendQuit'),
   },
 }
 
@@ -49,7 +56,6 @@ const fromMain = {
       channel: keyof ClientToServerEvents,
       ...args: Parameters<ClientToServerEvents[keyof ClientToServerEvents]>
     ) => win.webContents.send('fromBackend', channel, ...args),
-    backendQuit: (win: BrowserWindow) => win.webContents.send('backendQuit'),
   },
 }
 
