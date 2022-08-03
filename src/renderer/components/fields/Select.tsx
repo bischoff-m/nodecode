@@ -1,8 +1,10 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Select, useMantineTheme } from '@mantine/core'
 import type { FieldProps } from '@/types/util'
 import type { SelectFieldProps } from '@/types/NodePackage'
 import FieldBase from '@/components/util/FieldBase'
+import { useDispatchTyped, useSelectorTyped } from '@/redux/hooks'
+import { setFieldState } from '@/redux/programSlice'
 
 // TODO: close dropdown when canvas is moved or scaled (or move and scale dropdown as well?)
 //        -> better option: use redux to track canvas state and pass canvasOrigin to positionDependencies prop of SelectField
@@ -16,13 +18,27 @@ export default function SelectField(props: SelectFieldProps & FieldProps) {
     throw new Error('SelectField: default value is not included in values')
 
   const theme = useMantineTheme()
-  const [value, setValue] = useState<string>(props.default)
+  const dispatch = useDispatchTyped()
+  const state = useSelectorTyped(state => state.program.nodes[props.nodeKey].state[props.fieldKey])
+
+  useEffect(() => {
+    if (!state)
+      dispatch(setFieldState({
+        nodeKey: props.nodeKey,
+        fieldKey: props.fieldKey,
+        value: props.default,
+      }))
+  }, [])
 
   return (
     <FieldBase label={props.label}>
       <Select
-        value={value}
-        onChange={(value) => value && setValue(value)}
+        value={state ? state as string : props.default}
+        onChange={(value) => value && dispatch(setFieldState({
+          nodeKey: props.nodeKey,
+          fieldKey: props.fieldKey,
+          value: value,
+        }))}
         data={props.values.map((value) => ({ value, label: value }))}
         placeholder=''
         variant={theme.other.fieldComponentVariant}

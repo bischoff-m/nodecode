@@ -23,7 +23,9 @@
                 "x": 40,
                 "y": 100
             },
-            "state": {},
+            "state": {
+                "datatype": "String"
+            },
             "type": "list_input"
         },
         "output#KS1KjIc9qz": {
@@ -38,10 +40,12 @@
         "sql_aggregate#NKQxgE0Kgy": {
             "display": {
                 "width": 200,
-                "x": 100,
-                "y": 340
+                "x": 120,
+                "y": 360
             },
-            "state": {},
+            "state": {
+                "select": "Min"
+            },
             "type": "sql_aggregate"
         },
         "sql_query#2xGxgGj_49": {

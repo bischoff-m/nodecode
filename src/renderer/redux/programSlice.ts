@@ -55,6 +55,19 @@ export const programSlice = createSlice({
         throw new Error('Connection does not exist')
       delete state.connections[key]
     },
+    setFieldState: (state, action: PayloadAction<{
+      nodeKey: string
+      fieldKey: string
+      value: any
+    }>) => {
+      // TODO: add types in JSON Schema, NodePackage.d.ts and NodeProgram.d.ts 
+      const { nodeKey, fieldKey, value } = action.payload
+      if (!state.nodes[nodeKey])
+        throw new Error('Node does not exist')
+      if (!state.nodes[nodeKey].state[fieldKey])
+        console.warn('Field state does not exist, creating new state...')
+      state.nodes[nodeKey].state[fieldKey] = value
+    },
   },
 })
 
@@ -64,6 +77,7 @@ export const {
   moveNode,
   addConnection,
   removeConnection,
+  setFieldState,
 } = programSlice.actions
 
 
