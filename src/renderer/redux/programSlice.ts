@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
 import type { Connection, NodeInstance, NodeProgram } from '@/types/NodeProgram'
 import { customAlphabet, urlAlphabet } from 'nanoid'
+import type { Vec2D } from '@/types/util'
 
 const nanoid = customAlphabet(urlAlphabet, 10)
 
@@ -31,6 +32,13 @@ export const programSlice = createSlice({
           delete state.connections[key]
       }
     },
+    moveNode: (state, action: PayloadAction<{ key: string, delta: Vec2D }>) => {
+      const { key, delta } = action.payload
+      if (!state.nodes[key])
+        throw new Error('Node does not exist')
+      state.nodes[key].display.x += delta.x
+      state.nodes[key].display.y += delta.y
+    },
     addConnection: (state, action: PayloadAction<Connection>) => {
       // TODO: check if connection ...
       //        ...is valid (source and target exist)
@@ -53,6 +61,7 @@ export const programSlice = createSlice({
 export const {
   addNode,
   removeNode,
+  moveNode,
   addConnection,
   removeConnection,
 } = programSlice.actions

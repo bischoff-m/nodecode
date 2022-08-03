@@ -29,11 +29,14 @@ type OnMoveCallback = (
 
 const onMoveCallbacks: { [noodleID: string]: OnMoveCallback } = {}
 
-export const onMoveNode = (callback: OnMoveCallback, noodleID: string) => onMoveCallbacks[noodleID] = callback
-export const removeOnMoveNode = (noodleID: string) => delete onMoveCallbacks[noodleID]
+export const onMoveNodeSockets = (
+  callback: OnMoveCallback,
+  noodleID: string
+) => onMoveCallbacks[noodleID] = callback
+export const removeOnMoveNodeSockets = (noodleID: string) => delete onMoveCallbacks[noodleID]
 
 // functions to set state
-export function moveNode(nodeKey: string, by: Vec2D): void {
+export function moveNodeSockets(nodeKey: string, by: Vec2D): void {
   Object
     .keys(socketPositions)
     .filter(k => k.startsWith(nodeKey))
@@ -59,7 +62,8 @@ export const positionSlice = createSlice({
   name: 'positions',
   initialState: initialStatePos,
   reducers: {
-    moveNodeStop: (state, action: PayloadAction<string>) => {
+    moveNodeSocketsStop: (state, action: PayloadAction<string>) => {
+      // Synchronize the state with the socketPositions
       Object
         .keys(state)
         .filter(k => k.startsWith(action.payload))
@@ -82,7 +86,11 @@ export const positionSlice = createSlice({
     },
   },
 })
-export const { moveNodeStop, addSocketPos, removeSocketPos } = positionSlice.actions
+export const {
+  moveNodeSocketsStop,
+  addSocketPos,
+  removeSocketPos
+} = positionSlice.actions
 
 
 // #############################################################################

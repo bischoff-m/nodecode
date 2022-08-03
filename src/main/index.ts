@@ -89,6 +89,7 @@ async function createWindow() {
 app.whenReady().then(createWindow)
 
 app.on('window-all-closed', () => {
+  // TODO: check if app quits properly in production
   win = null
   if (process.platform !== 'darwin') {
     app.quit()

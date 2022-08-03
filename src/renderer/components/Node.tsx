@@ -1,6 +1,6 @@
 import { createStyles, MantineSize, Stack, useMantineTheme } from '@mantine/core'
 import { useDispatchTyped } from '@/redux/hooks'
-import { moveNode, moveNodeStop } from '@/redux/socketsSlice'
+import { moveNodeSockets, moveNodeSocketsStop } from '@/redux/socketsSlice'
 import { useRef, useState } from 'react'
 import Draggable from 'react-draggable'
 import { getCanvasZoom, onZoomChanged } from '@/components/NodeCanvas'
@@ -9,6 +9,7 @@ import type { DraggableData, DraggableEvent } from 'react-draggable'
 import type { ReactNode } from 'react'
 import { Vec2D } from '@/types/util'
 import { getSelectedNode, onNodeSelected, setSelectedNode } from '@/components/NodeProvider'
+import { moveNode } from '@/redux/programSlice'
 
 const useStyles = createStyles((theme) => ({
   card: {
@@ -76,7 +77,7 @@ export default function Node(props: NodeProps) {
   function onDrag(event: DraggableEvent, data: DraggableData) {
     if (!nodePos)
       return
-    moveNode(props.nodeKey, {
+    moveNodeSockets(props.nodeKey, {
       x: data.x - nodePos.x,
       y: data.y - nodePos.y
     })
@@ -86,7 +87,16 @@ export default function Node(props: NodeProps) {
   function onStop(event: DraggableEvent, data: DraggableData) {
     if (lastNodePos && lastNodePos.x === data.x && lastNodePos.y === data.y)
       return
-    dispatch(moveNodeStop(props.nodeKey))
+
+    dispatch(moveNodeSocketsStop(props.nodeKey))
+    if (lastNodePos)
+      dispatch(moveNode({
+        key: props.nodeKey,
+        delta: {
+          x: data.x - lastNodePos.x,
+          y: data.y - lastNodePos.y
+        }
+      }))
     nodePos = { x: data.x, y: data.y }
     lastNodePos = { x: data.x, y: data.y }
   }

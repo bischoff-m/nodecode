@@ -5,7 +5,11 @@ import Draggable, { DraggableEvent } from 'react-draggable'
 import { useSelectorTyped } from '@/redux/hooks'
 import { getCanvasZoom, screenToCanvas } from '@/components/NodeCanvas'
 import { fixedTheme } from '@/styles/themeCanvas'
-import { socketPositions as socketPos, onMoveNode, removeOnMoveNode } from '@/redux/socketsSlice'
+import {
+  socketPositions as socketPos,
+  onMoveNodeSockets,
+  removeOnMoveNodeSockets
+} from '@/redux/socketsSlice'
 import type { Vec2D } from '@/types/util'
 
 const handleSize = fixedTheme.handleDraggableSize
@@ -62,7 +66,7 @@ export default function Noodle(props: NoodleProps) {
 
 
   // If a node that the noodle is connected to is moved, update the path of the noodle
-  onMoveNode((nodeKey: string, by: Vec2D) => {
+  onMoveNodeSockets((nodeKey: string, by: Vec2D) => {
     if (!socketKeyLeft || !socketKeyRight || !refPath.current)
       return
     const leftNodeKey = allSockets[socketKeyLeft].nodeKey
@@ -205,7 +209,7 @@ export default function Noodle(props: NoodleProps) {
 
   useEffect(() => {
     return () => {
-      removeOnMoveNode(props.noodleID)
+      removeOnMoveNodeSockets(props.noodleID)
     }
   }, [])
 
