@@ -60,8 +60,7 @@
                     ]
                 },
                 "state": {
-                    "type": "object",
-                    "additionalProperties": true
+                    "$ref": "#/definitions/NodeState"
                 }
             },
             "required": [
@@ -69,6 +68,34 @@
                 "display",
                 "state"
             ]
+        },
+        "NodeState": {
+            "type": "object",
+            "propertyNames": {
+                "type": "string"
+            },
+            "additionalProperties": {
+                "type": "object",
+                "additionalProperties": {
+                    "anyOf": [
+                        {
+                            "$ref": "fields/InputOutput.schema.json#/definitions/InputOutputFieldState"
+                        },
+                        {
+                            "$ref": "fields/List.schema.json#/definitions/ListFieldState"
+                        },
+                        {
+                            "$ref": "fields/MultiSelect.schema.json#/definitions/MultiSelectFieldState"
+                        },
+                        {
+                            "$ref": "fields/Radio.schema.json#/definitions/RadioFieldState"
+                        },
+                        {
+                            "$ref": "fields/Select.schema.json#/definitions/SelectFieldState"
+                        }
+                    ]
+                }
+            }
         },
         "Connection": {
             "title": "Connection",

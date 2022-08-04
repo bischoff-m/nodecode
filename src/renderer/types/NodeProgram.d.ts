@@ -6,6 +6,8 @@
  */
 
 export type NodeProgramSchema = NodeProgram
+export type ListFieldState = string[]
+export type MultiSelectFieldState = string[]
 
 export interface NodeProgram {
   nodes: {
@@ -26,10 +28,14 @@ export interface NodeInstance {
     x: number
     y: number
   }
-  state: {
-    [k: string]: unknown
+  state: NodeState
+}
+export interface NodeState {
+  [k: string]: {
+    [k: string]: InputOutputFieldState | ListFieldState | MultiSelectFieldState | string
   }
 }
+export interface InputOutputFieldState {}
 export interface Connection {
   source: Socket
   target: Socket

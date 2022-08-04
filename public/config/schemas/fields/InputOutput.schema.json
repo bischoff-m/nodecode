@@ -47,6 +47,10 @@
                     ]
                 }
             ]
+        },
+        "InputOutputFieldState": {
+            "type": "object",
+            "additionalProperties": false
         }
     }
 }

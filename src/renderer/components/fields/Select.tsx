@@ -33,7 +33,7 @@ export default function SelectField(props: SelectFieldProps & FieldProps) {
   return (
     <FieldBase label={props.label}>
       <Select
-        value={state ? state as string : props.default}
+        value={state ? state.selected as string : props.default}
         onChange={(value) => value && dispatch(setFieldState({
           nodeKey: props.nodeKey,
           fieldKey: props.fieldKey,

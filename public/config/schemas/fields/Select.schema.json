@@ -36,6 +36,9 @@
                 "values",
                 "default"
             ]
+        },
+        "SelectFieldState": {
+            "type": "string"
         }
     }
 }

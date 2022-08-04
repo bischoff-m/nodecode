@@ -24,7 +24,9 @@
                 "y": 100
             },
             "state": {
-                "datatype": "String"
+                "datatype": {
+                    "selected": "String"
+                }
             },
             "type": "list_input"
         },
@@ -44,7 +46,9 @@
                 "y": 360
             },
             "state": {
-                "select": "Min"
+                "select": {
+                    "selected": "Min"
+                }
             },
             "type": "sql_aggregate"
         },

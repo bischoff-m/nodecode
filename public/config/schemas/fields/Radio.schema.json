@@ -35,6 +35,9 @@
             "required": [
                 "valueLabelPairs"
             ]
+        },
+        "RadioFieldState": {
+            "type": "string"
         }
     }
 }

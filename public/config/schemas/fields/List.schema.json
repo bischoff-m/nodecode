@@ -23,6 +23,12 @@
                     "type": "string"
                 }
             }
+        },
+        "ListFieldState": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
         }
     }
 }
