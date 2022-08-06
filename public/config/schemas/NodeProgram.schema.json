@@ -59,14 +59,14 @@
                         "y"
                     ]
                 },
-                "state": {
+                "fields": {
                     "$ref": "#/definitions/NodeState"
                 }
             },
             "required": [
                 "type",
                 "display",
-                "state"
+                "fields"
             ]
         },
         "NodeState": {
@@ -75,26 +75,83 @@
                 "type": "string"
             },
             "additionalProperties": {
-                "type": "object",
-                "additionalProperties": {
-                    "anyOf": [
-                        {
-                            "$ref": "fields/InputOutput.schema.json#/definitions/InputOutputFieldState"
+                "oneOf": [
+                    {
+                        "type": "object",
+                        "properties": {
+                            "fieldType": {
+                                "const": "InputOutput"
+                            },
+                            "state": {
+                                "$ref": "fields/InputOutput.schema.json#/definitions/InputOutputFieldState"
+                            }
                         },
-                        {
-                            "$ref": "fields/List.schema.json#/definitions/ListFieldState"
+                        "required": [
+                            "fieldType",
+                            "state"
+                        ]
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "fieldType": {
+                                "const": "List"
+                            },
+                            "state": {
+                                "$ref": "fields/List.schema.json#/definitions/ListFieldState"
+                            }
                         },
-                        {
-                            "$ref": "fields/MultiSelect.schema.json#/definitions/MultiSelectFieldState"
+                        "required": [
+                            "fieldType",
+                            "state"
+                        ]
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "fieldType": {
+                                "const": "MultiSelect"
+                            },
+                            "state": {
+                                "$ref": "fields/MultiSelect.schema.json#/definitions/MultiSelectFieldState"
+                            }
                         },
-                        {
-                            "$ref": "fields/Radio.schema.json#/definitions/RadioFieldState"
+                        "required": [
+                            "fieldType",
+                            "state"
+                        ]
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "fieldType": {
+                                "const": "Radio"
+                            },
+                            "state": {
+                                "$ref": "fields/Radio.schema.json#/definitions/RadioFieldState"
+                            }
                         },
-                        {
-                            "$ref": "fields/Select.schema.json#/definitions/SelectFieldState"
-                        }
-                    ]
-                }
+                        "required": [
+                            "fieldType",
+                            "state"
+                        ]
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "fieldType": {
+                                "const": "Select"
+                            },
+                            "state": {
+                                "$ref": "fields/Select.schema.json#/definitions/SelectFieldState"
+                            }
+                        },
+                        "required": [
+                            "fieldType",
+                            "state"
+                        ]
+                    }
+                ]
             }
         },
         "Connection": {

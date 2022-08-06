@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { Select, useMantineTheme } from '@mantine/core'
 import type { FieldProps } from '@/types/util'
 import type { SelectFieldProps } from '@/types/NodePackage'
 import FieldBase from '@/components/util/FieldBase'
 import { useDispatchTyped, useSelectorTyped } from '@/redux/hooks'
 import { setFieldState } from '@/redux/programSlice'
+import { SelectFieldState } from '@/types/NodeProgram'
 
 // TODO: close dropdown when canvas is moved or scaled (or move and scale dropdown as well?)
 //        -> better option: use redux to track canvas state and pass canvasOrigin to positionDependencies prop of SelectField
@@ -19,26 +20,32 @@ export default function SelectField(props: SelectFieldProps & FieldProps) {
 
   const theme = useMantineTheme()
   const dispatch = useDispatchTyped()
-  const state = useSelectorTyped(state => state.program.nodes[props.nodeKey].state[props.fieldKey])
+  const state = useSelectorTyped(
+    state => state
+      .program
+      .nodes[props.nodeKey]
+      .fields[props.fieldKey] as { fieldType: 'Select', state: SelectFieldState }
+      // .state as { fieldKey: 'Select', state: SelectFieldState }
+  )
+
+  const setState = (state: SelectFieldState) => dispatch(setFieldState({
+    nodeKey: props.nodeKey,
+    fieldKey: props.fieldKey,
+    newState: {
+      fieldType: 'Select',
+      state
+    },
+  }))
 
   useEffect(() => {
-    if (!state)
-      dispatch(setFieldState({
-        nodeKey: props.nodeKey,
-        fieldKey: props.fieldKey,
-        value: props.default,
-      }))
+    !state && setState(props.default)
   }, [])
 
   return (
     <FieldBase label={props.label}>
       <Select
-        value={state ? state.selected as string : props.default}
-        onChange={(value) => value && dispatch(setFieldState({
-          nodeKey: props.nodeKey,
-          fieldKey: props.fieldKey,
-          value: value,
-        }))}
+        value={state ? state.state : props.default}
+        onChange={(value) => value && setState(value)}
         data={props.values.map((value) => ({ value, label: value }))}
         placeholder=''
         variant={theme.other.fieldComponentVariant}

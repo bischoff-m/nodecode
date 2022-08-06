@@ -23,9 +23,10 @@
                 "x": 40,
                 "y": 100
             },
-            "state": {
+            "fields": {
                 "datatype": {
-                    "selected": "String"
+                    "fieldType": "Select",
+                    "state": "String"
                 }
             },
             "type": "list_input"
@@ -36,7 +37,7 @@
                 "x": 400,
                 "y": 100
             },
-            "state": {},
+            "fields": {},
             "type": "output"
         },
         "sql_aggregate#NKQxgE0Kgy": {
@@ -45,9 +46,10 @@
                 "x": 120,
                 "y": 360
             },
-            "state": {
+            "fields": {
                 "select": {
-                    "selected": "Min"
+                    "fieldType": "Select",
+                    "state": "Min"
                 }
             },
             "type": "sql_aggregate"
@@ -58,7 +60,7 @@
                 "x": 480,
                 "y": 220
             },
-            "state": {},
+            "fields": {},
             "type": "sql_query"
         }
     }

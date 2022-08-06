@@ -37,6 +37,7 @@
             ]
         },
         "MultiSelectFieldState": {
+            "title": "MultiSelectFieldState",
             "type": "array",
             "items": {
                 "type": "string"

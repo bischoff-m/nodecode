@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
-import type { Connection, NodeInstance, NodeProgram } from '@/types/NodeProgram'
+import type { Connection, NodeInstance, NodeProgram, NodeState } from '@/types/NodeProgram'
 import { customAlphabet, urlAlphabet } from 'nanoid'
 import type { Vec2D } from '@/types/util'
 
@@ -58,15 +58,15 @@ export const programSlice = createSlice({
     setFieldState: (state, action: PayloadAction<{
       nodeKey: string
       fieldKey: string
-      value: any
+      newState: NodeState[keyof NodeState]
     }>) => {
       // TODO: add types in JSON Schema, NodePackage.d.ts and NodeProgram.d.ts 
-      const { nodeKey, fieldKey, value } = action.payload
+      const { nodeKey, fieldKey, newState } = action.payload
       if (!state.nodes[nodeKey])
         throw new Error('Node does not exist')
-      if (!state.nodes[nodeKey].state[fieldKey])
+      if (!state.nodes[nodeKey].fields[fieldKey])
         console.warn('Field state does not exist, creating new state...')
-      state.nodes[nodeKey].state[fieldKey] = value
+      state.nodes[nodeKey].fields[fieldKey] = newState
     },
   },
 })

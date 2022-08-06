@@ -9,26 +9,27 @@ export const readJSON = <T extends object>(...subpath: string[]): T =>
   JSON.parse(fs.readFileSync(path.join(...subpath), fsOptions).toString())
 
 
-let validatePackage: Ajv.ValidateFunction | null = null
-const ajvPackage = new Ajv({ allErrors: true })
+export async function useValidate(
+  validate: Ajv.ValidateFunction | null,
+  ajv: Ajv.Ajv,
+  baseFile: 'NodePackage' | 'NodeProgram',
+): Promise<Ajv.ValidateFunction> {
+  if (validate !== null)
+    return validate
 
-export async function usePackageValidate(): Promise<Ajv.ValidateFunction> {
-  if (validatePackage !== null)
-    return validatePackage
-
-  const { schema, dependencies } = await getPackageSchema()
+  const { schema, dependencies } = await getSchemas(baseFile)
   dependencies.forEach(dep => {
     if (!dep.$id)
       throw new Error(`The $id property is required for all JSON schemas. ${JSON.stringify(dep)}`)
-    !ajvPackage.getSchema(dep.$id) && ajvPackage.addSchema(dep, dep.$id)
+    !ajv.getSchema(dep.$id) && ajv.addSchema(dep, dep.$id)
   })
-  validatePackage = ajvPackage.compile(schema)
-  return validatePackage
+  return ajv.compile(schema)
 }
 
-const getPackageSchema = async () => {
+
+const getSchemas = async (baseFile: 'NodePackage' | 'NodeProgram') => {
   const root = 'public/config/schemas'
-  const baseSchemaFile = readJSON<JSONSchema7>(root, 'NodePackage.schema.json')
+  const baseSchemaFile = readJSON<JSONSchema7>(root, `${baseFile}.schema.json`)
   const dependencies = fs
     .readdirSync(path.join(root, 'fields'))
     .map(file => readJSON<JSONSchema7>(root, 'fields', file))
@@ -40,18 +41,22 @@ const getPackageSchema = async () => {
 }
 
 
+
+let validatePackage: Ajv.ValidateFunction | null = null
+const ajvPackage = new Ajv({ allErrors: true })
+
+export const usePackageValidate = async () => validatePackage = await useValidate(
+  validatePackage,
+  ajvPackage,
+  'NodePackage',
+)
+
+
 let validateProgram: Ajv.ValidateFunction | null = null
 const ajvProgram = new Ajv({ allErrors: true })
 
-export async function useProgramValidate(): Promise<Ajv.ValidateFunction> {
-  if (validateProgram !== null)
-    return validateProgram
-  const schema = await getProgramSchema()
-  validateProgram = ajvProgram.compile(schema)
-  return validateProgram
-}
-
-const getProgramSchema = async () => {
-  const root = 'public/config/schemas'
-  return readJSON<JSONSchema7>(root, 'NodeProgram.schema.json')
-}
+export const useProgramValidate = async () => validateProgram = await useValidate(
+  validateProgram,
+  ajvProgram,
+  'NodeProgram',
+)

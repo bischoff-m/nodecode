@@ -37,6 +37,7 @@
             ]
         },
         "RadioFieldState": {
+            "title": "RadioFieldState",
             "type": "string"
         }
     }

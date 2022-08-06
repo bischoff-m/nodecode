@@ -49,6 +49,7 @@
             ]
         },
         "InputOutputFieldState": {
+            "title": "InputOutputFieldState",
             "type": "object",
             "additionalProperties": false
         }

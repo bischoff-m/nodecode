@@ -38,6 +38,7 @@
             ]
         },
         "SelectFieldState": {
+            "title": "SelectFieldState",
             "type": "string"
         }
     }

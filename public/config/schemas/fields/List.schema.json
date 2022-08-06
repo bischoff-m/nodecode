@@ -25,6 +25,7 @@
             }
         },
         "ListFieldState": {
+            "title": "ListFieldState",
             "type": "array",
             "items": {
                 "type": "string"

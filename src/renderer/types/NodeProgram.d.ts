@@ -8,6 +8,8 @@
 export type NodeProgramSchema = NodeProgram
 export type ListFieldState = string[]
 export type MultiSelectFieldState = string[]
+export type RadioFieldState = string
+export type SelectFieldState = string
 
 export interface NodeProgram {
   nodes: {
@@ -28,12 +30,30 @@ export interface NodeInstance {
     x: number
     y: number
   }
-  state: NodeState
+  fields: NodeState
 }
 export interface NodeState {
-  [k: string]: {
-    [k: string]: InputOutputFieldState | ListFieldState | MultiSelectFieldState | string
-  }
+  [k: string]:
+    | {
+        fieldType: 'InputOutput'
+        state: InputOutputFieldState
+      }
+    | {
+        fieldType: 'List'
+        state: ListFieldState
+      }
+    | {
+        fieldType: 'MultiSelect'
+        state: MultiSelectFieldState
+      }
+    | {
+        fieldType: 'Radio'
+        state: RadioFieldState
+      }
+    | {
+        fieldType: 'Select'
+        state: SelectFieldState
+      }
 }
 export interface InputOutputFieldState {}
 export interface Connection {
