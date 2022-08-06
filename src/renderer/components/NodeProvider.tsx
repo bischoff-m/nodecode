@@ -1,16 +1,27 @@
 import { createStyles } from '@mantine/core'
-import { getNodeComponent, NodePackageContext } from '@/components/NodePackageProvider'
+import { NodePackageContext } from '@/components/NodePackageProvider'
 import { useDispatchTyped, useSelectorTyped } from '@/redux/hooks'
 import type { NodeInstance } from '@/types/NodeProgram'
 import { addConnection, addNode, removeNode } from '@/redux/programSlice'
 import { useContext, useEffect } from 'react'
 import { useHotkeys } from '@mantine/hooks'
+import type {
+  Field,
+  InputOutputFieldProps,
+  SelectFieldProps,
+  ListFieldProps,
+  RadioFieldProps,
+  MultiSelectFieldProps
+} from '@/types/NodePackage'
+import Node from '@/components/Node'
+import InputOutput from '@/components/fields/InputOutput'
+import Select from '@/components/fields/Select'
+import List from '@/components/fields/List'
+import Radio from '@/components/fields/Radio'
+import MultiSelect from '@/components/fields/MultiSelect'
 
-// TODO: merge nodeFactory and NodeProvider
+
 // TODO: update display and state properties in Node and Field component
-// TODO: transform nodes and connection properties to arrays instead of objects
-//         -> or use proper keys for every node and connection
-// TODO: implement connections in redux state (currently noodles despawn)
 
 
 const initNodes: NodeInstance[] = [
@@ -110,6 +121,58 @@ export default function NodeProvider(props: NodeProviderProps) {
   const nodePackage = useContext(NodePackageContext)
   const nodes = useSelectorTyped((state) => state.program.nodes)
 
+  function getNodeComponent(
+    nodeKey: string,
+    nodeID: string,
+    position: { x: number; y: number },
+  ): JSX.Element {
+    // check if nodeID exists
+    const nodeIDs = nodePackage.nodes.map((node) => node.id)
+    if (!nodeIDs.includes(nodeID)) throw new Error(`NodeID \"${nodeID}\" could not be found.`)
+
+    // build node from config
+    const node = nodePackage.nodes.find((node) => node.id === nodeID)
+    if (!node) throw new Error('')
+
+    return (
+      <Node
+        key={nodeKey}
+        nodeKey={nodeKey}
+        title={node.title}
+        x={position.x}
+        y={position.y}
+      >
+        {node.fields.map((field, j) => getFieldComponent(field, j, nodeKey))}
+      </Node>
+    )
+  }
+
+  function getFieldComponent(
+    field: Field,
+    key: React.Key | undefined | null,
+    nodeKey: string,
+  ) {
+    const extraProps = {
+      key,
+      nodeKey,
+      fieldKey: field.id
+    }
+    switch (field.type) {
+      case 'InputOutput':
+        return <InputOutput {...extraProps} {...field.props as InputOutputFieldProps} />
+      case 'Select':
+        return <Select {...extraProps} {...field.props as SelectFieldProps} />
+      case 'List':
+        return <List {...extraProps} {...field.props as ListFieldProps} />
+      case 'Radio':
+        return <Radio {...extraProps} {...field.props as RadioFieldProps} />
+      case 'MultiSelect':
+        return <MultiSelect {...extraProps} {...field.props as MultiSelectFieldProps} />
+      default:
+        throw new Error('Unknown field type')
+    }
+  }
+
   useHotkeys([
     ['Delete', () => {
       if (selectedNode) {
@@ -149,7 +212,7 @@ export default function NodeProvider(props: NodeProviderProps) {
     <div className={classes.container}>{
       Object
         .keys(nodes)
-        .map((key) => getNodeComponent(nodePackage, key, nodes[key].type, nodes[key].display))
+        .map((key) => getNodeComponent(key, nodes[key].type, nodes[key].display))
     }</div>
   )
 }
