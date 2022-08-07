@@ -113,7 +113,7 @@ export default function NewNodePopup(props: NewNodePopupProps) {
                       x: 200,
                       y: 200,
                     },
-                    fields: {},
+                    state: {},
                   }
                 }))
               }}

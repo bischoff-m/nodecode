@@ -1,33 +1,55 @@
 {
     "$schema": "../schemas/NodeProgram.schema.json",
     "connections": {
-        "list_input#aoHTjKiqUY.output.right:output#KS1KjIc9qz.input.left": {
+        "list_input#YEk1MWPby3.InputOutput.output.right:sql_query#2xGxgGj_49.InputOutput.in-having.left": {
             "source": {
-                "fieldKey": "output",
+                "fieldKey": "InputOutput.output",
                 "isInput": false,
-                "nodeKey": "list_input#aoHTjKiqUY",
-                "socketKey": "list_input#aoHTjKiqUY.output.right"
+                "nodeKey": "list_input#YEk1MWPby3",
+                "socketKey": "list_input#YEk1MWPby3.InputOutput.output.right"
             },
             "target": {
-                "fieldKey": "input",
+                "fieldKey": "InputOutput.in-having",
+                "isInput": true,
+                "nodeKey": "sql_query#2xGxgGj_49",
+                "socketKey": "sql_query#2xGxgGj_49.InputOutput.in-having.left"
+            }
+        },
+        "list_input#aoHTjKiqUY.InputOutput.output.right:output#KS1KjIc9qz.InputOutput.input.left": {
+            "source": {
+                "fieldKey": "InputOutput.output",
+                "isInput": false,
+                "nodeKey": "list_input#aoHTjKiqUY",
+                "socketKey": "list_input#aoHTjKiqUY.InputOutput.output.right"
+            },
+            "target": {
+                "fieldKey": "InputOutput.input",
                 "isInput": true,
                 "nodeKey": "output#KS1KjIc9qz",
-                "socketKey": "output#KS1KjIc9qz.input.left"
+                "socketKey": "output#KS1KjIc9qz.InputOutput.input.left"
             }
         }
     },
     "nodes": {
+        "list_input#YEk1MWPby3": {
+            "display": {
+                "width": 200,
+                "x": 60,
+                "y": 520
+            },
+            "state": {
+                "Select.datatype": "Boolean"
+            },
+            "type": "list_input"
+        },
         "list_input#aoHTjKiqUY": {
             "display": {
                 "width": 100,
                 "x": 40,
                 "y": 100
             },
-            "fields": {
-                "datatype": {
-                    "fieldType": "Select",
-                    "state": "String"
-                }
+            "state": {
+                "Select.datatype": "Int"
             },
             "type": "list_input"
         },
@@ -37,7 +59,7 @@
                 "x": 400,
                 "y": 100
             },
-            "fields": {},
+            "state": {},
             "type": "output"
         },
         "sql_aggregate#NKQxgE0Kgy": {
@@ -46,11 +68,8 @@
                 "x": 120,
                 "y": 360
             },
-            "fields": {
-                "select": {
-                    "fieldType": "Select",
-                    "state": "Min"
-                }
+            "state": {
+                "Select.select": "Max"
             },
             "type": "sql_aggregate"
         },
@@ -60,7 +79,7 @@
                 "x": 480,
                 "y": 220
             },
-            "fields": {},
+            "state": {},
             "type": "sql_query"
         }
     }

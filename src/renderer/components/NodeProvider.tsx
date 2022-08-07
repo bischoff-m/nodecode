@@ -155,7 +155,7 @@ export default function NodeProvider(props: NodeProviderProps) {
     const extraProps = {
       key,
       nodeKey,
-      fieldKey: field.id
+      fieldKey: `${field.type}.${field.id}`
     }
     switch (field.type) {
       case 'InputOutput':

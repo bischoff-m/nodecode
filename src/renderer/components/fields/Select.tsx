@@ -20,31 +20,27 @@ export default function SelectField(props: SelectFieldProps & FieldProps) {
 
   const theme = useMantineTheme()
   const dispatch = useDispatchTyped()
-  const state = useSelectorTyped(
+  const selectedValue = useSelectorTyped(
     state => state
       .program
       .nodes[props.nodeKey]
-      .fields[props.fieldKey] as { fieldType: 'Select', state: SelectFieldState }
-      // .state as { fieldKey: 'Select', state: SelectFieldState }
+      .state[props.fieldKey] as SelectFieldState
   )
 
   const setState = (state: SelectFieldState) => dispatch(setFieldState({
     nodeKey: props.nodeKey,
     fieldKey: props.fieldKey,
-    newState: {
-      fieldType: 'Select',
-      state
-    },
+    fieldState: state,
   }))
 
   useEffect(() => {
-    !state && setState(props.default)
+    !selectedValue && setState(props.default)
   }, [])
 
   return (
     <FieldBase label={props.label}>
       <Select
-        value={state ? state.state : props.default}
+        value={selectedValue ? selectedValue : props.default}
         onChange={(value) => value && setState(value)}
         data={props.values.map((value) => ({ value, label: value }))}
         placeholder=''

@@ -6,10 +6,32 @@
  */
 
 export type NodeProgramSchema = NodeProgram
-export type ListFieldState = string[]
-export type MultiSelectFieldState = string[]
-export type RadioFieldState = string
+/**
+ * This interface was referenced by `NodeState`'s JSON-Schema definition
+ * via the `patternProperty` "^Select.".
+ */
 export type SelectFieldState = string
+/**
+ * This interface was referenced by `NodeState`'s JSON-Schema definition
+ * via the `patternProperty` "^List.".
+ */
+export type ListFieldState = string[]
+/**
+ * This interface was referenced by `NodeState`'s JSON-Schema definition
+ * via the `patternProperty` "^Radio.".
+ */
+export type RadioFieldState = string
+/**
+ * This interface was referenced by `NodeState`'s JSON-Schema definition
+ * via the `patternProperty` "^MultiSelect.".
+ */
+export type MultiSelectFieldState = string[]
+export type FieldState =
+  | InputOutputFieldState
+  | SelectFieldState
+  | ListFieldState
+  | RadioFieldState
+  | MultiSelectFieldState
 
 export interface NodeProgram {
   nodes: {
@@ -30,31 +52,15 @@ export interface NodeInstance {
     x: number
     y: number
   }
-  fields: NodeState
+  state: NodeState
 }
 export interface NodeState {
-  [k: string]:
-    | {
-        fieldType: 'InputOutput'
-        state: InputOutputFieldState
-      }
-    | {
-        fieldType: 'List'
-        state: ListFieldState
-      }
-    | {
-        fieldType: 'MultiSelect'
-        state: MultiSelectFieldState
-      }
-    | {
-        fieldType: 'Radio'
-        state: RadioFieldState
-      }
-    | {
-        fieldType: 'Select'
-        state: SelectFieldState
-      }
+  [k: string]: FieldState
 }
+/**
+ * This interface was referenced by `NodeState`'s JSON-Schema definition
+ * via the `patternProperty` "^InputOutput.".
+ */
 export interface InputOutputFieldState {}
 export interface Connection {
   source: Socket
