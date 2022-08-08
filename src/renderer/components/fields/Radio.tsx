@@ -1,10 +1,13 @@
-import { useState } from 'react'
 import { createStyles, Radio, RadioGroup, useMantineTheme } from '@mantine/core'
 import type { FieldProps } from '@/types/util'
 import type { RadioFieldProps } from '@/types/NodePackage'
 import FieldBase from '@/components/util/FieldBase'
 import MaxHeightScrollArea from '@/components/util/MaxHeightScrollArea'
 import { fixedTheme } from '@/styles/themeCanvas'
+import { useDispatchTyped, useSelectorTyped } from '@/redux/hooks'
+import type { RadioFieldState } from '@/types/NodeProgram'
+import { setFieldState } from '@/redux/programSlice'
+import { useEffect } from 'react'
 
 const useStyles = createStyles((theme) => ({
   container: {
@@ -19,8 +22,6 @@ const useStyles = createStyles((theme) => ({
   }
 }))
 
-// TODO: if props.defaultValue is not set: add check before running node-program, whether every field has a valid state
-
 export default function RadioField(props: RadioFieldProps & FieldProps) {
   if (Object.keys(props.valueLabelPairs).length === 0)
     throw new Error('RadioField: valueLabelPairs is empty')
@@ -29,14 +30,34 @@ export default function RadioField(props: RadioFieldProps & FieldProps) {
 
   const { classes } = useStyles()
   const theme = useMantineTheme()
-  const [value, setValue] = useState<string>(props.defaultValue ? props.defaultValue : '')
+  const dispatch = useDispatchTyped()
+  const selectedValue = useSelectorTyped(
+    state => state
+      .program
+      .nodes[props.nodeKey]
+      .state[props.fieldKey] as RadioFieldState
+  )
+
+  const setState = (state: RadioFieldState) => dispatch(setFieldState({
+    nodeKey: props.nodeKey,
+    fieldKey: props.fieldKey,
+    fieldState: state,
+  }))
+
+  useEffect(() => {
+    !selectedValue && setState(
+      props.defaultValue
+        ? props.defaultValue
+        : Object.keys(props.valueLabelPairs)[0]
+    )
+  }, [])
 
   return (
     <FieldBase label={props.label}>
       <MaxHeightScrollArea scrollAreaProps={{ offsetScrollbars: true }}>
         <RadioGroup
-          value={value}
-          onChange={setValue}
+          value={selectedValue}
+          onChange={setState}
           orientation='vertical'
           spacing={0}
           className={classes.container}

@@ -7,13 +7,13 @@ import {
   TextInput,
   useMantineTheme,
 } from '@mantine/core'
-import { useListState } from '@mantine/hooks'
 import { IconPlus } from '@tabler/icons'
 import { useState } from 'react'
 import MaxHeightScrollArea from '@/components/util/MaxHeightScrollArea'
 import type { FieldProps } from '@/types/util'
 import type { ListFieldProps } from '@/types/NodePackage'
-import FieldBase from '@/components/util/FieldBase'
+import FieldBase, { useFieldState } from '@/components/util/FieldBase'
+import type { ListFieldState } from '@/types/NodeProgram'
 
 const useStyles = createStyles((theme) => ({
   listItem: {
@@ -37,14 +37,17 @@ const useStyles = createStyles((theme) => ({
 export default function ListField(props: ListFieldProps & FieldProps) {
   const { classes } = useStyles()
   const theme = useMantineTheme()
-
-  const [listItems, listHandlers] = useListState<string>([])
   const [inputValue, setInputValue] = useState('')
+  const [listItems, setListItems] = useFieldState<ListFieldState>(
+    [],
+    props.nodeKey,
+    props.fieldKey,
+  )
 
   function handleAddItem() {
     const trimmed = inputValue.trim()
     if (trimmed !== '') {
-      listHandlers.prepend(trimmed)
+      setListItems([trimmed, ...listItems])
       setInputValue('')
     }
   }
@@ -71,7 +74,7 @@ export default function ListField(props: ListFieldProps & FieldProps) {
           {listItems.map((item, i) => (
             <div key={i} className={classes.listItem}>
               <CloseButton
-                onClick={() => listHandlers.remove(i)}
+                onClick={() => setListItems(listItems.filter((_, j) => j !== i))}
                 iconSize={fixedTheme.iconSize}
                 style={{ color: theme.other.iconColor }}
               />

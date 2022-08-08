@@ -22,7 +22,7 @@ Graphical Node Editor
 			...
 		]
 
-2. Add a handler
+1. Add a handler
 
 		// send   <-> on/once
 		// invoke <-> handle/handleOnce
@@ -37,7 +37,7 @@ Graphical Node Editor
 			return response
 		})
 
-3. Send a message
+1. Send a message
 
 		// For message to main
 		window.ipc.invoke('mymessage', ...args).then((data) => {
@@ -50,20 +50,22 @@ Graphical Node Editor
 
 ## Adding a field
 
-1. Add props definition in new file under `/public/config/schemas/fields`
+1. Add props and state definition in new file under `/public/config/schemas/fields`
 
-2. Add new field as `Field` type in `NodePackage.schema.json`
+1. Add new field as `Field` type in `NodePackage.schema.json`
 
-3. Compile types using `npm run prebuild`
+1. Add `$ref` to field definition for `NodeState` and `FieldState` in `NodeProgram.schema.json`
 
-4. Implement field component under `/src/renderer/components/fields`
+1. Compile types using `npm run prebuild`
 
-5. Add case in `getFieldComponent` in `/src/renderer/util/nodeFactory.tsx`
+1. Implement field component under `/src/renderer/components/fields`
 
-6. Add node that uses the new field
+1. Add case in `getFieldComponent` in `/src/renderer/components/NodeProvider.tsx`
+
+1. Add node that uses the new field
 
 ## Adding a node
 
 1. Add definition in a file under `/public/config/packages`
 
-2. (Currently it is necessary to reload the app)
+1. (Currently it is necessary to reload the app)

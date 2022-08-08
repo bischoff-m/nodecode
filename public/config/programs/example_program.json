@@ -28,20 +28,23 @@
                 "nodeKey": "output#KS1KjIc9qz",
                 "socketKey": "output#KS1KjIc9qz.InputOutput.input.left"
             }
+        },
+        "sql_mysql-table#4CBxWsNB3Z.InputOutput.output.right:sql_column-select#-VU9HoSHrm.InputOutput.inputoutput.left": {
+            "source": {
+                "fieldKey": "InputOutput.output",
+                "isInput": false,
+                "nodeKey": "sql_mysql-table#4CBxWsNB3Z",
+                "socketKey": "sql_mysql-table#4CBxWsNB3Z.InputOutput.output.right"
+            },
+            "target": {
+                "fieldKey": "InputOutput.inputoutput",
+                "isInput": true,
+                "nodeKey": "sql_column-select#-VU9HoSHrm",
+                "socketKey": "sql_column-select#-VU9HoSHrm.InputOutput.inputoutput.left"
+            }
         }
     },
     "nodes": {
-        "list_input#YEk1MWPby3": {
-            "display": {
-                "width": 200,
-                "x": 60,
-                "y": 520
-            },
-            "state": {
-                "Select.datatype": "Boolean"
-            },
-            "type": "list_input"
-        },
         "list_input#aoHTjKiqUY": {
             "display": {
                 "width": 100,
@@ -49,7 +52,12 @@
                 "y": 100
             },
             "state": {
-                "Select.datatype": "Int"
+                "List.item_list": [
+                    "d",
+                    "b",
+                    "a"
+                ],
+                "Select.datatype": "Boolean"
             },
             "type": "list_input"
         },
@@ -62,25 +70,34 @@
             "state": {},
             "type": "output"
         },
-        "sql_aggregate#NKQxgE0Kgy": {
+        "sql_column-select#-VU9HoSHrm": {
             "display": {
                 "width": 200,
-                "x": 120,
-                "y": 360
-            },
-            "state": {
-                "Select.select": "Max"
-            },
-            "type": "sql_aggregate"
-        },
-        "sql_query#2xGxgGj_49": {
-            "display": {
-                "width": 200,
-                "x": 480,
+                "x": 760,
                 "y": 220
             },
-            "state": {},
-            "type": "sql_query"
+            "state": {
+                "MultiSelect.multiselect": [
+                    "chartevents",
+                    "microbiologyevents",
+                    "icustays",
+                    "procedures"
+                ]
+            },
+            "type": "sql_column-select"
+        },
+        "sql_mysql-table#4CBxWsNB3Z": {
+            "display": {
+                "width": 200,
+                "x": 400,
+                "y": 220
+            },
+            "state": {
+                "Radio.table": "microbiologyevents",
+                "Select.database": "Mimic3",
+                "Select.server": "i11 MariaDB Server"
+            },
+            "type": "sql_mysql-table"
         }
     }
 }

@@ -1,8 +1,8 @@
-import { useState } from 'react'
 import { MultiSelect, useMantineTheme } from '@mantine/core'
 import type { FieldProps } from '@/types/util'
 import type { MultiSelectFieldProps } from '@/types/NodePackage'
-import FieldBase from '@/components/util/FieldBase'
+import FieldBase, { useFieldState } from '@/components/util/FieldBase'
+import type { MultiSelectFieldState } from '@/types/NodeProgram'
 
 
 export default function MultiSelectField(props: MultiSelectFieldProps & FieldProps) {
@@ -10,7 +10,11 @@ export default function MultiSelectField(props: MultiSelectFieldProps & FieldPro
     throw new Error('MultiSelectField: valueLabelPairs is empty')
 
   const theme = useMantineTheme()
-  const [selected, setSelected] = useState<string[]>([])
+  const [selected, setSelected] = useFieldState<MultiSelectFieldState>(
+    [],
+    props.nodeKey,
+    props.fieldKey,
+  )
 
   const data = Object.keys(props.valueLabelPairs).map(value => (
     { value, label: props.valueLabelPairs[value] }

@@ -1,5 +1,10 @@
 import { createStyles } from '@mantine/core'
 import { fixedTheme } from '@/styles/themeCanvas'
+import type { FieldState } from '@/types/NodeProgram'
+import { useDispatchTyped, useSelectorTyped } from '@/redux/hooks'
+import { setFieldState } from '@/redux/programSlice'
+import { useEffect } from 'react'
+
 
 const useStyles = createStyles((theme) => ({
   container: {
@@ -33,4 +38,31 @@ export default function FieldBase(props: FieldBaseProps) {
       {props.children}
     </div>
   )
+}
+
+
+export function useFieldState<T extends FieldState>(
+  defaultValue: T,
+  nodeKey: string,
+  fieldKey: string,
+): [T, (state: T) => void] {
+  const selectedValue = useSelectorTyped(
+    state => state
+      .program
+      .nodes[nodeKey]
+      .state[fieldKey] as T
+  )
+
+  const dispatch = useDispatchTyped()
+  const setState = (state: T) => dispatch(setFieldState({
+    nodeKey: nodeKey,
+    fieldKey: fieldKey,
+    fieldState: state,
+  }))
+
+  useEffect(() => {
+    !selectedValue && setState(defaultValue)
+  }, [])
+
+  return [selectedValue !== undefined ? selectedValue : defaultValue, setState]
 }

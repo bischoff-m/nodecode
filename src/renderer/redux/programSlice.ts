@@ -63,8 +63,6 @@ export const programSlice = createSlice({
       const { nodeKey, fieldKey, fieldState } = action.payload
       if (!state.nodes[nodeKey])
         throw new Error('Node does not exist')
-      if (!state.nodes[nodeKey].state[fieldKey])
-        console.warn('Field state does not exist, creating new state...')
       state.nodes[nodeKey].state[fieldKey] = fieldState
     },
   },
