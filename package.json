@@ -18,7 +18,8 @@
     "dev": "node .vite/watch.mjs",
     "build:web": "node .vite/build.mjs",
     "build:win": "node .vite/build.mjs && electron-builder",
-    "prebuild": "node .vite/prebuild.mjs"
+    "prebuild": "node .vite/prebuild.mjs",
+    "docs": "npx serve docs"
   },
   "dependencies": {
     "@mantine/core": "^4.2.12",
