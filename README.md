@@ -45,7 +45,7 @@ Graphical Node Editor
 		})
 
 		// For message to renderer
-    	win?.webContents.send('mymessage', ...args)
+    win?.webContents.send('mymessage', ...args)
 
 
 ## Adding a field

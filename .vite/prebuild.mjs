@@ -1,5 +1,6 @@
 import fs from 'fs'
 import { compileFromFile } from 'json-schema-to-typescript'
+import TypeDoc from 'typedoc'
 
 console.log('Converting JSON Schemas to Typescript Type Definitions...\n')
 
@@ -29,3 +30,24 @@ compileFromFile('./public/config/schemas/NodeProgram.schema.json', {
   },
   bannerComment: comment,
 }).then((ts) => fs.writeFileSync('./src/renderer/types/NodeProgram.d.ts', ts))
+
+
+
+
+// https://typedoc.org/guides/installation/
+
+const app = new TypeDoc.Application()
+
+app.options.addReader(new TypeDoc.TSConfigReader())
+app.bootstrap({
+  // typedoc options here
+  entryPoints: ['src/renderer/main.tsx'],
+})
+
+const project = app.convert()
+
+if (!project)
+  throw new Error('Could not build TypeDoc documentation')
+
+const outputDir = 'docs'
+await app.generateDocs(project, outputDir)
