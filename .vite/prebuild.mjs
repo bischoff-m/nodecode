@@ -2,7 +2,7 @@ import fs from 'fs'
 import { compileFromFile } from 'json-schema-to-typescript'
 import TypeDoc from 'typedoc'
 
-console.log('Converting JSON Schemas to Typescript Type Definitions...\n')
+console.log('Converting JSON Schemas to Typescript type definitions...\n')
 
 const comment = `
 /* tslint:disable */
@@ -35,6 +35,7 @@ compileFromFile('./public/config/schemas/NodeProgram.schema.json', {
 
 
 // https://typedoc.org/guides/installation/
+console.log('Generating documentation from comments...')
 
 const app = new TypeDoc.Application()
 

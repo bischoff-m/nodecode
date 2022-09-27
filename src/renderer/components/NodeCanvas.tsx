@@ -6,7 +6,7 @@ import {
   useEffect,
   useRef,
 } from 'react'
-import gridSvg from '@/assets/gridSvg.svg'
+import gridLines from '@/assets/grid-lines.svg'
 import { directstyled, useDirectStyle } from '@/lib/direct-styled' // https://github.com/everweij/direct-styled
 import { Vec2D } from '@/types/util'
 import NoodleProvider from '@/components/NoodleProvider'
@@ -56,7 +56,7 @@ const useStyles = createStyles((theme) => ({
     width: '100%',
     height: '100%',
     backgroundColor: mantineTheme.other?.canvasBackgroundColor,
-    backgroundImage: `url(${gridSvg})`,
+    backgroundImage: `url(${gridLines})`,
     backgroundRepeat: 'repeat',
     backgroundPosition: '0px 0px',
   },
