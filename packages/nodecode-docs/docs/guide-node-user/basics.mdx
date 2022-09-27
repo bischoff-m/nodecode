@@ -1,0 +1,109 @@
+---
+sidebar_position: 1
+---
+
+# Basics
+
+
+## Node programs
+
+A **node program** consists of nodes and connections. Each node can have input and output
+sockets. Every input socket can have a connection that represents data flow into the node.
+
+This sample program applies an operator to two numbers and outputs the result.
+
+<div style={{
+    padding: '2rem',
+    backgroundColor: '#131314',
+    borderRadius: 'var(--ifm-code-border-radius)',
+    backgroundSize: '1.5em 1.5em',
+    backgroundImage: 'radial-gradient(circle, rgba(255, 255, 255, 0.2) 1px, rgba(0, 0, 0, 0) 1px)',
+    backgroundPosition: '0 0',
+}}>
+    <img src='/img/example-division-program.svg' />
+</div>
+
+
+## Nodes
+
+<div style={{ float: 'right', paddingLeft: '2rem' }}>
+<div style={{
+    height: '24.5rem',
+    padding: '2rem',
+    backgroundColor: '#131314',
+    borderRadius: 'var(--ifm-code-border-radius)',
+    backgroundSize: '1.5em 1.5em',
+    backgroundImage: 'radial-gradient(circle, rgba(255, 255, 255, 0.2) 1px, rgba(0, 0, 0, 0) 1px)',
+    backgroundPosition: '0 0',
+}}>
+    <img src='/img/example-operator-node.svg' style={{
+        position: 'relative',
+        top: '50%',
+        transform: 'translateY(-50%)'
+    }}/>
+</div>
+</div>
+
+Each **node** represents a **function** that calculates output values from input values
+and its state. The code below shows how this node could be defined in python (it's only
+an example though).
+
+```python
+def operator2d(value1, value2):
+    if(state.operator == '+')
+        return value1 + value2
+    if(state.operator == '-')
+        return value1 - value2
+    if(state.operator == '*')
+        return value1 * value2
+    if(state.operator == '/')
+        return value1 / value2
+    if(state.operator == '%')
+        return value1 % value2
+```
+
+
+<div style={{ clear: 'both', height: '1rem' }}></div>
+
+All nodes are built from UI components (like **labels, text fields, selects,
+etc.**) that are predefined by nodecode.
+
+The fields that make up a node and other information are defined in JSON format.
+
+```json
+{
+    "id": "operator2d",
+    "title": "Operator 2D",
+    "fields": [
+        {
+            "id": "input-output-1",
+            "type": "InputOutput",
+            "props": {
+                "inputLabel": "Value 1",
+                "outputLabel": "Result"
+            }
+        },
+        {
+            "id": "input-output-2",
+            "type": "InputOutput",
+            "props": {
+                "inputLabel": "Value 2"
+            }
+        },
+        {
+            "id": "operator",
+            "type": "SegmentedControl",
+            "props": {
+                "options": ["+", "-", "*", "/", "%"]
+            }
+        }
+    ]
+}
+```
+
+
+## TODO
+
+- Source code for node function
+- JSON for fields
+- One of the most common fields is the **Input-Output-Field**
