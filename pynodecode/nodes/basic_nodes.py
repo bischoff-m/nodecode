@@ -2,23 +2,23 @@ from pynodecode.core import Node
 from pynodecode.util import register_node
 
 
-@register_node('input_list')
+@register_node('list_input')
 class InputListNode(Node):
-    def run(self, field=None):
-        output = self.arguments['item_list']
-        list_type = self.arguments['datatype_dropdown']
+    def calculate(self, field=None):
+        items = self.state['item_list']
+        list_type = self.state['datatype']
 
         if list_type == 'Int':
-            return [int(x) for x in output]
+            self.output['output'] = [int(x) for x in items]
         elif list_type == 'Float':
-            return [float(x) for x in output]
+            self.output['output'] = [float(x) for x in items]
         elif list_type == 'Boolean':
-            return [bool(x) for x in output]
+            self.output['output'] = [bool(x) for x in items]
         else:
-            return output
-
+            self.output['output'] = items
 
 @register_node('output')
 class OutputNode(Node):
-    def run(self, field=None):
-        return [conn.get_data() for conn in self.connections.values()]
+    def calculate(self, field=None):
+        print(self.useInput('input'))
+        return self.useInput('input')

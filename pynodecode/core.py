@@ -2,26 +2,34 @@ from typing import Type, Dict, List
 from abc import ABC, abstractmethod
 import networkx as nx
 
-# TODO: update type hinting to python 3.9
+# TODO: update type hinting to python 3.10
+# TODO: improve types to be as specific as possible
 # TODO: add docstrings to all classes and methods
 
 NODE_CLASSES = dict()
 
 
 class Node(ABC):
-    def __init__(self, static_args: Dict, predecessors):
+    # TYPES:
+    # init_state: Dict[field_key, field_state]
+    # predecessors: Dict[in_field_key, (out_field_key, Node)]
+    def __init__(self, init_state: Dict, predecessors: Dict):
         super().__init__()
-        self.cache = {}
-        self.arguments = static_args
-        self.connections = predecessors
+        self.output = {}
+        self.state = init_state
+        
+        def useInput(field_key: str):
+            out_field, node = predecessors[field_key]
+            return node.run(out_field)
+        self.useInput = useInput
 
-    def get_data(self, field=None):
-        if field not in self.cache:
-            self.cache[field] = self.run(field)
-        return self.cache[field]
+    def run(self, field=None):
+        if field not in self.output:
+            self.calculate(field)
+        return self.output[field]
 
     @abstractmethod
-    def run(self, field):
+    def calculate(self, field=None):
         pass
 
 
@@ -32,19 +40,25 @@ def register_nodeclass(id: str, cls: Type[Node]):
 
 
 class NodeProgram:
-    def __init__(self, nodeList: List[Dict]):
-        self.program = nodeList
+    # TYPES:
+    # programDef: NodeProgram
+    def __init__(self, programDef):
+        self.program = programDef
+        nodeDefs = programDef['nodes']
+        connectionDefs = programDef['connections']
 
-        # check if all needed nodes were registered
-        nodeIDs = {node['nodeID'] for node in nodeList}
+        # check if all needed nodes were registered using @register_node(nodeID)
+        nodeIDs = {node['type'] for _, node in nodeDefs}
         missing_IDs = nodeIDs - set(NODE_CLASSES)
         if missing_IDs:
             raise Exception(f'No implementation found for node IDs {missing_IDs}')
 
+        return
+
         # generate graph from nodes and connections
         G = nx.DiGraph()
-        G.add_nodes_from([node['id'] for node in nodeList])
-        for node in nodeList:
+        G.add_nodes_from([node['id'] for node in programDef])
+        for node in programDef:
             for conn in node['connections']:
                 G.add_edge(
                     conn['fromID'],
@@ -64,7 +78,7 @@ class NodeProgram:
         while leaves:
             # initialize all leaf nodes and set the weight of all outgoing edges to 0
             for leafID in leaves:
-                node = next(node for node in nodeList if node['id'] == leafID)
+                node = next(node for node in programDef if node['id'] == leafID)
                 predecessors = {conn['toField']: self.nodes[conn['fromID']] for conn in node['connections']}
                 nodeClass = NODE_CLASSES[node['nodeID']]
                 self.nodes[leafID] = nodeClass(node['arguments'], predecessors)

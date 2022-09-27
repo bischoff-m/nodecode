@@ -30,8 +30,9 @@ def on_run(data):
     with open('./config/programs/example_program.json', 'r') as f:
         programDef = json.load(f)
     program = NodeProgram(programDef)
-    output = program.run()
-    return output
+    # output = program.run()
+    # return output
+    return '42'
 
 
 @sio.on('quit')
