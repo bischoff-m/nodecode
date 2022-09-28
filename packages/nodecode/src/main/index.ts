@@ -22,7 +22,7 @@ let win: BrowserWindow | null = null
 
 async function createWindow() {
   win = new BrowserWindow({
-    title: 'NodeCode',
+    title: 'Nodecode',
     width: 1000 + 16,
     height: 600 + 59,
     icon: join(__dirname, 'icon.png'),

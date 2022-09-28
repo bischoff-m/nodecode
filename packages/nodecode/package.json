@@ -1,18 +1,9 @@
 {
-  "name": "nodecode",
-  "productName": "NodeCode",
+  "name": "nodecode-ui",
+  "productName": "Nodecode",
   "version": "0.1.0",
   "description": "Graphical Node Editor",
   "author": "Marco Bischoff <bischoff_m@aim.com>",
-  "license": "GPL-3.0-or-later",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/bischoff-m/nodecode.git"
-  },
-  "engines": {
-    "node": ">=18.0.0",
-    "npm": ">=8.0.0"
-  },
   "main": "dist/main/index.cjs",
   "scripts": {
     "dev": "node .vite/watch.mjs",

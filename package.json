@@ -1,0 +1,25 @@
+{
+    "name": "nodecode",
+    "version": "0.1.0",
+    "author": "Marco Bischoff <bischoff_m@aim.com>",
+    "license": "GPL-3.0-or-later",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/bischoff-m/nodecode.git"
+    },
+    "engines": {
+        "node": ">=18.0.0",
+        "npm": ">=8.0.0"
+    },
+    "scripts": {
+        "dev": "cd packages/nodecode/ && node .vite/watch.mjs",
+        "build:web": "node packages/nodecode/.vite/build.mjs",
+        "build:win": "node packages/nodecode/.vite/build.mjs && electron-builder",
+        "prebuild": "node packages/nodecode/.vite/prebuild.mjs",
+        "docs": "npx serve packages/nodecode/docs"
+    },
+    "workspaces": [
+        "packages/nodecode",
+        "packages/nodecode-docs"
+    ]
+}
