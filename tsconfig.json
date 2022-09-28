@@ -3,7 +3,7 @@
     "files": [],
     "references": [
         {
-            "path": "packages/nodecode"
+            "path": "packages/nodecode-ui"
         },
         {
             "path": "packages/nodecode-docs"

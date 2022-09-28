@@ -12,14 +12,14 @@
         "npm": ">=8.0.0"
     },
     "scripts": {
-        "dev": "cd packages/nodecode/ && node .vite/watch.mjs",
-        "build:web": "node packages/nodecode/.vite/build.mjs",
-        "build:win": "node packages/nodecode/.vite/build.mjs && electron-builder",
-        "prebuild": "node packages/nodecode/.vite/prebuild.mjs",
-        "docs": "npx serve packages/nodecode/docs"
+        "dev": "cd packages/nodecode-ui/ && node .vite/watch.mjs",
+        "build:web": "node packages/nodecode-ui/.vite/build.mjs",
+        "build:win": "node packages/nodecode-ui/.vite/build.mjs && electron-builder",
+        "prebuild": "node packages/nodecode-ui/.vite/prebuild.mjs",
+        "docs": "npx serve packages/nodecode-ui/docs"
     },
     "workspaces": [
-        "packages/nodecode",
+        "packages/nodecode-ui",
         "packages/nodecode-docs"
     ]
 }
