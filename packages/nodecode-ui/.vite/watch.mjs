@@ -59,7 +59,8 @@ async function watchPreload(viteDevServer) {
 }
 
 // bootstrap
-import './prebuild.mjs'
+import './prebuild-types.mjs'
+import './prebuild-docs.mjs'
 const viteDevServer = await createServer({
   configFile: './.vite/vite.renderer.ts',
 })

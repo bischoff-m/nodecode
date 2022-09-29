@@ -22,5 +22,4 @@ async function buildElectron() {
 }
 
 // bootstrap
-import './prebuild.mjs'
 await buildElectron()

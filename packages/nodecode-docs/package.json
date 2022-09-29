@@ -1,7 +1,8 @@
 {
   "name": "nodecode-docs",
-  "version": "0.0.0",
-  "private": true,
+  "version": "0.1.0",
+  "description": "Documentation of nodecode",
+  "author": "Marco Bischoff <bischoff_m@aim.com>",
   "scripts": {
     "docusaurus": "docusaurus",
     "start": "docusaurus start",
