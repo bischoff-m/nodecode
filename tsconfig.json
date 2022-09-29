@@ -1,25 +1,12 @@
+// https://www.typescriptlang.org/docs/handbook/project-references.html#overall-structure
 {
-  "$schema": "https://json.schemastore.org/tsconfig",
-  "compilerOptions": {
-    "baseUrl": ".",
-    "outDir": "./dist",
-    "target": "ESNext",
-    "module": "ESNext",
-    "lib": ["DOM", "DOM.Iterable", "ESNext"],
-    "allowJs": false,
-    "skipLibCheck": true,
-    "skipDefaultLibCheck": true,
-    "esModuleInterop": true,
-    "moduleResolution": "Node",
-    "resolveJsonModule": true,
-    "strict": true,
-    "noImplicitReturns": true,
-    "forceConsistentCasingInFileNames": true,
-    "isolatedModules": true,
-    "jsx": "react-jsx",
-    "paths": {
-      "@/*": ["./src/renderer/*"]
-    }
-  },
-  "include": ["./src"]
+    "files": [],
+    "references": [
+        {
+            "path": "packages/nodecode-ui"
+        },
+        {
+            "path": "packages/nodecode-docs"
+        }
+    ]
 }

@@ -1,0 +1,52 @@
+{
+    "name": "Basic Nodes",
+    "nodes": [
+        {
+            "id": "input_list",
+            "title": "List Input",
+            "fields": [
+                {
+                    "id": "output",
+                    "type": "InputOutputField",
+                    "arguments": {
+                        "outputLabel": "List",
+                        "outputDatatype": "array"
+                    }
+                },
+                {
+                    "id": "datatype",
+                    "type": "SelectField",
+                    "arguments": {
+                        "label": "Datatype",
+                        "values": [
+                            "String",
+                            "Int",
+                            "Float",
+                            "Boolean"
+                        ],
+                        "default": "String"
+                    }
+                },
+                {
+                    "id": "item_list",
+                    "type": "ListField"
+                }
+            ]
+        },
+        {
+            "id": "output",
+            "title": "Output",
+            "fields": [
+                {
+                    "id": "input",
+                    "type": "InputOutputField",
+                    "arguments": {
+                        "inputLabel": "Output",
+                        "inputDatatype": "any",
+                        "inputMulti": true
+                    }
+                }
+            ]
+        }
+    ]
+}
