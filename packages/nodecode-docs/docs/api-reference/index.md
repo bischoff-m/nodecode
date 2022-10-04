@@ -1,6 +1,13 @@
+---
+id: "index"
+title: "nodecode-ui"
+sidebar_label: "Readme"
+sidebar_position: 0
+custom_edit_url: null
+---
+
 # nodecode
 Graphical Node Editor
-
 
 (Fork from https://github.com/caoxiemeihao/vite-react-electron)
 
@@ -52,7 +59,6 @@ Graphical Node Editor
 	// For message to renderer
 	win?.webContents.send('mymessage', ...args)
 	```
-
 
 ## Adding a field
 

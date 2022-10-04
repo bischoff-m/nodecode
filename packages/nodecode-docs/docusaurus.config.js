@@ -75,6 +75,27 @@ const config = {
         darkTheme: darkCodeTheme,
       },
     }),
+  plugins: [
+    [
+      'docusaurus-plugin-typedoc',
+      // Plugin / TypeDoc options
+      {
+        entryPoints: [
+          '../nodecode-ui/src/main/index.ts',
+          '../nodecode-ui/src/preload/index.ts',
+          '../nodecode-ui/src/renderer/main.tsx',
+        ],
+        tsconfig: '../nodecode-ui/tsconfig.json',
+        // plugin: [], TODO: add react components plugin for typedoc
+        out: 'api-reference',
+        sidebar: {
+          categoryLabel: 'API Reference',
+          position: 5,
+          fullNames: true,
+        },
+      },
+    ],
+  ],
 }
 
 module.exports = config
