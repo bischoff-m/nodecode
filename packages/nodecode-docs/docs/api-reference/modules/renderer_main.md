@@ -36,4 +36,4 @@ A good string
 
 #### Defined in
 
-[renderer/main.tsx:34](https://github.com/bischoff-m/knotflow/blob/0a50fdf/packages/nodecode-ui/src/renderer/main.tsx#L34)
+[renderer/main.tsx:34](https://github.com/bischoff-m/nodecode/blob/b064b11/packages/nodecode-ui/src/renderer/main.tsx#L34)

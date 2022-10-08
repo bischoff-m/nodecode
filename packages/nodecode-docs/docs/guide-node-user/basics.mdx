@@ -22,27 +22,26 @@ This sample program applies an operator to two numbers and outputs the result.
 }}>
     <img src='/img/example-division-program.svg' />
 </div>
-
+<div style={{
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingTop: '1rem',
+}}>
+    <h3>Data flows from left to right</h3>
+</div>
 
 ## Nodes
 
-<div style={{ float: 'right', paddingLeft: '2rem' }}>
 <div style={{
-    height: '24.5rem',
-    padding: '2rem',
-    backgroundColor: '#131314',
-    borderRadius: 'var(--ifm-code-border-radius)',
-    backgroundSize: '1.5em 1.5em',
-    backgroundImage: 'radial-gradient(circle, rgba(255, 255, 255, 0.2) 1px, rgba(0, 0, 0, 0) 1px)',
-    backgroundPosition: '0 0',
+    display: 'flex',
+    flexDirection: 'row',
+    gap: '1rem',
 }}>
-    <img src='/img/example-operator-node.svg' style={{
-        position: 'relative',
-        top: '50%',
-        transform: 'translateY(-50%)'
-    }}/>
-</div>
-</div>
+
+<div style={{
+    flex: 1,
+}}>
 
 Each **node** represents a **function** that calculates output values from input values
 and its state. The code below shows how this node could be defined in python (it's only
@@ -62,8 +61,25 @@ def operator2d(value1, value2):
         return value1 % value2
 ```
 
+</div>
 
-<div style={{ clear: 'both', height: '1rem' }}></div>
+<div style={{
+    marginBottom: 'var(--ifm-leading)',
+    padding: '2rem',
+    backgroundColor: '#131314',
+    borderRadius: 'var(--ifm-code-border-radius)',
+    backgroundSize: '1.5em 1.5em',
+    backgroundImage: 'radial-gradient(circle, rgba(255, 255, 255, 0.2) 1px, rgba(0, 0, 0, 0) 1px)',
+    backgroundPosition: '0 0',
+}}>
+    <img src='/img/example-operator-node.svg' style={{
+        position: 'relative',
+        top: '50%',
+        transform: 'translateY(-50%)'
+    }}/>
+</div>
+
+</div>
 
 All nodes are built from UI components (like **labels, text fields, selects,
 etc.**) that are predefined by nodecode.
