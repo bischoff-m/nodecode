@@ -13,12 +13,13 @@
     },
     "scripts": {
         "start": "npm start --prefix packages/nodecode-ui/",
-        "prebuild": "npm prebuild --prefix packages/nodecode-ui/",
-        "build": "npm build --prefix packages/nodecode-ui/",
-        "docs:ui-only": "npm run docs --prefix packages/nodecode-ui/",
+        "ui:prebuild": "npm prebuild --prefix packages/nodecode-ui/",
+        "ui:build": "npm build --prefix packages/nodecode-ui/",
         "docs": "npm start --prefix packages/nodecode-docs/",
-        "postinstall": "cd packages/nodecode-runtime && pipenv install",
-        "backend": "cd packages/nodecode-runtime && pipenv run python kernel_prototype.py"
+        "docs:build": "npm run build --prefix packages/nodecode-docs/",
+        "docs:serve": "npm run serve --prefix packages/nodecode-docs/",
+        "runtime": "cd packages/nodecode-runtime && pipenv run python kernel_prototype.py",
+        "runtime:postinstall": "cd packages/nodecode-runtime && pipenv install"
     },
     "workspaces": [
         "packages/nodecode-ui",

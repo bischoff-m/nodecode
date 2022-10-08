@@ -86,6 +86,7 @@ const config = {
           '../nodecode-ui/src/renderer/main.tsx',
         ],
         tsconfig: '../nodecode-ui/tsconfig.json',
+        watch: process.env.NODE_ENV === 'development',
         // plugin: [], TODO: add react components plugin for typedoc
         out: 'api-reference',
         sidebar: {
