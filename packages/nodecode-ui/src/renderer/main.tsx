@@ -15,8 +15,8 @@ function AppContainer() {
 }
 
 const container = document.getElementById('root')
-const root = ReactDOM.createRoot(container!)
-root.render(<AppContainer />)
+const root = container && ReactDOM.createRoot(container)
+root?.render(<AppContainer />)
 
 
 /**
