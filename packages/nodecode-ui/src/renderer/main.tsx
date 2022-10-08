@@ -29,8 +29,24 @@ root?.render(<AppContainer />)
  *
  * @example
  *
+ *     doc_test_exported('hello')
+ */
+export function doc_test_exported(n: string, o: string, d: string): string {
+  return '42'
+}
+
+/**
+ * My test function.
+ * 
+ * @param n - A string param
+ * @param [o] - A optional string param
+ * @param [d=DefaultValue] - A optional string param
+ * @return A good string
+ *
+ * @example
+ *
  *     __doc_test('hello')
  */
-export function __doc_test(n: string, o: string , d: string): string {
+function __doc_test(n: string, o: string, d: string): string {
   return '42'
 }

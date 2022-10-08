@@ -8,16 +8,16 @@ custom_edit_url: null
 
 ## Functions
 
-### \_\_doc\_test
+### doc\_test\_exported
 
-▸ **__doc_test**(`n`, `o?`, `d?`): `string`
+▸ **doc_test_exported**(`n`, `o?`, `d?`): `string`
 
 My test function.
 
 **`Example`**
 
 ```ts
-__doc_test('hello')
+doc_test_exported('hello')
 ```
 
 #### Parameters
@@ -36,4 +36,4 @@ A good string
 
 #### Defined in
 
-[renderer/main.tsx:34](https://github.com/bischoff-m/nodecode/blob/b064b11/packages/nodecode-ui/src/renderer/main.tsx#L34)
+[renderer/main.tsx:34](https://github.com/bischoff-m/nodecode/blob/4a2c0b6/packages/nodecode-ui/src/renderer/main.tsx#L34)

@@ -12,6 +12,7 @@ import {
 } from 'electron'
 
 // TODO: implement once and listenerCount
+// TODO: use unknown instead of explicit any
 
 // Define the IPC channels here
 // WARN: The keys of the functions should match the channel names because they are used as

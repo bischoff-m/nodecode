@@ -84,6 +84,8 @@ const config = {
           '../nodecode-ui/src/main/index.ts',
           '../nodecode-ui/src/preload/index.ts',
           '../nodecode-ui/src/renderer/main.tsx',
+          '../nodecode-ui/src/global.d.ts',
+          '../nodecode-ui/src/ipc.ts',
         ],
         tsconfig: '../nodecode-ui/tsconfig.json',
         watch: process.env.NODE_ENV === 'development',
