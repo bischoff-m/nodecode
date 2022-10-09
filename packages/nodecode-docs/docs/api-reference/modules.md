@@ -9,6 +9,8 @@ custom_edit_url: null
 
 ## Modules
 
+- [global](modules/global.md)
+- [ipc](modules/ipc.md)
 - [main](modules/main.md)
 - [preload](modules/preload.md)
 - [renderer/main](modules/renderer_main.md)

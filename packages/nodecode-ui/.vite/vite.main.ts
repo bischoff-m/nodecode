@@ -17,6 +17,7 @@ export default defineConfig({
       external: [
         ...builtinModules,
         'electron',
+        'express',
       ],
       output: {
         entryFileNames: '[name].cjs',

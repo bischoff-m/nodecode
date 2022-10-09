@@ -16,6 +16,12 @@ module.exports = {
         'plugin:css/standard',
         'plugin:mdx/recommended',
     ],
+    'overrides': [
+        {
+            'files': ['*.md', '*.mdx'],
+            'extends': 'plugin:mdx/recommended',
+        }
+    ],
     'settings': {
         'mdx/code-blocks': false,
         'react': {

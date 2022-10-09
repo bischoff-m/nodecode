@@ -3,6 +3,8 @@ import useDocusaurusContext from '@docusaurus/useDocusaurusContext'
 import HomepageFeatures from '@site/src/components/HomepageFeatures'
 import Layout from '@theme/Layout'
 import { clsx } from 'clsx'
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import * as React from 'react'
 import styles from './index.module.css'
 
 function HomepageHeader() {

@@ -15,7 +15,7 @@ custom_edit_url: null
 
 #### Defined in
 
-[global.d.ts:8](https://github.com/bischoff-m/nodecode/blob/4a2c0b6/packages/nodecode-ui/src/global.d.ts#L8)
+[global.d.ts:8](https://github.com/bischoff-m/nodecode/blob/3133122/packages/nodecode-ui/src/global.d.ts#L8)
 
 ___
 
@@ -25,7 +25,7 @@ ___
 
 #### Defined in
 
-[global.d.ts:7](https://github.com/bischoff-m/nodecode/blob/4a2c0b6/packages/nodecode-ui/src/global.d.ts#L7)
+[global.d.ts:7](https://github.com/bischoff-m/nodecode/blob/3133122/packages/nodecode-ui/src/global.d.ts#L7)
 
 ___
 
@@ -35,4 +35,4 @@ ___
 
 #### Defined in
 
-[global.d.ts:9](https://github.com/bischoff-m/nodecode/blob/4a2c0b6/packages/nodecode-ui/src/global.d.ts#L9)
+[global.d.ts:9](https://github.com/bischoff-m/nodecode/blob/3133122/packages/nodecode-ui/src/global.d.ts#L9)
