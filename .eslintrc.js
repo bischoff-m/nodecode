@@ -15,7 +15,6 @@ module.exports = {
         'plugin:@typescript-eslint/eslint-recommended',
         'plugin:css/standard',
         'plugin:mdx/recommended',
-        'plugin:jsdoc/recommended',
     ],
     'overrides': [
         {
@@ -57,7 +56,7 @@ module.exports = {
         'css',
         'eslint-plugin-import-helpers',
         'import',
-        'jsdoc'
+        'eslint-plugin-tsdoc'
     ],
     'rules': {
         'linebreak-style': [
@@ -102,5 +101,6 @@ module.exports = {
                     '^@site']
             }
         ],
+        'tsdoc/syntax': 'warn',
     },
 }

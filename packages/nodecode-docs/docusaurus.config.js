@@ -90,7 +90,10 @@ const config = {
         ],
         tsconfig: '../nodecode-ui/tsconfig.json',
         watch: process.env.NODE_ENV === 'development',
-        // plugin: [], TODO: add react components plugin for typedoc
+        // TODO: add react components plugin for typedoc
+        plugin: [
+          'typedoc-plugin-not-exported'
+        ],
         out: 'api-reference',
         sidebar: {
           categoryLabel: 'API Reference',

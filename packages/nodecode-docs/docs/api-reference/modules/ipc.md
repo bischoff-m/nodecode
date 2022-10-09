@@ -20,7 +20,7 @@ custom_edit_url: null
 
 #### Defined in
 
-[ipc.ts:131](https://github.com/bischoff-m/nodecode/blob/3133122/packages/nodecode-ui/src/ipc.ts#L131)
+[ipc.ts:131](https://github.com/bischoff-m/nodecode/blob/31a16d5/packages/nodecode-ui/src/ipc.ts#L131)
 
 ___
 
@@ -44,7 +44,7 @@ ___
 
 #### Defined in
 
-[ipc.ts:119](https://github.com/bischoff-m/nodecode/blob/3133122/packages/nodecode-ui/src/ipc.ts#L119)
+[ipc.ts:119](https://github.com/bischoff-m/nodecode/blob/31a16d5/packages/nodecode-ui/src/ipc.ts#L119)
 
 ## Functions
 
@@ -72,4 +72,4 @@ ___
 
 #### Defined in
 
-[ipc.ts:91](https://github.com/bischoff-m/nodecode/blob/3133122/packages/nodecode-ui/src/ipc.ts#L91)
+[ipc.ts:91](https://github.com/bischoff-m/nodecode/blob/31a16d5/packages/nodecode-ui/src/ipc.ts#L91)
