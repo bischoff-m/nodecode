@@ -6,9 +6,9 @@
   "author": "Marco Bischoff <bischoff_m@aim.com>",
   "main": "dist/main/index.cjs",
   "scripts": {
-    "start": "node .vite/watch.mjs",
-    "prebuild": "node .vite/prebuild-types.mjs",
-    "build": "node .vite/build.mjs && electron-builder"
+    "start": "node vite/watch.mjs",
+    "prebuild": "node vite/prebuild-types.mjs",
+    "build": "node vite/build.mjs && electron-builder"
   },
   "dependencies": {
     "@mantine/core": "^4.2.12",
@@ -41,7 +41,7 @@
     "vite": "^3.0.2"
   },
   "env": {
-    "//": "Used in ./.vite/watch.mjs and ./src/main/index.ts",
+    "//": "Used in ./vite/watch.mjs and ./src/main/index.ts",
     "HOST": "127.0.0.1",
     "PORT": 3344
   },

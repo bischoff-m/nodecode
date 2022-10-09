@@ -4,9 +4,9 @@ import chalk from 'chalk'
 const TAG = chalk.bgBlue('[build.mjs]')
 
 const viteConfigs = {
-  main: './.vite/vite.main.ts',
-  preload: './.vite/vite.preload.ts',
-  renderer: './.vite/vite.renderer.ts',
+  main: './vite/vite.main.ts',
+  preload: './vite/vite.preload.ts',
+  renderer: './vite/vite.renderer.ts',
 }
 
 async function buildElectron() {
