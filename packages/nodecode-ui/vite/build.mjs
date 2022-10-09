@@ -1,5 +1,5 @@
-import { build as viteBuild } from 'vite'
 import chalk from 'chalk'
+import { build as viteBuild } from 'vite'
 
 const TAG = chalk.bgBlue('[build.mjs]')
 

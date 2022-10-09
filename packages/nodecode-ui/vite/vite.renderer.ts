@@ -1,6 +1,6 @@
+import react from '@vitejs/plugin-react'
 import { join } from 'path'
 import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
 import pkg from '../package.json'
 
 // https://vitejs.dev/config/
