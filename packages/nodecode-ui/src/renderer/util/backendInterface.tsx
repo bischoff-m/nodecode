@@ -12,7 +12,7 @@ import type { ServerToClientEvents } from '@/types/server'
 ////////////////////////////////////////////////////////////////////////////////
 // FROM BACKEND TO RENDERER
 ////////////////////////////////////////////////////////////////////////////////
-const listeners: { [channel: string]: ((...args: any[]) => void)[] } = {}
+const listeners: { [channel: string]: ((...args: unknown[]) => void)[] } = {}
 
 window.ipc.removeAllListeners('fromBackend')
 window.ipc.on.fromBackend((event, channel, ...args) => {
@@ -22,7 +22,7 @@ window.ipc.on.fromBackend((event, channel, ...args) => {
     listener(...args)
 })
 
-function on(channel: string, callback: (...args: any[]) => void) {
+function on(channel: string, callback: (...args: unknown[]) => void) {
   if (!listeners[channel])
     listeners[channel] = []
   listeners[channel].push(callback)
@@ -47,14 +47,14 @@ function send(
 function invoke(
   channel: keyof ServerToClientEvents,
   ...args: Parameters<ServerToClientEvents[keyof ServerToClientEvents]>
-): Promise<any> {
+): Promise<unknown> {
   return window.ipc.invoke.toBackend(channel, 0, args)
 }
 function invokeTimeout(
   channel: keyof ServerToClientEvents,
   timeout: number,
   ...args: Parameters<ServerToClientEvents[keyof ServerToClientEvents]>
-): Promise<any> {
+): Promise<unknown> {
   return window.ipc.invoke.toBackend(channel, timeout, args)
 }
 

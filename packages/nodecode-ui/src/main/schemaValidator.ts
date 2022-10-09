@@ -1,4 +1,4 @@
-import Ajv from 'ajv'
+import ajv from 'ajv'
 import fs from 'fs'
 import type { JSONSchema7 } from 'json-schema'
 import path from 'path'
@@ -10,10 +10,10 @@ export const readJSON = <T extends object>(...subpath: string[]): T =>
 
 
 export async function useValidate(
-  validate: Ajv.ValidateFunction | null,
-  ajv: Ajv.Ajv,
+  validate: ajv.ValidateFunction | null,
+  ajv: ajv.Ajv,
   baseFile: 'NodePackage' | 'NodeProgram',
-): Promise<Ajv.ValidateFunction> {
+): Promise<ajv.ValidateFunction> {
   if (validate !== null)
     return validate
 
@@ -42,8 +42,8 @@ const getSchemas = async (baseFile: 'NodePackage' | 'NodeProgram') => {
 
 
 
-let validatePackage: Ajv.ValidateFunction | null = null
-const ajvPackage = new Ajv({ allErrors: true })
+let validatePackage: ajv.ValidateFunction | null = null
+const ajvPackage = new ajv({ allErrors: true })
 
 export const usePackageValidate = async () => validatePackage = await useValidate(
   validatePackage,
@@ -52,8 +52,8 @@ export const usePackageValidate = async () => validatePackage = await useValidat
 )
 
 
-let validateProgram: Ajv.ValidateFunction | null = null
-const ajvProgram = new Ajv({ allErrors: true })
+let validateProgram: ajv.ValidateFunction | null = null
+const ajvProgram = new ajv({ allErrors: true })
 
 export const useProgramValidate = async () => validateProgram = await useValidate(
   validateProgram,

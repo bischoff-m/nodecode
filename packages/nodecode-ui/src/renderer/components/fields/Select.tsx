@@ -1,8 +1,8 @@
 import { Select, useMantineTheme } from '@mantine/core'
-import type { FieldProps } from '@/types/util'
-import type { SelectFieldProps } from '@/types/NodePackage'
 import FieldBase, { useFieldState } from '@/components/util/FieldBase'
+import type { SelectFieldProps } from '@/types/NodePackage'
 import type { SelectFieldState } from '@/types/NodeProgram'
+import type { FieldProps } from '@/types/util'
 
 // TODO: close dropdown when canvas is moved or scaled (or move and scale dropdown as well?)
 //        -> better option: use redux to track canvas state and pass canvasOrigin to positionDependencies prop of SelectField

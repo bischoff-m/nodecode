@@ -1,13 +1,13 @@
-import { join } from 'path'
 import { app, BrowserWindow } from 'electron'
 import isDev from 'electron-is-dev'
-import startServer from './server'
-import pkg from '../../package.json'
-import { getIpcMain } from '../ipc'
+import fs from 'fs'
+import { join } from 'path'
 import type { NodePackage } from '@/types/NodePackage'
 import type { NodeProgram } from '@/types/NodeProgram'
+import pkg from '../../package.json'
+import { getIpcMain } from '../ipc'
 import { readJSON, usePackageValidate, useProgramValidate } from './schemaValidator'
-import fs from 'fs'
+import startServer from './server'
 
 if (isDev)
   app.disableHardwareAcceleration()
@@ -55,7 +55,7 @@ async function createWindow() {
   const root = 'public/config'
 
 
-  ipcMain.handle.getProgram(async (event) => {
+  ipcMain.handle.getProgram(async () => {
     const program = readJSON<NodeProgram>(root, 'programs/example_program.json')
     const validate = await useProgramValidate()
     if (!validate(program))
@@ -63,7 +63,7 @@ async function createWindow() {
     return program
   })
 
-  ipcMain.handle.getPackage(async (event) => {
+  ipcMain.handle.getPackage(async () => {
     const nodePackage = readJSON<NodePackage>(root, 'packages/basic_nodes.json')
     const validate = await usePackageValidate()
     if (!validate(nodePackage))

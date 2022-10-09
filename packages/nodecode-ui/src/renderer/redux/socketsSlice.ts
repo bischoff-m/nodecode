@@ -1,7 +1,7 @@
 import { combineReducers, createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
-import type { Vec2D } from '@/types/util'
 import type { Socket } from '@/types/NodeProgram'
+import type { Vec2D } from '@/types/util'
 
 
 // helper function to generate a unique key for a socket

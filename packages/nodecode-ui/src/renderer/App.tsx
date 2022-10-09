@@ -1,12 +1,12 @@
-import NodeCanvas from '@/components/NodeCanvas'
-import theme from '@/styles/themeApp'
-import { Provider as ReduxProvider } from 'react-redux'
-import store from '@/redux/store'
 import { MantineProvider, AppShell } from '@mantine/core'
-import Navbar from '@/components/Navbar'
+import { Provider as ReduxProvider } from 'react-redux'
 import Header from '@/components/Header'
+import Navbar from '@/components/Navbar'
+import NodeCanvas from '@/components/NodeCanvas'
 import '@/styles/global.scss'
 import NodePackageProvider from '@/components/NodePackageProvider'
+import store from '@/redux/store'
+import theme from '@/styles/themeApp'
 
 export default function App() {
   return (

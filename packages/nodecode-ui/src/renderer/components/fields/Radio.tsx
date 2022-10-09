@@ -1,15 +1,15 @@
 import { createStyles, Radio, RadioGroup, useMantineTheme } from '@mantine/core'
-import type { FieldProps } from '@/types/util'
-import type { RadioFieldProps } from '@/types/NodePackage'
+import { useEffect } from 'react'
 import FieldBase from '@/components/util/FieldBase'
 import MaxHeightScrollArea from '@/components/util/MaxHeightScrollArea'
-import { fixedTheme } from '@/styles/themeCanvas'
 import { useDispatchTyped, useSelectorTyped } from '@/redux/hooks'
-import type { RadioFieldState } from '@/types/NodeProgram'
 import { setFieldState } from '@/redux/programSlice'
-import { useEffect } from 'react'
+import { fixedTheme } from '@/styles/themeCanvas'
+import type { RadioFieldProps } from '@/types/NodePackage'
+import type { RadioFieldState } from '@/types/NodeProgram'
+import type { FieldProps } from '@/types/util'
 
-const useStyles = createStyles((theme) => ({
+const useStyles = createStyles(() => ({
   container: {
     paddingLeft: 8,
     paddingRight: 8,

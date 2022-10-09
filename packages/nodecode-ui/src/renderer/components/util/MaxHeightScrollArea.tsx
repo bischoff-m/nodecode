@@ -1,9 +1,9 @@
-import { fixedTheme } from '@/styles/themeCanvas'
 import {
   ScrollArea,
   ScrollAreaProps,
   useMantineTheme,
 } from '@mantine/core'
+import { fixedTheme } from '@/styles/themeCanvas'
 
 type MaxHeightScrollAreaProps = {
   maxHeight?: number,

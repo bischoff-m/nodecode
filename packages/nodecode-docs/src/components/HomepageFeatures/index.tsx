@@ -1,6 +1,5 @@
-import React from 'react';
-import clsx from 'clsx';
-import styles from './styles.module.css';
+import { clsx } from 'clsx'
+import styles from './styles.module.css'
 
 type FeatureItem = {
   title: string;
@@ -11,6 +10,7 @@ type FeatureItem = {
 const FeatureList: FeatureItem[] = [
   {
     title: 'Easy to Use',
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     Svg: require('@site/static/img/undraw_docusaurus_mountain.svg').default,
     description: (
       <>
@@ -21,6 +21,7 @@ const FeatureList: FeatureItem[] = [
   },
   {
     title: 'Focus on What Matters',
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     Svg: require('@site/static/img/undraw_docusaurus_tree.svg').default,
     description: (
       <>
@@ -31,6 +32,7 @@ const FeatureList: FeatureItem[] = [
   },
   {
     title: 'Powered by React',
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     Svg: require('@site/static/img/undraw_docusaurus_react.svg').default,
     description: (
       <>
@@ -39,7 +41,7 @@ const FeatureList: FeatureItem[] = [
       </>
     ),
   },
-];
+]
 
 function Feature({title, Svg, description}: FeatureItem) {
   return (
@@ -52,7 +54,7 @@ function Feature({title, Svg, description}: FeatureItem) {
         <p>{description}</p>
       </div>
     </div>
-  );
+  )
 }
 
 export default function HomepageFeatures(): JSX.Element {
@@ -66,5 +68,5 @@ export default function HomepageFeatures(): JSX.Element {
         </div>
       </div>
     </section>
-  );
+  )
 }

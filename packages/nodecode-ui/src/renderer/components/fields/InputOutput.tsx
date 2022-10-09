@@ -1,11 +1,11 @@
 import { createStyles } from '@mantine/core'
-import { updateSocket, addSocketPos, removeSocket, removeSocketPos } from '@/redux/socketsSlice'
-import { useDispatchTyped } from '@/redux/hooks'
 import { useEffect, useRef } from 'react'
 import { screenToCanvas } from '@/components/NodeCanvas'
+import { useDispatchTyped } from '@/redux/hooks'
+import { updateSocket, addSocketPos, removeSocket, removeSocketPos } from '@/redux/socketsSlice'
 import { fixedTheme } from '@/styles/themeCanvas'
-import type { FieldProps } from '@/types/util'
 import type { InputOutputFieldProps } from '@/types/NodePackage'
+import type { FieldProps } from '@/types/util'
 
 // TODO: implement multiple connections on the same socket and datatypes
 // TODO: handle position needs to updated when node is updated (for example a list is expanded)
@@ -65,7 +65,7 @@ export default function InputOutputField(props: InputOutputFieldProps & FieldPro
     const leftPos = leftHandleRef.current.getBoundingClientRect()
     const rightPos = rightHandleRef.current.getBoundingClientRect()
 
-    Array(true, false).forEach(isLeft => {
+    new Array<boolean>(true, false).forEach(isLeft => {
       const pos = screenToCanvas(isLeft ? leftPos : rightPos)
       if (isLeft ? props.inputLabel : props.outputLabel) {
         const socket = {
@@ -85,7 +85,7 @@ export default function InputOutputField(props: InputOutputFieldProps & FieldPro
     })
 
     return () => {
-      Array(true, false).forEach(isLeft => {
+      new Array<boolean>(true, false).forEach(isLeft => {
         const socket = {
           nodeKey: props.nodeKey,
           fieldKey: props.fieldKey,

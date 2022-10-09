@@ -40,11 +40,11 @@ const mantineTheme: MantineThemeOverride = {
   defaultRadius: 'md',
   primaryColor: 'blue',
   fontSizes: {
-    "xs": 11,
-    "sm": 13,
-    "md": 14,
-    "lg": 15,
-    "xl": 16
+    'xs': 11,
+    'sm': 13,
+    'md': 14,
+    'lg': 15,
+    'xl': 16
   },
   other: {
     // colors

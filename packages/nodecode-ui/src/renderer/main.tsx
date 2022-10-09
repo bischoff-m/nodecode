@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react'
-import ReactDOM from 'react-dom/client'
+import { StrictMode, useEffect } from 'react'
+import { createRoot } from 'react-dom/client'
 import App from '@/App'
 
 function AppContainer() {
@@ -8,14 +8,14 @@ function AppContainer() {
   })
 
   return (
-    <React.StrictMode>
+    <StrictMode>
       <App />
-    </React.StrictMode>
+    </StrictMode>
   )
 }
 
 const container = document.getElementById('root')
-const root = container && ReactDOM.createRoot(container)
+const root = container && createRoot(container)
 root?.render(<AppContainer />)
 
 
@@ -31,6 +31,7 @@ root?.render(<AppContainer />)
  *
  *     doc_test_exported('hello')
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function doc_test_exported(n: string, o: string, d: string): string {
   return '42'
 }
@@ -47,6 +48,7 @@ export function doc_test_exported(n: string, o: string, d: string): string {
  *
  *     __doc_test('hello')
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function __doc_test(n: string, o: string, d: string): string {
   return '42'
 }

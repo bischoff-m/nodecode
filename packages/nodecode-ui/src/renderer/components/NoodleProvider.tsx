@@ -1,7 +1,7 @@
+import { useEffect, useState } from 'react'
 import Noodle from '@/components/Noodle'
 import { useDispatchTyped, useSelectorTyped } from '@/redux/hooks'
 import { addConnection, removeConnection } from '@/redux/programSlice'
-import { useEffect, useState } from 'react'
 
 type SocketPair = {
   source: string | undefined
@@ -10,9 +10,7 @@ type SocketPair = {
 
 const getNoodleKey = (pair: SocketPair) => `${pair.source}:${pair.target}`
 
-export type NoodleProviderProps = {}
-
-export default function NoodleProvider(props: NoodleProviderProps) {
+export default function NoodleProvider() {
   const dispatch = useDispatchTyped()
 
   // Redux state
@@ -56,7 +54,7 @@ export default function NoodleProvider(props: NoodleProviderProps) {
       }))
 
     // Copy of state that will be updated and set back to state
-    let newLoose = { ...looseNoodles }
+    const newLoose = { ...looseNoodles }
     const insert = (socketPair: SocketPair) => newLoose[getNoodleKey(socketPair)] = socketPair
     const remove = (socketPair: SocketPair) => delete newLoose[getNoodleKey(socketPair)]
 

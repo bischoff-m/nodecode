@@ -1,6 +1,3 @@
-import type { NodePackage } from '@/types/NodePackage'
-import type { NodeProgram } from '@/types/NodeProgram'
-import { ClientToServerEvents, ServerToClientEvents } from '@/types/server'
 import {
   contextBridge as originalContextBridge,
   ipcMain as originalIpcMain,
@@ -10,6 +7,9 @@ import {
   BrowserWindow,
   IpcMainEvent,
 } from 'electron'
+import type { NodePackage } from '@/types/NodePackage'
+import type { NodeProgram } from '@/types/NodeProgram'
+import { ClientToServerEvents, ServerToClientEvents } from '@/types/server'
 
 // TODO: implement once and listenerCount
 // TODO: use unknown instead of explicit any

@@ -1,0 +1,12 @@
+packages/nodecode-runtime
+
+packages/nodecode-ui/node_modules
+packages/nodecode-ui/dist
+packages/nodecode-ui/release
+packages/nodecode-ui/src/renderer/lib
+
+packages/nodecode-docs/node_modules
+packages/nodecode-docs/docs/api-reference
+packages/nodecode-docs/build
+packages/nodecode-docs/docs/tutorial-basics
+packages/nodecode-docs/docs/tutorial-extras

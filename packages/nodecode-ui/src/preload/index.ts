@@ -1,8 +1,9 @@
 import { contextBridge, ipcRenderer } from '../ipc'
-import { domReady } from './utils'
 import { useLoading } from './loading'
+import { domReady } from './utils'
 
-const { appendLoading, removeLoading } = useLoading();
+// eslint-disable-next-line react-hooks/rules-of-hooks
+const { appendLoading, removeLoading } = useLoading()
 
 domReady().then(appendLoading)
 

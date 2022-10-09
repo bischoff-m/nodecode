@@ -7,7 +7,7 @@
   "main": "dist/main/index.cjs",
   "scripts": {
     "start": "node .vite/watch.mjs",
-    "prebuild": "node .vite/prebuild-types.mjs && node .vite/prebuild-docs.mjs",
+    "prebuild": "node .vite/prebuild-types.mjs",
     "build": "node .vite/build.mjs && electron-builder"
   },
   "dependencies": {

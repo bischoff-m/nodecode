@@ -1,19 +1,12 @@
-import { createStyles } from '@mantine/core'
 import {
   Header as MantineHeader,
   Button,
   Group,
 } from '@mantine/core'
-import backend from '@/util/backendInterface'
 import SaveFileButton from '@/components/SaveFileButton'
-
-const useStyles = createStyles((theme) => ({
-
-}))
+import backend from '@/util/backendInterface'
 
 export default function Header() {
-  const { classes } = useStyles()
-
   return (
     <MantineHeader height={60} p='sm'>
       <Group position='right'>
@@ -23,7 +16,8 @@ export default function Header() {
           // TODO: Revise backend access method and improve the types (omit callback parameter)
           // onClick={() => backend.invoke('run', 'hallo hier mein programm')
           onClick={() => backend
-            .invoke('run', 'hallo hier mein programm', (data: any) => { })
+            // eslint-disable-next-line @typescript-eslint/no-empty-function
+            .invoke('run', 'hallo hier mein programm', () => { })
             .then((data) => console.log('antwort ist zurück: ', data))
           }
         >RUN</Button>

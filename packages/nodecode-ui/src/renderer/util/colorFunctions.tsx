@@ -1,4 +1,3 @@
-
 export function removeColorTags(shades: {
   '50': string,
   '100': string,

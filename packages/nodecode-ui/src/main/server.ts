@@ -1,10 +1,8 @@
-
-
-const express = require('express')
+import type { BrowserWindow } from 'electron'
+import express, { Request, Response } from 'express'
 import { createServer } from 'http'
 import { Server } from 'socket.io'
 import type { ServerToClientEvents, ClientToServerEvents, InterServerEvents, SocketData } from '@/types/server'
-import type { BrowserWindow } from 'electron'
 import { getIpcMain } from '../ipc'
 
 // Doc: https://stackoverflow.com/questions/66686377/how-to-tie-socket-io-width-express-an-typescript
@@ -16,7 +14,7 @@ export default function startServer(win: BrowserWindow) {
   const expressApp = express()
   const httpServer = createServer(expressApp)
 
-  expressApp.get('/', (req: any, res: any) => {
+  expressApp.get('/', (req: Request, res: Response) => {
     res.send('Please connect using <a href="https://socket.io/">socket.io</a>')
   })
 
@@ -62,7 +60,7 @@ export default function startServer(win: BrowserWindow) {
         socket.emit(
           channel,
           ...args,
-          (data: any) => resolve(data) // callback that is called by the backend on success
+          (data: unknown) => resolve(data) // callback that is called by the backend on success
         )
         // if the given timeout expires, reject the promise
         timeout > 0 && setTimeout(() => reject(new Error('Timeout when sending event from main to backend.')), timeout)

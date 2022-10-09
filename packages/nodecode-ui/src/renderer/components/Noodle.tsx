@@ -2,14 +2,14 @@ import { createStyles, useMantineTheme } from '@mantine/core'
 import { useEffect, useRef, useState } from 'react'
 import type { MouseEvent as ReactMouseEvent } from 'react'
 import Draggable, { DraggableEvent } from 'react-draggable'
-import { useSelectorTyped } from '@/redux/hooks'
 import { getCanvasZoom, screenToCanvas } from '@/components/NodeCanvas'
-import { fixedTheme } from '@/styles/themeCanvas'
+import { useSelectorTyped } from '@/redux/hooks'
 import {
   socketPositions as socketPos,
   onMoveNodeSockets,
   removeOnMoveNodeSockets
 } from '@/redux/socketsSlice'
+import { fixedTheme } from '@/styles/themeCanvas'
 import type { Vec2D } from '@/types/util'
 
 const handleSize = fixedTheme.handleDraggableSize
@@ -66,7 +66,7 @@ export default function Noodle(props: NoodleProps) {
 
 
   // If a node that the noodle is connected to is moved, update the path of the noodle
-  onMoveNodeSockets((nodeKey: string, by: Vec2D) => {
+  onMoveNodeSockets((nodeKey: string) => {
     if (!socketKeyLeft || !socketKeyRight || !refPath.current)
       return
     const leftNodeKey = allSockets[socketKeyLeft].nodeKey
@@ -101,8 +101,8 @@ export default function Noodle(props: NoodleProps) {
     const [minSocketKey, minDistance] = Object
       .keys(socketPosAfterMove)
       .reduce((res, key) => {
-        let pos = socketPosAfterMove[key]
-        let distance = Math.sqrt((pos.x - handlePos.x) ** 2 + (pos.y - handlePos.y) ** 2)
+        const pos = socketPosAfterMove[key]
+        const distance = Math.sqrt((pos.x - handlePos.x) ** 2 + (pos.y - handlePos.y) ** 2)
         if (distance < res[1] && allSockets[key].nodeKey !== excludeNode) return [key, distance]
         else return res
       }, ['', Infinity] as [string, number])
@@ -162,13 +162,13 @@ export default function Noodle(props: NoodleProps) {
     let posRight: Vec2D
 
     if (socketKeyLeft) {
-      let socketPos = posFromSocketKey(socketKeyLeft)
+      const socketPos = posFromSocketKey(socketKeyLeft)
       posLeft = { x: socketPos.x + 7, y: socketPos.y }
     } else {
       posLeft = mousePos
     }
     if (socketKeyRight) {
-      let socketPos = posFromSocketKey(socketKeyRight)
+      const socketPos = posFromSocketKey(socketKeyRight)
       posRight = { x: socketPos.x - 7, y: socketPos.y }
     } else {
       posRight = mousePos

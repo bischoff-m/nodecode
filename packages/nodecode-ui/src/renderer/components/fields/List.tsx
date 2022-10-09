@@ -1,4 +1,3 @@
-import { fixedTheme } from '@/styles/themeCanvas'
 import {
   ActionIcon,
   CloseButton,
@@ -9,11 +8,12 @@ import {
 } from '@mantine/core'
 import { IconPlus } from '@tabler/icons'
 import { useState } from 'react'
-import MaxHeightScrollArea from '@/components/util/MaxHeightScrollArea'
-import type { FieldProps } from '@/types/util'
-import type { ListFieldProps } from '@/types/NodePackage'
 import FieldBase, { useFieldState } from '@/components/util/FieldBase'
+import MaxHeightScrollArea from '@/components/util/MaxHeightScrollArea'
+import { fixedTheme } from '@/styles/themeCanvas'
+import type { ListFieldProps } from '@/types/NodePackage'
 import type { ListFieldState } from '@/types/NodeProgram'
+import type { FieldProps } from '@/types/util'
 
 const useStyles = createStyles((theme) => ({
   listItem: {

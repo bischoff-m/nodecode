@@ -1,8 +1,8 @@
 import { MultiSelect, useMantineTheme } from '@mantine/core'
-import type { FieldProps } from '@/types/util'
-import type { MultiSelectFieldProps } from '@/types/NodePackage'
 import FieldBase, { useFieldState } from '@/components/util/FieldBase'
+import type { MultiSelectFieldProps } from '@/types/NodePackage'
 import type { MultiSelectFieldState } from '@/types/NodeProgram'
+import type { FieldProps } from '@/types/util'
 
 
 export default function MultiSelectField(props: MultiSelectFieldProps & FieldProps) {

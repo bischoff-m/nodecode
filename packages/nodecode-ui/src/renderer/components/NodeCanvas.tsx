@@ -1,18 +1,13 @@
 import { createStyles, MantineProvider } from '@mantine/core'
-import { mantineTheme, styleOverrides, classNames } from '@/styles/themeCanvas'
-import {
-  MouseEvent,
-  WheelEvent,
-  useEffect,
-  useRef,
-} from 'react'
-import gridLines from '@/assets/grid-lines.svg'
-import { directstyled, useDirectStyle } from '@/lib/direct-styled' // https://github.com/everweij/direct-styled
-import { Vec2D } from '@/types/util'
-import NoodleProvider from '@/components/NoodleProvider'
 import { useBooleanToggle, useHotkeys } from '@mantine/hooks'
+import { MouseEvent, WheelEvent, useEffect, useRef, } from 'react'
+import gridLines from '@/assets/grid-lines.svg'
 import NewNodePopup from '@/components/NewNodePopup'
 import NodeProvider, { setSelectedNode } from '@/components/NodeProvider'
+import NoodleProvider from '@/components/NoodleProvider'
+import { directstyled, useDirectStyle } from '@/lib/direct-styled' // https://github.com/everweij/direct-styled
+import { mantineTheme, styleOverrides, classNames } from '@/styles/themeCanvas'
+import { Vec2D } from '@/types/util'
 
 // Global constants and variables
 const zoomFactor = 0.8
@@ -50,7 +45,7 @@ export const onZoomChanged = (callback: (newZoom: number) => void) => onZoomCall
 //////////////////////////////////////////////////////////////////////////////////////////////
 // Styles
 //////////////////////////////////////////////////////////////////////////////////////////////
-const useStyles = createStyles((theme) => ({
+const useStyles = createStyles(() => ({
   container: {
     overflow: 'hidden',
     width: '100%',
@@ -141,7 +136,7 @@ export default function NodeCanvas() {
     }
   }
 
-  function handleMouseUp(e: MouseEvent<'div'>) {
+  function handleMouseUp() {
     isDragging = false
     containerRef.current && containerRef.current.classList.remove(classes.dragging)
     containerRef.current && containerRef.current.classList.add(classes.animatedBackground)
@@ -168,11 +163,11 @@ export default function NodeCanvas() {
 
     // Calculations from https://stackoverflow.com/a/46833254/16953263
     // position of cursor relative to the center point of the container
-    let zoomPoint = {
+    const zoomPoint = {
       x: e.clientX - left - width / 2,
       y: e.clientY - top - height / 2,
     }
-    let zoomTarget = {
+    const zoomTarget = {
       x: (zoomPoint.x - innerOffset.x) / zoom,
       y: (zoomPoint.y - innerOffset.y) / zoom,
     }
@@ -181,7 +176,7 @@ export default function NodeCanvas() {
     innerOffset.x = zoomPoint.x - zoomTarget.x * zoom
     innerOffset.y = zoomPoint.y - zoomTarget.y * zoom
 
-    let drag = draggableRef.current
+    const drag = draggableRef.current
     if (drag && !drag.classList.contains(classes.animatedTransition))
       drag.classList.add(classes.animatedTransition)
 

@@ -1,11 +1,11 @@
 export interface ServerToClientEvents {
   quit: () => void,
   // Socket.io automatically handles callbacks
-  run: (program: any, callback: (data: any) => void) => void,
+  run: (program: unknown, callback: (data: unknown) => void) => void,
 }
 
 export interface ClientToServerEvents {
-  output: (msg: any) => void
+  output: (msg: unknown) => void
 }
 
 export interface InterServerEvents {
@@ -13,5 +13,5 @@ export interface InterServerEvents {
 }
 
 export interface SocketData {
-  example: any
+  example: unknown
 }

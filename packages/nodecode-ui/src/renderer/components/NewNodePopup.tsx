@@ -1,15 +1,15 @@
 import { createStyles, Loader, Stack, TextInput } from '@mantine/core'
 import type { MantineSize } from '@mantine/core'
-import MaxHeightScrollArea from '@/components/util/MaxHeightScrollArea'
-import { fixedTheme } from '@/styles/themeCanvas'
 import { IconSearch } from '@tabler/icons'
-import { Vec2D } from '@/types/util'
-import { useContext, useEffect, useRef, useState } from 'react'
-import { Node } from '@/types/NodePackage'
 import Fuse from 'fuse.js'
+import { useContext, useEffect, useRef, useState } from 'react'
+import { NodePackageContext } from '@/components/NodePackageProvider'
+import MaxHeightScrollArea from '@/components/util/MaxHeightScrollArea'
 import { useDispatchTyped } from '@/redux/hooks'
 import { addNode } from '@/redux/programSlice'
-import { NodePackageContext } from '@/components/NodePackageProvider'
+import { fixedTheme } from '@/styles/themeCanvas'
+import { Node } from '@/types/NodePackage'
+import { Vec2D } from '@/types/util'
 
 // TODO: indexActive as state sets which list entry is highlighted
 // TODO: add node to canvas when clicked
@@ -67,7 +67,7 @@ export default function NewNodePopup(props: NewNodePopupProps) {
   const { classes } = useStyles()
   const refInput = useRef<HTMLInputElement>(null)
   const nodePackage = useContext(NodePackageContext)
-  let [searchResults, setSearchResults] = useState<Fuse.FuseResult<Node>[] | null>(null)
+  const [searchResults, setSearchResults] = useState<Fuse.FuseResult<Node>[] | null>(null)
   const dispatch = useDispatchTyped()
 
   useEffect(() => {

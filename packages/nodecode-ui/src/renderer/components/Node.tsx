@@ -1,15 +1,15 @@
 import { createStyles, MantineSize, Stack, useMantineTheme } from '@mantine/core'
-import { useDispatchTyped } from '@/redux/hooks'
-import { moveNodeSockets, moveNodeSocketsStop } from '@/redux/socketsSlice'
 import { useRef, useState } from 'react'
-import Draggable from 'react-draggable'
-import { getCanvasZoom, onZoomChanged } from '@/components/NodeCanvas'
-import { fixedTheme } from '@/styles/themeCanvas'
-import type { DraggableData, DraggableEvent } from 'react-draggable'
 import type { ReactNode } from 'react'
-import { Vec2D } from '@/types/util'
+import Draggable from 'react-draggable'
+import type { DraggableData, DraggableEvent } from 'react-draggable'
+import { getCanvasZoom, onZoomChanged } from '@/components/NodeCanvas'
 import { getSelectedNode, onNodeSelected, setSelectedNode } from '@/components/NodeProvider'
+import { useDispatchTyped } from '@/redux/hooks'
 import { moveNode } from '@/redux/programSlice'
+import { moveNodeSockets, moveNodeSocketsStop } from '@/redux/socketsSlice'
+import { fixedTheme } from '@/styles/themeCanvas'
+import { Vec2D } from '@/types/util'
 
 const useStyles = createStyles((theme) => ({
   card: {

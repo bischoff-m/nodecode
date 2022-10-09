@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
-import type { Connection, FieldState, NodeInstance, NodeProgram } from '@/types/NodeProgram'
 import { customAlphabet, urlAlphabet } from 'nanoid'
+import type { Connection, FieldState, NodeInstance, NodeProgram } from '@/types/NodeProgram'
 import type { Vec2D } from '@/types/util'
 
 const nanoid = customAlphabet(urlAlphabet, 10)

@@ -1,5 +1,5 @@
-import { NodePackage } from '@/types/NodePackage'
 import { createContext, useEffect, useState } from 'react'
+import { NodePackage } from '@/types/NodePackage'
 
 export const NodePackageContext = createContext<NodePackage>({
   name: 'Empty Package',

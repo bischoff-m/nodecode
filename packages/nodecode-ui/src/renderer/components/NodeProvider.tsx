@@ -1,10 +1,15 @@
 import { createStyles } from '@mantine/core'
+import { useHotkeys } from '@mantine/hooks'
+import { useContext, useEffect } from 'react'
+import InputOutput from '@/components/fields/InputOutput'
+import List from '@/components/fields/List'
+import MultiSelect from '@/components/fields/MultiSelect'
+import Radio from '@/components/fields/Radio'
+import Select from '@/components/fields/Select'
+import Node from '@/components/Node'
 import { NodePackageContext } from '@/components/NodePackageProvider'
 import { useDispatchTyped, useSelectorTyped } from '@/redux/hooks'
-import type { NodeInstance } from '@/types/NodeProgram'
 import { addConnection, addNode, removeNode } from '@/redux/programSlice'
-import { useContext, useEffect } from 'react'
-import { useHotkeys } from '@mantine/hooks'
 import type {
   Field,
   InputOutputFieldProps,
@@ -13,12 +18,7 @@ import type {
   RadioFieldProps,
   MultiSelectFieldProps
 } from '@/types/NodePackage'
-import Node from '@/components/Node'
-import InputOutput from '@/components/fields/InputOutput'
-import Select from '@/components/fields/Select'
-import List from '@/components/fields/List'
-import Radio from '@/components/fields/Radio'
-import MultiSelect from '@/components/fields/MultiSelect'
+import type { NodeInstance } from '@/types/NodeProgram'
 
 
 // TODO: update display and state properties in Node and Field component
@@ -106,16 +106,14 @@ export const setSelectedNode = (nodeKey: string | null) => {
 }
 
 
-const useStyles = createStyles((theme) => ({
+const useStyles = createStyles(() => ({
   container: {
     zIndex: 100,
     cursor: 'default',
   },
 }))
 
-export type NodeProviderProps = {}
-
-export default function NodeProvider(props: NodeProviderProps) {
+export default function NodeProvider() {
   const { classes } = useStyles()
   const dispatch = useDispatchTyped()
   const nodePackage = useContext(NodePackageContext)
@@ -128,7 +126,7 @@ export default function NodeProvider(props: NodeProviderProps) {
   ): JSX.Element {
     // check if nodeID exists
     const nodeIDs = nodePackage.nodes.map((node) => node.id)
-    if (!nodeIDs.includes(nodeID)) throw new Error(`NodeID \"${nodeID}\" could not be found.`)
+    if (!nodeIDs.includes(nodeID)) throw new Error(`NodeID "${nodeID}" could not be found.`)
 
     // build node from config
     const node = nodePackage.nodes.find((node) => node.id === nodeID)

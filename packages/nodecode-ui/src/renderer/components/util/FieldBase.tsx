@@ -1,10 +1,9 @@
 import { createStyles } from '@mantine/core'
-import { fixedTheme } from '@/styles/themeCanvas'
-import type { FieldState } from '@/types/NodeProgram'
+import { useEffect } from 'react'
 import { useDispatchTyped, useSelectorTyped } from '@/redux/hooks'
 import { setFieldState } from '@/redux/programSlice'
-import { useEffect } from 'react'
-
+import { fixedTheme } from '@/styles/themeCanvas'
+import type { FieldState } from '@/types/NodeProgram'
 
 const useStyles = createStyles((theme) => ({
   container: {
