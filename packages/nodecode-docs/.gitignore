@@ -3,6 +3,7 @@
 
 # Production
 /build
+/docs/internal-reference
 
 # Generated files
 .docusaurus

@@ -92,9 +92,9 @@ const config = {
           'typedoc-plugin-mark-react-functional-components',
           'typedoc-plugin-rename-defaults',
         ],
-        out: 'api-reference',
+        out: 'internal-reference',
         sidebar: {
-          categoryLabel: 'API Reference',
+          categoryLabel: 'Internal Reference',
           position: 5,
           fullNames: false,
         },
