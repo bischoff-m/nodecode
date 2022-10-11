@@ -1,7 +1,7 @@
 ---
 id: "global.NodeJS"
 title: "Namespace: NodeJS"
-sidebar_label: "global.NodeJS"
+sidebar_label: "NodeJS"
 custom_edit_url: null
 ---
 

@@ -1,3 +1,14 @@
+/**
+ * The NodeCanvas is the core component of the node editor. It contains the nodes and
+ * connections of the current program. The whole canvas can be moved and zoomed. Nodes and
+ * connections can be added and removed.
+ * @module
+ */
+
+// TODO: replace vector math by something where you dont need to write x and y for each calculation
+//       - https://mathjs.org/ Problem: code is less readable because of math.add(...) instead of ... + ...
+//       - https://www.sweetjs.org/doc/tutorial.html Define own operators (maybe in combination with mathjs)
+
 import { createStyles, MantineProvider } from '@mantine/core'
 import { useBooleanToggle, useHotkeys } from '@mantine/hooks'
 import { MouseEvent, WheelEvent, useEffect, useRef, } from 'react'
@@ -10,19 +21,32 @@ import { mantineTheme, styleOverrides, classNames } from '@/styles/themeCanvas'
 import { Vec2D } from '@/types/util'
 
 // Global constants and variables
-const zoomFactor = 0.8
-const keysPressed: string[] = [] // keys currently pressed
-const prevDragPos: Vec2D = { x: 0, y: 0 } // screen position of mouse, updated while dragging
-const innerOffset: Vec2D = { x: 0, y: 0 } // offset of canvas relative to its parent component in pixels, can be changed by dragging
-let isDragging = false // whether the user is currently dragging
+const ZOOMFACTOR = 0.8 // Determines how much scrolling affects the zoom
+const keysPressed: string[] = [] // Keys currently pressed
+const prevDragPos: Vec2D = { x: 0, y: 0 } // Screen position of mouse, updated while dragging
+const innerOffset: Vec2D = { x: 0, y: 0 } // Offset of canvas relative to its parent component in pixels, can be changed by dragging
+let isDragging = false // Whether the user is currently dragging
+
+// Zoom state (get using direct access or with callback on update)
+let zoom = 1 // Relative size of elements on canvas in percent
+export const getCanvasZoom = () => zoom
+const onZoomCallbacks: ((newZoom: number) => void)[] = [] // Functions that should be called when user zoomed in/out
+export const onZoomChanged = (callback: (newZoom: number) => void) => onZoomCallbacks.push(callback)
 
 // Refs
 let canvasDiv: HTMLDivElement | null = null // ref.current of the canvas component that can be dragged
 let containerDiv: HTMLDivElement | null = null // ref.current of the div that contains the canvas
 
+/**
+ * Transforms screen coordinates to canvas coordinates (e.g. for mouse events).
+ * This does not use the innerOffset and zoom variables because it would not account for
+ * animations.
+ * If this method is used before the `NodeCanvas` component is mounted, it will return
+ * `NaN`.
+ * @param position - Screen coordinates to convert
+ * @returns Canvas coordinates after conversion
+ */
 export const screenToCanvas = (position: Vec2D) => {
-  // transforms screen coordinates to canvas coordinates (e.g. for mouse events)
-  // this does not use the innerOffset and zoom variables because it would not account for animations
   if (!canvasDiv || !containerDiv) return { x: NaN, y: NaN }
   const { left, top, width: innerWidth } = canvasDiv.getBoundingClientRect()
   const { width: outerWidth } = containerDiv.getBoundingClientRect()
@@ -32,19 +56,7 @@ export const screenToCanvas = (position: Vec2D) => {
   }
 }
 
-// Zoom state (get using direct access or with callback on update)
-let zoom = 1 // relative size of elements on canvas in percent
-export const getCanvasZoom = () => zoom
-const onZoomCallbacks: ((newZoom: number) => void)[] = [] // functions that should be called when user zoomed in/out
-export const onZoomChanged = (callback: (newZoom: number) => void) => onZoomCallbacks.push(callback)
 
-// TODO: replace vector math by something where you dont need to write x and y for each calculation
-//       - https://mathjs.org/ Problem: code is less readable because of math.add(...) instead of ... + ...
-//       - https://www.sweetjs.org/doc/tutorial.html Define own operators (maybe in combination with mathjs)
-
-//////////////////////////////////////////////////////////////////////////////////////////////
-// Styles
-//////////////////////////////////////////////////////////////////////////////////////////////
 const useStyles = createStyles(() => ({
   container: {
     overflow: 'hidden',
@@ -75,13 +87,10 @@ const useStyles = createStyles(() => ({
 }))
 
 
-//////////////////////////////////////////////////////////////////////////////////////////////
-// Canvas component
-//////////////////////////////////////////////////////////////////////////////////////////////
-
 /**
- * The NodeCanvas is the core component of the node editor. You can place, move and connect nodes
- *
+ * The NodeCanvas is the core component of the node editor. It contains the nodes and
+ * connections of the current program. The whole canvas can be moved and zoomed. Nodes and
+ * connections can be added and removed.
  */
 export default function NodeCanvas() {
   // Styles
@@ -101,9 +110,11 @@ export default function NodeCanvas() {
     ['space', () => toggleNewNodePopupOpen()],
   ])
 
+  /**
+   * Calculate and set position of canvas and background based on innerOffset, zoom and
+   * the size of the canvas container
+   */
   function updateCanvasStyle() {
-    // calculate and set position of canvas and background of canvas based on
-    // innerOffset, zoom and the size of the canvas container
     if (!containerRef.current) return
     const { width, height } = containerRef.current.getBoundingClientRect()
     const translatedOffset = {
@@ -121,6 +132,10 @@ export default function NodeCanvas() {
     })
   }
 
+  /**
+   * Enables dragging the canvas container if the wheel was pressed.
+   * @param e - Mouse down event on the canvas
+   */
   function handleMouseDown(e: MouseEvent<'div'>) {
     prevDragPos.x = e.clientX
     prevDragPos.y = e.clientY
@@ -136,6 +151,9 @@ export default function NodeCanvas() {
     }
   }
 
+  /**
+   * Disables dragging the canvas container if the wheel was released.
+   */
   function handleMouseUp() {
     isDragging = false
     containerRef.current && containerRef.current.classList.remove(classes.dragging)
@@ -143,6 +161,10 @@ export default function NodeCanvas() {
     draggableRef.current && draggableRef.current.classList.add(classes.animatedTransition)
   }
 
+  /**
+   * Translates the canvas when it is dragged using the mouse wheel.
+   * @param e - Mouse move event on the canvas
+   */
   function handleMouseMove(e: MouseEvent<'div'>) {
     e.preventDefault()
     if (!isDragging) return
@@ -155,14 +177,18 @@ export default function NodeCanvas() {
     updateCanvasStyle()
   }
 
+  /**
+   * Zooms in/out of the canvas if the `Control` button is pressed while scrolling.
+   * @param e - Mouse wheel (scroll) event on the canvas
+   */
   function handleWheel(e: WheelEvent<'div'>) {
-    // TODO: min und max für zoom
+    // TODO: Min and max for zoom
     if (containerRef.current == null || isDragging || !keysPressed.includes('Control')) return
     e.stopPropagation()
     const { left, top, width, height } = containerRef.current.getBoundingClientRect()
 
     // Calculations from https://stackoverflow.com/a/46833254/16953263
-    // position of cursor relative to the center point of the container
+    // Position of cursor relative to the center point of the container
     const zoomPoint = {
       x: e.clientX - left - width / 2,
       y: e.clientY - top - height / 2,
@@ -171,7 +197,7 @@ export default function NodeCanvas() {
       x: (zoomPoint.x - innerOffset.x) / zoom,
       y: (zoomPoint.y - innerOffset.y) / zoom,
     }
-    zoom *= zoomFactor ** Math.sign(e.deltaY)
+    zoom *= ZOOMFACTOR ** Math.sign(e.deltaY)
 
     innerOffset.x = zoomPoint.x - zoomTarget.x * zoom
     innerOffset.y = zoomPoint.y - zoomTarget.y * zoom
@@ -180,9 +206,9 @@ export default function NodeCanvas() {
     if (drag && !drag.classList.contains(classes.animatedTransition))
       drag.classList.add(classes.animatedTransition)
 
-    // update this component
+    // Update this component
     updateCanvasStyle()
-    // updated other components that registered a callback
+    // Updated other components that registered a callback
     onZoomCallbacks.forEach((callback) => callback(zoom))
   }
 

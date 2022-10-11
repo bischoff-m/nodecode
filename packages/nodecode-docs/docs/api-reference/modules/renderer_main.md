@@ -6,16 +6,6 @@ sidebar_position: 0
 custom_edit_url: null
 ---
 
-## Variables
-
-### me
-
-• `Const` **me**: `MyClass`
-
-#### Defined in
-
-[renderer/main.tsx:68](https://github.com/bischoff-m/nodecode/blob/31a16d5/packages/nodecode-ui/src/renderer/main.tsx#L68)
-
 ## Functions
 
 ### doc\_test\_exported
@@ -46,4 +36,4 @@ A good string
 
 #### Defined in
 
-[renderer/main.tsx:37](https://github.com/bischoff-m/nodecode/blob/31a16d5/packages/nodecode-ui/src/renderer/main.tsx#L37)
+[packages/nodecode-ui/src/renderer/main.tsx:35](https://github.com/bischoff-m/nodecode/blob/1978ab5/packages/nodecode-ui/src/renderer/main.tsx#L35)

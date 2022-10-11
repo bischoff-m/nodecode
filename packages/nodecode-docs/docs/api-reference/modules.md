@@ -1,9 +1,8 @@
 ---
 id: "modules"
 title: "nodecode-ui"
-sidebar_label: "Table of contents"
+sidebar_label: "Exports"
 sidebar_position: 0.5
-hide_table_of_contents: true
 custom_edit_url: null
 ---
 
@@ -12,5 +11,45 @@ custom_edit_url: null
 - [global](modules/global.md)
 - [ipc](modules/ipc.md)
 - [main](modules/main.md)
+- [main/schemaValidator](modules/main_schemaValidator.md)
+- [main/server](modules/main_server.md)
 - [preload](modules/preload.md)
+- [preload/loading](modules/preload_loading.md)
+- [preload/utils](modules/preload_utils.md)
+- [renderer/App](modules/renderer_App.md)
+- [renderer/components/Header](modules/renderer_components_Header.md)
+- [renderer/components/Navbar](modules/renderer_components_Navbar.md)
+- [renderer/components/NewNodePopup](modules/renderer_components_NewNodePopup.md)
+- [renderer/components/Node](modules/renderer_components_Node.md)
+- [renderer/components/NodeCanvas](modules/renderer_components_NodeCanvas.md)
+- [renderer/components/NodePackageProvider](modules/renderer_components_NodePackageProvider.md)
+- [renderer/components/NodeProvider](modules/renderer_components_NodeProvider.md)
+- [renderer/components/Noodle](modules/renderer_components_Noodle.md)
+- [renderer/components/NoodleProvider](modules/renderer_components_NoodleProvider.md)
+- [renderer/components/SaveFileButton](modules/renderer_components_SaveFileButton.md)
+- [renderer/components/fields/InputOutput](modules/renderer_components_fields_InputOutput.md)
+- [renderer/components/fields/List](modules/renderer_components_fields_List.md)
+- [renderer/components/fields/MultiSelect](modules/renderer_components_fields_MultiSelect.md)
+- [renderer/components/fields/Radio](modules/renderer_components_fields_Radio.md)
+- [renderer/components/fields/Select](modules/renderer_components_fields_Select.md)
+- [renderer/components/util/FieldBase](modules/renderer_components_util_FieldBase.md)
+- [renderer/components/util/MaxHeightScrollArea](modules/renderer_components_util_MaxHeightScrollArea.md)
+- [renderer/lib/direct-styled](modules/renderer_lib_direct_styled.md)
+- [renderer/lib/direct-styled/directstyled](modules/renderer_lib_direct_styled_directstyled.md)
+- [renderer/lib/direct-styled/tags](modules/renderer_lib_direct_styled_tags.md)
+- [renderer/lib/direct-styled/types](modules/renderer_lib_direct_styled_types.md)
+- [renderer/lib/direct-styled/useDirectStyle](modules/renderer_lib_direct_styled_useDirectStyle.md)
 - [renderer/main](modules/renderer_main.md)
+- [renderer/redux/hooks](modules/renderer_redux_hooks.md)
+- [renderer/redux/programSlice](modules/renderer_redux_programSlice.md)
+- [renderer/redux/socketsSlice](modules/renderer_redux_socketsSlice.md)
+- [renderer/redux/store](modules/renderer_redux_store.md)
+- [renderer/styles/mantineDefaultTheme](modules/renderer_styles_mantineDefaultTheme.md)
+- [renderer/styles/themeApp](modules/renderer_styles_themeApp.md)
+- [renderer/styles/themeCanvas](modules/renderer_styles_themeCanvas.md)
+- [renderer/types/NodePackage](modules/renderer_types_NodePackage.md)
+- [renderer/types/NodeProgram](modules/renderer_types_NodeProgram.md)
+- [renderer/types/server](modules/renderer_types_server.md)
+- [renderer/types/util](modules/renderer_types_util.md)
+- [renderer/util/backendInterface](modules/renderer_util_backendInterface.md)
+- [renderer/util/colorFunctions](modules/renderer_util_colorFunctions.md)

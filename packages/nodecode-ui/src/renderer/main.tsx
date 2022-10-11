@@ -25,7 +25,7 @@ root?.render(<AppContainer />)
  * @param n - A string param
  * @param [o] - A optional string param
  * @param [d=DefaultValue] - A optional string param
- * @return A good string
+ * @returns A good string
  *
  * @example
  *
@@ -40,9 +40,7 @@ export function doc_test_exported(n: string, o: string, d: string): string {
  * My test function.
  * 
  * @param n - A string param
- * @param [o] - A optional string param
- * @param [d=DefaultValue] - A optional string param
- * @return A good string
+ * @returns A good string
  *
  * @example
  *

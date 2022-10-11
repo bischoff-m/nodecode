@@ -1,7 +1,7 @@
 ---
 id: "global.NodeJS.ProcessEnv"
 title: "Interface: ProcessEnv"
-sidebar_label: "global.NodeJS.ProcessEnv"
+sidebar_label: "ProcessEnv"
 custom_edit_url: null
 ---
 
@@ -15,7 +15,7 @@ custom_edit_url: null
 
 #### Defined in
 
-[global.d.ts:8](https://github.com/bischoff-m/nodecode/blob/31a16d5/packages/nodecode-ui/src/global.d.ts#L8)
+[packages/nodecode-ui/src/global.d.ts:8](https://github.com/bischoff-m/nodecode/blob/1978ab5/packages/nodecode-ui/src/global.d.ts#L8)
 
 ___
 
@@ -25,7 +25,7 @@ ___
 
 #### Defined in
 
-[global.d.ts:7](https://github.com/bischoff-m/nodecode/blob/31a16d5/packages/nodecode-ui/src/global.d.ts#L7)
+[packages/nodecode-ui/src/global.d.ts:7](https://github.com/bischoff-m/nodecode/blob/1978ab5/packages/nodecode-ui/src/global.d.ts#L7)
 
 ___
 
@@ -35,4 +35,4 @@ ___
 
 #### Defined in
 
-[global.d.ts:9](https://github.com/bischoff-m/nodecode/blob/31a16d5/packages/nodecode-ui/src/global.d.ts#L9)
+[packages/nodecode-ui/src/global.d.ts:9](https://github.com/bischoff-m/nodecode/blob/1978ab5/packages/nodecode-ui/src/global.d.ts#L9)

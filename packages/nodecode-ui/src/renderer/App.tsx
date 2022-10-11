@@ -8,6 +8,9 @@ import NodePackageProvider from '@/components/NodePackageProvider'
 import store from '@/redux/store'
 import theme from '@/styles/themeApp'
 
+/**
+ * The root app component that wraps all of the content.
+ */
 export default function App() {
   return (
     <div style={{ overflow: 'hidden' }}>

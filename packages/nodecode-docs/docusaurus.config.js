@@ -82,23 +82,21 @@ const config = {
       // Plugin / TypeDoc options
       {
         entryPoints: [
-          '../nodecode-ui/src/main/index.ts',
-          '../nodecode-ui/src/preload/index.ts',
-          '../nodecode-ui/src/renderer/main.tsx',
-          '../nodecode-ui/src/global.d.ts',
-          '../nodecode-ui/src/ipc.ts',
+          '../nodecode-ui/src',
         ],
+        entryPointStrategy: 'expand',
         tsconfig: '../nodecode-ui/tsconfig.json',
         watch: process.env.NODE_ENV === 'development',
-        // TODO: add react components plugin for typedoc
         plugin: [
-          'typedoc-plugin-not-exported'
+          'typedoc-plugin-not-exported',
+          'typedoc-plugin-mark-react-functional-components',
+          'typedoc-plugin-rename-defaults',
         ],
         out: 'api-reference',
         sidebar: {
           categoryLabel: 'API Reference',
           position: 5,
-          fullNames: true,
+          fullNames: false,
         },
       },
     ],
