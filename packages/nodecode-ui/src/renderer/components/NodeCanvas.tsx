@@ -20,22 +20,52 @@ import { directstyled, useDirectStyle } from '@/lib/direct-styled' // https://gi
 import { mantineTheme, styleOverrides, classNames } from '@/styles/themeCanvas'
 import { Vec2D } from '@/types/util'
 
+//////////////////////////////////////////////////////////////////////////////////////////
 // Global constants and variables
-const ZOOMFACTOR = 0.8 // Determines how much scrolling affects the zoom
-const keysPressed: string[] = [] // Keys currently pressed
-const prevDragPos: Vec2D = { x: 0, y: 0 } // Screen position of mouse, updated while dragging
-const innerOffset: Vec2D = { x: 0, y: 0 } // Offset of canvas relative to its parent component in pixels, can be changed by dragging
-let isDragging = false // Whether the user is currently dragging
+//////////////////////////////////////////////////////////////////////////////////////////
 
-// Zoom state (get using direct access or with callback on update)
-let zoom = 1 // Relative size of elements on canvas in percent
-export const getCanvasZoom = () => zoom
-const onZoomCallbacks: ((newZoom: number) => void)[] = [] // Functions that should be called when user zoomed in/out
-export const onZoomChanged = (callback: (newZoom: number) => void) => onZoomCallbacks.push(callback)
+/** Determines how much scrolling affects the zoom. */
+const ZOOMFACTOR = 0.8
+
+/** Keys currently pressed. */
+const keysPressed: string[] = []
+
+/** Screen position of mouse, updated while dragging. */
+const prevDragPos: Vec2D = { x: 0, y: 0 }
+
+/** Offset of canvas relative to its parent component in pixels, can be changed by dragging. */
+const innerOffset: Vec2D = { x: 0, y: 0 }
+
+/** Whether the user is currently dragging. */
+let isDragging = false
 
 // Refs
 let canvasDiv: HTMLDivElement | null = null // ref.current of the canvas component that can be dragged
 let containerDiv: HTMLDivElement | null = null // ref.current of the div that contains the canvas
+
+
+//////////////////////////////////////////////////////////////////////////////////////////
+// Zoom state (get using direct access or with callback on update)
+//////////////////////////////////////////////////////////////////////////////////////////
+
+/** Relative size of elements on canvas in percent. */
+let zoom = 1
+
+/** Functions that should be called when user zoomed in/out. */
+const onZoomCallbacks: ((newZoom: number) => void)[] = []
+
+/**
+ * Getter for the zoom state.
+ * @returns The current zoom of the canvas
+ */
+export const getCanvasZoom = () => zoom
+
+/**
+ * Registers a callback that should be called whed the user zoomed in/out.
+ * @param callback - The function that should be called when zoom is triggered
+ */
+export const onZoomChanged = (callback: (newZoom: number) => void) => onZoomCallbacks.push(callback)
+
 
 /**
  * Transforms screen coordinates to canvas coordinates (e.g. for mouse events).
@@ -88,9 +118,7 @@ const useStyles = createStyles(() => ({
 
 
 /**
- * The NodeCanvas is the core component of the node editor. It contains the nodes and
- * connections of the current program. The whole canvas can be moved and zoomed. Nodes and
- * connections can be added and removed.
+ * @category Component
  */
 export default function NodeCanvas() {
   // Styles

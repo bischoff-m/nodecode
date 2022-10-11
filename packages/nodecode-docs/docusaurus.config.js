@@ -79,18 +79,27 @@ const config = {
   plugins: [
     [
       'docusaurus-plugin-typedoc',
-      // Plugin / TypeDoc options
       {
+        // TypeDoc options
         entryPoints: [
           '../nodecode-ui/src',
         ],
         entryPointStrategy: 'expand',
         tsconfig: '../nodecode-ui/tsconfig.json',
+        // TODO: typedoc-plugin-external-module-map
+        // 'external-modulemap': [
+        //   String.raw`renderer\/([\w\-\_]+)\/.*`,
+        //   '.*'
+        // ],
+
+        // Docusaurus-plugin-typedoc options
         watch: process.env.NODE_ENV === 'development',
         plugin: [
           'typedoc-plugin-not-exported',
           'typedoc-plugin-mark-react-functional-components',
           'typedoc-plugin-rename-defaults',
+          'typedoc-plugin-external-module-map',
+          'typedoc-plugin-mdn-links',
         ],
         out: 'internal-reference',
         sidebar: {
