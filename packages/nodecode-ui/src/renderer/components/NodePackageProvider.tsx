@@ -1,6 +1,35 @@
+/**
+ * This component contains the {@link "renderer/types/NodePackage".NodePackage} context of
+ * the app which represents all the nodes that can be placed in the editor or that a loaded
+ * program can consist of. It contains a description of what the nodes look like and what 
+ * fields they consist of and is loaded via the IPC when the program starts.
+ * 
+ * The `NodePackageProvider` component needs to wrap all other components that want to
+ * access the context. It is made available to the subcomponents via the
+ * [`useContext`](https://reactjs.org/docs/hooks-reference.html#usecontext) react hook
+ * and the {@link NodePackageContext} variable.
+ * 
+ * **Note**
+ * 
+ * > Currently, the context is only reloaded when the app is restarted or `Ctrl + R` is
+ * > pressed in development mode. In the future, the user should be able to install node
+ * > packages consisting of nodes for a specific use case (e.g., creating SQL queries or
+ * > image processing) by using a plugin browser in the app. When installing a new node
+ * > package, the NodePackage context would need to be updated and the
+ * > {@link "renderer/components/NodeCanvas" NodeCanvas} would need to be reloaded.
+ * 
+ * > A further extension would be to provide a node builder tool to create new nodes and
+ * > node packages without having to manually modify the corresponding JSON file.
+ * 
+ * @module
+ */
+
 import { createContext, useEffect, useState } from 'react'
 import { NodePackage } from '@/types/NodePackage'
 
+/**
+ * The NodePackage context that is passed down to the child components.
+ */
 export const NodePackageContext = createContext<NodePackage>({
   name: 'Empty Package',
   nodes: [],
@@ -10,7 +39,11 @@ type NodePackageProviderProps = {
   children?: React.ReactNode,
 }
 
-export default function NodePackageProvider(props: NodePackageProviderProps) {
+/**
+ * @param props - The children that need to access the NodePackage context.
+ * @category Component
+ */
+export default function NodePackageProvider(props: NodePackageProviderProps): JSX.Element {
   const [packageData, setPackageData] = useState<NodePackage | null>(null)
 
   useEffect(() => {

@@ -1,11 +1,38 @@
 /**
- * The NodeCanvas is the core component of the node editor. It contains the nodes and
+ * The `NodeCanvas` is the core component of the node editor. It contains the nodes and
  * connections of the current program. The whole canvas can be moved and zoomed. Nodes and
  * connections can be added and removed.
+ * 
  * @module
+ * 
+ * @remarks
+ * The outermost child of the `NodeCanvas` component is a container that stays fixed to
+ * the outer contents of the app.
+ * 
+ * - It is referenced using the global variable `containerDiv`,
+ * - It handles mouse events,
+ * - It is used as a base coordinate system for mouse event coordinates,
+ * - It is used for displaying the grid background.
+ * 
+ * Its direct child is referenced using the global variable `canvasDiv` and contains
+ * nodes, connections and other node editor content. It is translated and scaled compared
+ * to the `containerDiv` using the transform CSS property. Translation and scale are
+ * represented by the global variables `innerOffset` and `zoom` respectively.
+ * 
+ * These are made global instead of using the useState react hook, because the content
+ * does not have to be re-rendered, only a CSS property has to be updated.
+ * The update is instead done using the library
+ * [`direct-styled`](https://www.npmjs.com/package/direct-styled) which provides its own
+ * HOC (`<directstyled.div>...</directstyled.div>`) and hook to update its style tag.
+ * 
+ * **Note**
+ * 
+ * > I am not sure if using react state for the variables causes bad performance, maybe it
+ * > was caused by a different problem. However, no problems occurred with the 
+ * > `direct-styled` library.
  */
 
-// TODO: replace vector math by something where you dont need to write x and y for each calculation
+// TODO: Replace vector math by something where you dont need to write x and y for each calculation
 //       - https://mathjs.org/ Problem: code is less readable because of math.add(...) instead of ... + ...
 //       - https://www.sweetjs.org/doc/tutorial.html Define own operators (maybe in combination with mathjs)
 
@@ -51,20 +78,24 @@ let containerDiv: HTMLDivElement | null = null // ref.current of the div that co
 /** Relative size of elements on canvas in percent. */
 let zoom = 1
 
-/** Functions that should be called when user zoomed in/out. */
-const onZoomCallbacks: ((newZoom: number) => void)[] = []
-
 /**
  * Getter for the zoom state.
  * @returns The current zoom of the canvas
  */
 export const getCanvasZoom = () => zoom
 
+/** A function that is called when the user zoomed in/out. */
+type ZoomCallback = (newZoom: number) => void
+
+/** Functions that should be called when user zoomed in/out. */
+const onZoomCallbacks: ZoomCallback[] = []
+
 /**
  * Registers a callback that should be called whed the user zoomed in/out.
+ * @event
  * @param callback - The function that should be called when zoom is triggered
  */
-export const onZoomChanged = (callback: (newZoom: number) => void) => onZoomCallbacks.push(callback)
+export const onZoomChanged = (callback: ZoomCallback) => { onZoomCallbacks.push(callback) }
 
 
 /**
@@ -76,7 +107,7 @@ export const onZoomChanged = (callback: (newZoom: number) => void) => onZoomCall
  * @param position - Screen coordinates to convert
  * @returns Canvas coordinates after conversion
  */
-export const screenToCanvas = (position: Vec2D) => {
+export const screenToCanvas = (position: Vec2D): Vec2D => {
   if (!canvasDiv || !containerDiv) return { x: NaN, y: NaN }
   const { left, top, width: innerWidth } = canvasDiv.getBoundingClientRect()
   const { width: outerWidth } = containerDiv.getBoundingClientRect()
@@ -120,7 +151,7 @@ const useStyles = createStyles(() => ({
 /**
  * @category Component
  */
-export default function NodeCanvas() {
+export default function NodeCanvas(): JSX.Element {
   // Styles
   const { classes } = useStyles()
   const [containerStyle, setContainerStyle] = useDirectStyle()

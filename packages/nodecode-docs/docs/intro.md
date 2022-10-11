@@ -4,44 +4,42 @@ sidebar_position: 1
 
 # Getting Started
 
-Let's discover **Docusaurus in less than 5 minutes**.
+Nodecode consists of the following packages:
 
-## Getting Started
+- nodecode-ui (frontend)
+- nodecode-runtime (backend)
+- nodecode-docs (documentation)
 
-Get started by **creating a new site**.
+# Installation
 
-Or **try Docusaurus immediately** with **[docusaurus.new](https://docusaurus.new)**.
+To start, you need to have [Node](https://nodejs.dev/), npm (usually comes with Node) and [Python](https://www.python.org/) installed.
 
-### What you'll need
+Clone the project and run:
 
-- [Node.js](https://nodejs.org/en/download/) version 16.14 or above:
-  - When installing Node.js, you are recommended to check all checkboxes related to dependencies.
-
-## Generate a new site
-
-Generate a new Docusaurus site using the **classic template**.
-
-The classic template will automatically be added to your project after you run the command:
-
-```bash
-npm init docusaurus@latest my-website classic
+```
+npm install
 ```
 
-You can type this command into Command Prompt, Powershell, Terminal, or any other integrated terminal of your code editor.
+After installing the npm packages, it will try to install the python packages. If you only want to run the frontend, you can ignore this step.
 
-The command also installs all necessary dependencies you need to run Docusaurus.
+# Usage
 
-## Start your site
+To run the frontend, execute:
 
-Run the development server:
-
-```bash
-cd my-website
-npm run start
+```
+npm start
 ```
 
-The `cd` command changes the directory you're working with. In order to work with your newly created Docusaurus site, you'll need to navigate the terminal there.
+In order to run programs in nodecode, a runtime needs to be connected. You can start it by opening a separate terminal and running:
 
-The `npm run start` command builds your website locally and serves it through a development server, ready for you to view at http://localhost:3000/.
+```
+npm run runtime
+```
 
-Open `docs/intro.md` (this page) and edit some lines: the site **reloads automatically** and displays your changes.
+# Documentation
+
+The documentation of front- and backend is contained in a separate packages that can be started using:
+
+```
+npm run docs
+```

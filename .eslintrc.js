@@ -70,7 +70,6 @@ module.exports = {
             'error',
             'never'
         ],
-        'no-console': 'warn',
         'react/react-in-jsx-scope': 'off',
         'react/jsx-uses-react': 'off',
         'react-hooks/exhaustive-deps': 'off', // TODO: turn back on and test if quick fix works with redux
@@ -80,8 +79,7 @@ module.exports = {
                 'newlinesBetween': 'never',
                 'groups': [
                     'module',
-                    // eslint-disable-next-line no-useless-escape
-                    '/^@\//',
+                    String.raw`/^@\//`,
                     ['parent', 'sibling', 'index'],
                 ],
                 'alphabetize': {
