@@ -1,3 +1,10 @@
+/**
+ * The root app component that wraps all of the content. This is directly referenced by
+ * {@link "renderer/main"}, the entry point for the renderer process.
+ * 
+ * @module
+ */
+
 import { MantineProvider, AppShell } from '@mantine/core'
 import { Provider as ReduxProvider } from 'react-redux'
 import Header from '@/components/Header'
@@ -9,7 +16,7 @@ import store from '@/redux/store'
 import theme from '@/styles/themeApp'
 
 /**
- * The root app component that wraps all of the content.
+ * @category Component
  */
 export default function App() {
   return (
