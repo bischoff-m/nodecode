@@ -20,16 +20,14 @@
  * represented by the global variables `innerOffset` and `zoom` respectively.
  * 
  * These are made global instead of using the useState react hook, because the content
- * does not have to be re-rendered, only a CSS property has to be updated.
- * The update is instead done using the library
- * [`direct-styled`](https://www.npmjs.com/package/direct-styled) which provides its own
- * HOC (`<directstyled.div>...</directstyled.div>`) and hook to update its style tag.
+ * does not have to be re-rendered, only a CSS property has to be updated. This is done
+ * in the method `updateCanvasStyle`.
  * 
  * **Note**
  * 
  * > I am not sure if using react state for the variables causes bad performance, maybe it
- * > was caused by a different problem. However, no problems occurred with the 
- * > `direct-styled` library.
+ * > was caused by a different problem. However, no problems occurred when directly
+ * > updating the CSS properties.
  * 
  * ### Background Grid
  * 
@@ -168,7 +166,7 @@ export function screenToCanvas(position: Vec2D): Vec2D {
 
 /**
  * Calculate and set position of canvas and background based on innerOffset, zoom and
- * the size of the canvas container
+ * the size of the canvas container.
  */
 function updateCanvasStyle() {
   if (!containerDiv || !canvasDiv) return
