@@ -189,6 +189,9 @@ export default function Noodle(props: NoodleProps) {
     // Set width and height for svg
     const width = maxX - minX + paddingX * 2
     const height = maxY - minY + paddingY * 2
+    if (isNaN(width) || isNaN(height))
+      return ''
+
     refSVG.current.setAttribute('width', `${width}px`)
     refSVG.current.setAttribute('height', `${height}px`)
 
