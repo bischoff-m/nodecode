@@ -74,7 +74,6 @@ import gridLines from '@/assets/grid-lines.svg'
 import NewNodePopup from '@/components/NewNodePopup'
 import NodeProvider, { setSelectedNode } from '@/components/NodeProvider'
 import NoodleProvider from '@/components/NoodleProvider'
-import { directstyled, useDirectStyle } from '@/lib/direct-styled' // https://github.com/everweij/direct-styled
 import { mantineTheme, styleOverrides, classNames } from '@/styles/themeCanvas'
 import { Vec2D } from '@/types/util'
 
@@ -124,25 +123,29 @@ let isDragging = false
 /** Relative size of elements on canvas in percent. */
 let zoom = 1
 
-/**
- * Getter for the zoom state.
- * @returns The current zoom of the canvas
- */
-export const getCanvasZoom = () => zoom
-
 /** A function that is called when the user zoomed in/out. */
 type ZoomCallback = (newZoom: number) => void
 
 /** Functions that should be called when user zoomed in/out. */
 const onZoomCallbacks: ZoomCallback[] = []
 
+
+//////////////////////////////////////////////////////////////////////////////////////////
+// Functions
+//////////////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Getter for the zoom state.
+ * @returns The current zoom of the canvas
+ */
+export function getCanvasZoom() { return zoom }
+
 /**
  * Registers a callback that should be called whed the user zoomed in/out.
  * @event
  * @param callback - The function that should be called when zoom is triggered
  */
-export const onZoomChanged = (callback: ZoomCallback) => { onZoomCallbacks.push(callback) }
-
+export function onZoomChanged(callback: ZoomCallback) { onZoomCallbacks.push(callback) }
 
 /**
  * Transforms screen coordinates to canvas coordinates (e.g. for mouse events).
@@ -153,7 +156,7 @@ export const onZoomChanged = (callback: ZoomCallback) => { onZoomCallbacks.push(
  * @param position - Screen coordinates to convert
  * @returns Canvas coordinates after conversion
  */
-export const screenToCanvas = (position: Vec2D): Vec2D => {
+export function screenToCanvas(position: Vec2D): Vec2D {
   if (!canvasDiv || !containerDiv) return { x: NaN, y: NaN }
   const { left, top, width: innerWidth } = canvasDiv.getBoundingClientRect()
   const { width: outerWidth } = containerDiv.getBoundingClientRect()
@@ -161,6 +164,23 @@ export const screenToCanvas = (position: Vec2D): Vec2D => {
     x: (position.x - left) / (innerWidth / outerWidth),
     y: (position.y - top) / (innerWidth / outerWidth),
   }
+}
+
+/**
+ * Calculate and set position of canvas and background based on innerOffset, zoom and
+ * the size of the canvas container
+ */
+function updateCanvasStyle() {
+  if (!containerDiv || !canvasDiv) return
+  const { width, height } = containerDiv.getBoundingClientRect()
+  const translatedOffset = {
+    x: innerOffset.x - (width * (zoom - 1)) / 2,
+    y: innerOffset.y - (height * (zoom - 1)) / 2,
+  }
+
+  canvasDiv.style.transform = `translate(${innerOffset.x}px, ${innerOffset.y}px) scale(${zoom}, ${zoom})`
+  containerDiv.style.backgroundPosition = `${translatedOffset.x}px ${translatedOffset.y}px`
+  containerDiv.style.backgroundSize = `${zoom * 100}px ${zoom * 100}px`
 }
 
 
@@ -197,8 +217,6 @@ const useStyles = createStyles(() => ({
 export default function NodeCanvas(): JSX.Element {
   // Styles
   const { classes } = useStyles()
-  const [containerStyle, setContainerStyle] = useDirectStyle()
-  const [dragStyle, setDragStyle] = useDirectStyle()
 
   // Refs
   const containerRef = useRef<HTMLDivElement>(null)
@@ -213,35 +231,10 @@ export default function NodeCanvas(): JSX.Element {
   ])
 
   /**
-   * Calculate and set position of canvas and background based on innerOffset, zoom and
-   * the size of the canvas container
-   * 
-   * TODO: move out of the component and update directly via CSS, then maybe direct-styled
-   * does not need to be used
-   */
-  function updateCanvasStyle() {
-    if (!containerRef.current) return
-    const { width, height } = containerRef.current.getBoundingClientRect()
-    const translatedOffset = {
-      x: innerOffset.x - (width * (zoom - 1)) / 2,
-      y: innerOffset.y - (height * (zoom - 1)) / 2,
-    }
-
-    setDragStyle({
-      transform: `translate(${innerOffset.x}px, ${innerOffset.y}px) scale(${zoom}, ${zoom})`,
-    })
-    setContainerStyle({
-      backgroundPositionX: translatedOffset.x,
-      backgroundPositionY: translatedOffset.y,
-      backgroundSize: `${zoom * 100}px ${zoom * 100}px`,
-    })
-  }
-
-  /**
    * Enables dragging the canvas container if the wheel was pressed.
    * @param e - Mouse down event on the canvas
    */
-  function handleMouseDown(e: MouseEvent<'div'>) {
+  function handleMouseDown(e: MouseEvent<HTMLDivElement>) {
     prevDragPos.x = e.clientX
     prevDragPos.y = e.clientY
     // if wheel was pressed
@@ -270,7 +263,7 @@ export default function NodeCanvas(): JSX.Element {
    * Translates the canvas when it is dragged using the mouse wheel.
    * @param e - Mouse move event on the canvas
    */
-  function handleMouseMove(e: MouseEvent<'div'>) {
+  function handleMouseMove(e: MouseEvent<HTMLDivElement>) {
     e.preventDefault()
     if (!isDragging) return
 
@@ -286,7 +279,7 @@ export default function NodeCanvas(): JSX.Element {
    * Zooms in/out of the canvas if the `Control` button is pressed while scrolling.
    * @param e - Mouse wheel (scroll) event on the canvas
    */
-  function handleWheel(e: WheelEvent<'div'>) {
+  function handleWheel(e: WheelEvent<HTMLDivElement>) {
     // TODO: Min and max for zoom
     if (containerRef.current == null || isDragging || !keysPressed.includes('Control')) return
     e.stopPropagation()
@@ -353,7 +346,7 @@ export default function NodeCanvas(): JSX.Element {
       withGlobalStyles
       withCSSVariables
     >
-      <directstyled.div
+      <div
         className={`${classes.container} ${classes.animatedBackground}`}
         ref={containerRef}
         onMouseDown={handleMouseDown}
@@ -364,12 +357,10 @@ export default function NodeCanvas(): JSX.Element {
         }}
         onWheel={handleWheel}
         onClick={() => setSelectedNode(null)}
-        style={containerStyle}
       >
-        <directstyled.div
+        <div
           className={`${classes.canvas} ${classes.animatedTransition}`}
           ref={canvasRef}
-          style={dragStyle}
         >
           <NodeProvider />
           <NoodleProvider />
@@ -377,8 +368,8 @@ export default function NodeCanvas(): JSX.Element {
             screenPosition={{ x: 760, y: 300 }}
             toggleOpen={toggleNewNodePopupOpen}
           />}
-        </directstyled.div>
-      </directstyled.div>
+        </div>
+      </div>
     </MantineProvider>
   )
 }
