@@ -55,6 +55,7 @@
  *   the program is running.
  * - Use the library [svg.js](https://www.npmjs.com/package/svg.js) to render the grid.
  *   This also had bad performance.
+ * TODO: Try konva + gpu.js
  * 
  * *This may be deleted once an approach is found to display the background grid with low
  * CPU usage and dynamically (dynamic opacity and number of points/lines; fixed size of
