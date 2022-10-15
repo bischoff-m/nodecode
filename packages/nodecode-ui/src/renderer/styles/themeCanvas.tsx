@@ -14,8 +14,8 @@ const fixedTheme = {
   scrollbarSize: 12,
   // layout: canvas
   gridSize: 25,
-  gridMinorRadius: 2,
-  gridMajorRadius: 3.5,
+  gridMinorRadius: 1.5,
+  gridMajorRadius: 2.5,
   // layout: nodes
   nodeWidth: 300,
   nodePadding: 5,
@@ -60,8 +60,8 @@ const mantineTheme: MantineThemeOverride = {
     noodleColor: defaultTheme.colors.gray[2],
     scrollbarColor: 'rgba(0, 0, 0, 0.55)',
     scrollbarThumbColor: 'rgba(255, 255, 255, 0.4)',
-    gridMinorColor: 'rgba(0, 0, 0, 0.6)',
-    gridMajorColor: 'rgba(255, 0, 0, 0.6)',
+    gridMinorColor: 'rgba(255, 255, 255, 0.08)',
+    gridMajorColor: 'rgba(255, 255, 255, 0.1)',
     // shadows
     nodeContainerShadow: '0px 0px 5px rgba(0, 0, 0, 0.6)',
     fieldContainerShadow: 'none',
