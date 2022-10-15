@@ -46,7 +46,7 @@
  * following other approaches, but the CPU usage was worse.
  * - Use `radial-gradient(circle, ...)` as `backgroundImage` instead of the svg file.
  *   Additionally, dim the grid when zoomed out because it otherwise is too bright.
- *   Problem: The background needs to have the size of one tile 20px\*20px instead of the
+ *   Problem: The background needed to have the size of one tile 25px\*25px instead of the
  *   100px\*100px originally used. Also, each tile has to be translated 50% (10px) to be
  *   at the correct position. This worked fine with zoom = 1, but the grid was offset when
  *   zoomed in.
@@ -66,14 +66,13 @@
 //       - https://mathjs.org/ Problem: code is less readable because of math.add(...) instead of ... + ...
 //       - https://www.sweetjs.org/doc/tutorial.html Define own operators (maybe in combination with mathjs)
 
-import { createStyles, MantineProvider } from '@mantine/core'
+import { createStyles, MantineProvider, useMantineTheme } from '@mantine/core'
 import { useBooleanToggle, useHotkeys } from '@mantine/hooks'
 import { MouseEvent, WheelEvent, useEffect, useRef, } from 'react'
-import gridLines from '@/assets/grid-lines.svg'
 import NewNodePopup from '@/components/NewNodePopup'
 import NodeProvider, { setSelectedNode } from '@/components/NodeProvider'
 import NoodleProvider from '@/components/NoodleProvider'
-import { mantineTheme, styleOverrides, classNames } from '@/styles/themeCanvas'
+import { mantineTheme, styleOverrides, classNames, fixedTheme } from '@/styles/themeCanvas'
 import { Vec2D } from '@/types/util'
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -108,11 +107,11 @@ const keysPressed: string[] = []
 /** Screen position of mouse, updated while dragging. */
 const prevDragPos: Vec2D = { x: 0, y: 0 }
 
-/** Offset of canvas relative to its parent div in pixels, can be changed by dragging. */
+/**
+ * Offset of canvas relative to its parent div in pixels, can be changed by dragging.
+ * This does not account for zoom, the real offset has to be calculated separately.
+ */
 const innerOffset: Vec2D = { x: 0, y: 0 }
-
-/** Whether the user is currently dragging. */
-let isDragging = false
 
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -149,9 +148,8 @@ export function onZoomChanged(callback: ZoomCallback) { onZoomCallbacks.push(cal
 /**
  * Transforms screen coordinates to canvas coordinates (e.g. for mouse events).
  * This does not use the innerOffset and zoom variables because it would not account for
- * animations.
- * If this method is used before the `NodeCanvas` component is mounted, it will return
- * `NaN`.
+ * animations. If this method is used before the `NodeCanvas` component is mounted, it
+ * will return `NaN`.
  * @param position - Screen coordinates to convert
  * @returns Canvas coordinates after conversion
  */
@@ -170,28 +168,22 @@ export function screenToCanvas(position: Vec2D): Vec2D {
  * the size of the canvas container.
  */
 function updateCanvasStyle() {
-  if (!containerDiv || !canvasDiv) return
-  const { width, height } = containerDiv.getBoundingClientRect()
-  const translatedOffset = {
-    x: innerOffset.x - (width * (zoom - 1)) / 2,
-    y: innerOffset.y - (height * (zoom - 1)) / 2,
-  }
-
+  if (!canvasDiv) return
   canvasDiv.style.transform = `translate(${innerOffset.x}px, ${innerOffset.y}px) scale(${zoom}, ${zoom})`
-  containerDiv.style.backgroundPosition = `${translatedOffset.x}px ${translatedOffset.y}px`
-  containerDiv.style.backgroundSize = `${zoom * 100}px ${zoom * 100}px`
 }
 
 
-const useStyles = createStyles(() => ({
+const useStyles = createStyles((theme) => ({
+  grid: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+  },
   container: {
     overflow: 'hidden',
     width: '100%',
     height: '100%',
-    backgroundColor: mantineTheme.other?.canvasBackgroundColor,
-    backgroundImage: `url(${gridLines})`,
-    backgroundRepeat: 'repeat',
-    backgroundPosition: '0px 0px',
+    backgroundColor: theme.other.canvasBackgroundColor,
   },
   canvas: {
     zIndex: 100,
@@ -204,9 +196,6 @@ const useStyles = createStyles(() => ({
   animatedTransition: {
     transition: 'transform .3s',
   },
-  animatedBackground: {
-    transition: 'background-position .3s, background-size .3s',
-  },
 }))
 
 
@@ -216,10 +205,12 @@ const useStyles = createStyles(() => ({
 export default function NodeCanvas(): JSX.Element {
   // Styles
   const { classes } = useStyles()
+  const theme = useMantineTheme()
 
   // Refs
   const containerRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLDivElement>(null)
+  const gridRef = useRef<HTMLCanvasElement>(null)
 
   // React state
   const [isNewNodePopupOpen, toggleNewNodePopupOpen] = useBooleanToggle(false)
@@ -228,6 +219,78 @@ export default function NodeCanvas(): JSX.Element {
   useHotkeys([
     ['space', () => toggleNewNodePopupOpen()],
   ])
+
+  // Variables
+
+  /** Whether the user is currently dragging. */
+  let isDragging = false
+
+  /** Whether the background grid is repeatedly redrawn. */
+  let isGridAnimated = false
+
+  /** Drawing context of the background grid element. */
+  let gridContext: CanvasRenderingContext2D | null = null
+
+  /**
+   * This method draws the grid to the background. It is called using the
+   * `window.requestAnimationFrame()` method, which calls this method at a regular
+   * interval (mostly 60 times per second).
+   * 
+   * TODO:
+   * - Hide minor ticks when zooming out
+   * - gridContext is set to null when a new node is added via NewNodePopup
+   * - Check that nodes are inserted fitting the grid
+   * - Comment everything new
+   * - Remove animatedBackground documentation
+   * - Add animation to grid (or remove for canvas)
+   */
+  function updateGrid() {
+    if (containerDiv && canvasDiv && gridRef.current && gridContext) {
+      if (gridContext.fillStyle !== theme.other.gridMinorColor)
+        gridContext.fillStyle = theme.other.gridMinorColor
+      const gridRect = gridRef.current.getBoundingClientRect()
+      const containerRect = containerDiv.getBoundingClientRect()
+
+      // The distance from the upper left corner of the outer container to the upper left
+      // corner of the inner container (with accounting for zoom)
+      const realOffset = {
+        x: innerOffset.x - (containerRect.width * (zoom - 1)) / 2,
+        y: innerOffset.y - (containerRect.height * (zoom - 1)) / 2,
+      }
+      const zoomedCellSize = fixedTheme.gridSize * zoom
+      const cellOffsetMinor = {
+        x: realOffset.x % zoomedCellSize,
+        y: realOffset.y % zoomedCellSize,
+      }
+      const cellOffsetMajor = {
+        x: realOffset.x % (zoomedCellSize * 4),
+        y: realOffset.y % (zoomedCellSize * 4),
+      }
+
+      gridContext?.clearRect(0, 0, gridRect.width, gridRect.height)
+      for (
+        let x = cellOffsetMinor.x - zoomedCellSize;
+        x < containerRect.width + zoomedCellSize;
+        x += zoomedCellSize
+      )
+        for (
+          let y = cellOffsetMinor.y - zoomedCellSize;
+          y < containerRect.height + zoomedCellSize;
+          y += zoomedCellSize
+        ) {
+          // TODO: Figure out how to calculate which dot is major properly
+          const radius = Math.abs(x % (zoomedCellSize * 4) - cellOffsetMajor.x) < zoomedCellSize * zoom
+            && Math.abs(y % (zoomedCellSize * 4) - cellOffsetMajor.y) < zoomedCellSize * zoom
+            ? fixedTheme.gridMajorRadius
+            : fixedTheme.gridMinorRadius
+          gridContext.beginPath()
+          gridContext.arc(x, y, radius, 0, 2 * Math.PI, false)
+          gridContext.fill()
+        }
+    }
+    if (isGridAnimated)
+      window.requestAnimationFrame(updateGrid)
+  }
 
   /**
    * Enables dragging the canvas container if the wheel was pressed.
@@ -238,13 +301,13 @@ export default function NodeCanvas(): JSX.Element {
     prevDragPos.y = e.clientY
     // if wheel was pressed
     isDragging = e.button === 1
+    console.log('down', isDragging, canvasDiv?.classList)
     if (isDragging) {
       e.preventDefault()
-      containerRef.current && containerRef.current.classList.add(classes.dragging)
-      containerRef.current &&
-        containerRef.current.classList.remove(classes.animatedBackground)
-      canvasRef.current &&
-        canvasRef.current.classList.remove(classes.animatedTransition)
+      containerDiv?.classList.add(classes.dragging)
+      canvasDiv?.classList.remove(classes.animatedTransition)
+      isGridAnimated = true
+      window.requestAnimationFrame(updateGrid)
     }
   }
 
@@ -253,9 +316,8 @@ export default function NodeCanvas(): JSX.Element {
    */
   function handleMouseUp() {
     isDragging = false
-    containerRef.current && containerRef.current.classList.remove(classes.dragging)
-    containerRef.current && containerRef.current.classList.add(classes.animatedBackground)
-    canvasRef.current && canvasRef.current.classList.add(classes.animatedTransition)
+    isGridAnimated = false
+    containerDiv?.classList.remove(classes.dragging)
   }
 
   /**
@@ -280,9 +342,9 @@ export default function NodeCanvas(): JSX.Element {
    */
   function handleWheel(e: WheelEvent<HTMLDivElement>) {
     // TODO: Min and max for zoom
-    if (containerRef.current == null || isDragging || !keysPressed.includes('Control')) return
+    if (containerDiv == null || isDragging || !keysPressed.includes('Control')) return
     e.stopPropagation()
-    const { left, top, width, height } = containerRef.current.getBoundingClientRect()
+    const { left, top, width, height } = containerDiv.getBoundingClientRect()
 
     // Calculations from https://stackoverflow.com/a/46833254/16953263
     // Position of cursor relative to the center point of the container
@@ -299,12 +361,11 @@ export default function NodeCanvas(): JSX.Element {
     innerOffset.x = zoomPoint.x - zoomTarget.x * zoom
     innerOffset.y = zoomPoint.y - zoomTarget.y * zoom
 
-    const drag = canvasRef.current
-    if (drag && !drag.classList.contains(classes.animatedTransition))
-      drag.classList.add(classes.animatedTransition)
-
     // Update this component
+    canvasDiv?.classList.add(classes.animatedTransition)
     updateCanvasStyle()
+    requestAnimationFrame(updateGrid)
+
     // Updated other components that registered a callback
     onZoomCallbacks.forEach((callback) => callback(zoom))
   }
@@ -330,9 +391,18 @@ export default function NodeCanvas(): JSX.Element {
 
     updateCanvasStyle()
 
+    if (gridRef.current) {
+      const { width, height } = gridRef.current.getBoundingClientRect()
+      gridRef.current.width = width
+      gridRef.current.height = height
+      gridContext = gridRef.current.getContext('2d')
+    }
+    window.requestAnimationFrame(updateGrid)
+
     return () => {
       document.removeEventListener('keydown', onKeyDown)
       document.removeEventListener('keyup', onKeyUp)
+      isGridAnimated = false
     }
   }, [])
 
@@ -346,7 +416,7 @@ export default function NodeCanvas(): JSX.Element {
       withCSSVariables
     >
       <div
-        className={`${classes.container} ${classes.animatedBackground}`}
+        className={classes.container}
         ref={containerRef}
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
@@ -357,8 +427,13 @@ export default function NodeCanvas(): JSX.Element {
         onWheel={handleWheel}
         onClick={() => setSelectedNode(null)}
       >
+        <canvas
+          id='grid-background'
+          className={classes.grid}
+          ref={gridRef}
+        ></canvas>
         <div
-          className={`${classes.canvas} ${classes.animatedTransition}`}
+          className={classes.canvas}
           ref={canvasRef}
         >
           <NodeProvider />
