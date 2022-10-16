@@ -144,7 +144,7 @@ const onZoomCallbacks: ZoomCallback[] = []
 export function getCanvasZoom() { return zoom }
 
 /**
- * Registers a callback that should be called whed the user zoomed in/out.
+ * Registers a callback that should be called when the user zoomed in/out.
  * @event
  * @param callback - The function that should be called when zoom is triggered
  */
