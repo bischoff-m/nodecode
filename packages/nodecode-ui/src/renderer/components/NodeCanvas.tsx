@@ -189,7 +189,7 @@ function mod(n: number, m: number) {
 }
 
 
-const useStyles = createStyles((theme) => ({
+const useStyles = createStyles(() => ({
   grid: {
     position: 'absolute',
     width: '100%',
@@ -199,7 +199,7 @@ const useStyles = createStyles((theme) => ({
     overflow: 'hidden',
     width: '100%',
     height: '100%',
-    backgroundColor: theme.other.canvasBackgroundColor,
+    backgroundColor: mantineTheme.other?.canvasBackgroundColor,
   },
   canvas: {
     zIndex: 100,
