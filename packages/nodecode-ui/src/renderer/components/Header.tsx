@@ -23,10 +23,8 @@ import {
 import SaveFileButton from '@/components/SaveFileButton'
 import backend from '@/util/backendInterface'
 
-/**
- * @category Component
- */
-export default function Header() {
+/** @category Component */
+export default function Header(): JSX.Element {
   return (
     <MantineHeader height={60} p='sm'>
       <Group position='right'>

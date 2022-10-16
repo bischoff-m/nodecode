@@ -3,8 +3,6 @@
  * connections of the current program. The whole canvas can be moved and zoomed. Nodes and
  * connections can be added and removed.
  * 
- * @module
- * 
  * @remarks
  * The outermost child of the `NodeCanvas` component is a container that stays fixed to
  * the outer contents of the app.
@@ -56,6 +54,8 @@
  * > calculations in the future. This could be done using
  * > [WebGL](https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API) or the library
  * > [gpu.js](https://gpu.rocks/).
+ * 
+ * @module
  */
 
 // TODO: Replace vector math by something where you dont need to write x and y for each calculation
@@ -189,6 +189,11 @@ function mod(n: number, m: number) {
 }
 
 
+//////////////////////////////////////////////////////////////////////////////////////////
+// Component
+//////////////////////////////////////////////////////////////////////////////////////////
+
+/** {@link https://mantine.dev/styles/create-styles/} */
 const useStyles = createStyles(() => ({
   grid: {
     position: 'absolute',
@@ -211,9 +216,7 @@ const useStyles = createStyles(() => ({
   },
 }))
 
-/**
- * @category Component
- */
+/** @category Component */
 export default function NodeCanvas(): JSX.Element {
   // Styles
   const { classes } = useStyles()
@@ -341,7 +344,7 @@ export default function NodeCanvas(): JSX.Element {
       const gridRect = gridRef.current.getBoundingClientRect()
       const containerRect = containerDiv.getBoundingClientRect()
 
-      // Clear whole canvas
+      // Clear whole background grid canvas
       gridContext.clearRect(0, 0, gridRect.width, gridRect.height)
 
       // Do not show the grid when zoomed out far enough to improve performance
@@ -410,6 +413,7 @@ export default function NodeCanvas(): JSX.Element {
     if (!onlyOnce && isGridAnimated)
       window.requestAnimationFrame(updateGrid)
   }
+
 
   useEffect(() => {
     // Listen for keys

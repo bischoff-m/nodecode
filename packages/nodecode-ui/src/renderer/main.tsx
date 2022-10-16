@@ -7,7 +7,7 @@ import { StrictMode, useEffect } from 'react'
 import { createRoot } from 'react-dom/client'
 import App from '@/App'
 
-function AppContainer() {
+function AppContainer(): JSX.Element {
   useEffect(() => {
     window.loading.removeLoading()
   })
@@ -23,7 +23,7 @@ const container = document.getElementById('root')
 const root = container && createRoot(container)
 root?.render(<AppContainer />)
 
-
+// TODO: remove test functions
 /**
  * My test function.
  * 

@@ -28,22 +28,26 @@ import { createContext, useEffect, useState } from 'react'
 import { NodePackage } from '@/types/NodePackage'
 
 /**
- * The NodePackage context that is passed down to the child components.
+ * The NodePackage context that is passed down to the child components. It is initialized
+ * with an empty array. Once the component is mounted, the node package data is loaded
+ * via the IPC and set as the context data. Only then the children of this component are
+ * rendered.
  */
 export const NodePackageContext = createContext<NodePackage>({
   name: 'Empty Package',
   nodes: [],
 })
 
-type NodePackageProviderProps = {
+
+/** @category Component */
+export type NodePackageProviderProps = {
+  /** The child elements that need to access the NodePackage context. */
   children?: React.ReactNode,
 }
 
-/**
- * @param props - The children that need to access the NodePackage context.
- * @category Component
- */
+/** @category Component */
 export default function NodePackageProvider(props: NodePackageProviderProps): JSX.Element {
+  /** Stores all the node package data that is used as the context once loaded. */
   const [packageData, setPackageData] = useState<NodePackage | null>(null)
 
   useEffect(() => {

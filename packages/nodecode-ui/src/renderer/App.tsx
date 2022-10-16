@@ -15,10 +15,8 @@ import NodePackageProvider from '@/components/NodePackageProvider'
 import store from '@/redux/store'
 import theme from '@/styles/themeApp'
 
-/**
- * @category Component
- */
-export default function App() {
+/** @category Component */
+export default function App(): JSX.Element {
   return (
     <div style={{ overflow: 'hidden' }}>
       <ReduxProvider store={store}>

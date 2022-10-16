@@ -15,9 +15,7 @@
 
 import { Navbar as MantineNavbar } from '@mantine/core'
 
-/**
- * @category Component
- */
+/** @category Component */
 export default function Navbar(): JSX.Element {
   return (
     <MantineNavbar width={{ base: 60 }}>
