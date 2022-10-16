@@ -44,7 +44,7 @@ export default function Noodle(props: NoodleProps) {
     throw new Error('Noodle: at least one default socket key is required')
 
   // Styles
-  const { classes } = useStyles()
+  const { classes, cx } = useStyles()
   const theme = useMantineTheme()
 
   // Refs
@@ -224,7 +224,7 @@ export default function Noodle(props: NoodleProps) {
   return (
     <>
       <svg
-        className={`${classes.svg} ${beganDragging ? classes.aboveNodes : classes.belowNodes}`}
+        className={cx(classes.svg, beganDragging ? classes.aboveNodes : classes.belowNodes)}
         ref={refSVG}
       >
         {
@@ -253,7 +253,7 @@ export default function Noodle(props: NoodleProps) {
         scale={getCanvasZoom()}
       >
         <div
-          className={`${classes.handle} handleLeft`}
+          className={cx(classes.handle, 'handleLeft')}
           ref={refLeft}
           style={{
             display: socketKeyLeft !== undefined || !socketKeyRight ? 'none' : 'block',
@@ -271,7 +271,7 @@ export default function Noodle(props: NoodleProps) {
         scale={getCanvasZoom()}
       >
         <div
-          className={`${classes.handle} handleRight`}
+          className={cx(classes.handle, 'handleRight')}
           ref={refRight}
           style={{
             display: !socketKeyLeft && socketKeyRight !== undefined ? 'none' : 'block',
