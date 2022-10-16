@@ -48,8 +48,8 @@
         "list_input#aoHTjKiqUY": {
             "display": {
                 "width": 100,
-                "x": 40,
-                "y": 100
+                "x": 50,
+                "y": 50
             },
             "state": {
                 "List.item_list": [
@@ -65,7 +65,7 @@
             "display": {
                 "width": 100,
                 "x": 400,
-                "y": 100
+                "y": 50
             },
             "state": {},
             "type": "output"
@@ -73,8 +73,8 @@
         "sql_column-select#-VU9HoSHrm": {
             "display": {
                 "width": 200,
-                "x": 760,
-                "y": 220
+                "x": 750,
+                "y": 200
             },
             "state": {
                 "MultiSelect.multiselect": [
@@ -90,7 +90,7 @@
             "display": {
                 "width": 200,
                 "x": 400,
-                "y": 220
+                "y": 200
             },
             "state": {
                 "Radio.table": "microbiologyevents",
