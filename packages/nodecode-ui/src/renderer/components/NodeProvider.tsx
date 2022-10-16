@@ -11,13 +11,13 @@
  * 
  * **Note**
  * 
- * I don't know if this is the right place to load the program object via the IPC. This
- * component would work the same if the program-loading-code would be in any other file
- * (e.g. {@link "renderer/components/NoodleProvider"}). Also, the approach with 
- * `isInitialized` to stop it from adding the nodes/connections multiple times feels off.
- * This could likely be replaced with a separate redux action to initialize the state.
- * However, this has to be rewritten and likely moved anyway once support for multiple
- * program files is added.
+ * > I don't know if this is the right place to load the program object via the IPC. This
+ * > component would work the same if the program-loading-code would be in any other file
+ * > (e.g. {@link "renderer/components/NoodleProvider" NoodleProvider}). Also, the approach with 
+ * > `isInitialized` to stop it from adding the nodes/connections multiple times feels
+ * > off. This could likely be replaced with a separate redux action to initialize the
+ * > state. However, this has to be rewritten and likely moved anyway once support for
+ * > multiple program files is added.
  * 
  * @module
  */
@@ -101,7 +101,7 @@ const useStyles = createStyles(() => ({
 }))
 
 /** @category Component */
-export default function NodeProvider() {
+export default function NodeProvider(): JSX.Element {
   const { classes } = useStyles()
   const dispatch = useDispatchTyped()
   const nodePackage = useContext(NodePackageContext)

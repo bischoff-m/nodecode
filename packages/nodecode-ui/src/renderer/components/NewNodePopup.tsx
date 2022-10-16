@@ -99,7 +99,7 @@ export type NewNodePopupProps = {
 }
 
 /** @category Component */
-export default function NewNodePopup(props: NewNodePopupProps) {
+export default function NewNodePopup(props: NewNodePopupProps): JSX.Element {
   const { classes } = useStyles()
   const dispatch = useDispatchTyped()
   const refInput = useRef<HTMLInputElement>(null)
