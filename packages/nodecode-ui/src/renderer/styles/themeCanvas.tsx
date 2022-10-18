@@ -7,36 +7,36 @@ import type {
 } from '@mantine/core'
 import defaultTheme from '@/styles/mantineDefaultTheme'
 
-// style variables that are the same for all themes
-const fixedTheme = {
-  // layout: general
+/** Style variables that are the same for all themes. */
+export const fixedTheme = {
+  // Layout: General
   iconSize: 18,
   scrollbarSize: 12,
-  // layout: canvas
+  // Layout: Canvas
   gridSize: 25,
   gridMinorRadius: 1.5,
   gridMajorRadius: 2.5,
-  // layout: nodes
+  // Layout: Nodes
   nodeWidth: 300,
   nodePadding: 5,
   nodeFieldSpacing: 5,
-  // layout: noodles
+  // Layout: Noodles
   handleSize: 14,
   handleDraggableSize: 40,
-  // layout: fields
+  // Layout: Fields
   fieldInnerMargin: 0,
   fieldLabelMargin: 8,
   fieldDefaultHeight: 30,
   fieldMaxHeight: 150,
-  // radius
+  // Radius
   fieldContainerRadius: 'md' as MantineSize, // only visible if theme.other.fieldBorder is set
-  // debugging
+  // Debugging
   handleDraggableOpacity: 0,
   noodleBackgroundOpacity: 0,
 }
 
-// style variables that depend on the color scheme
-const mantineTheme: MantineThemeOverride = {
+/** Syle variables that depend on the color scheme. */
+export const mantineTheme: MantineThemeOverride = {
   colorScheme: 'dark',
   fontFamily: defaultTheme.fontFamily,
   defaultRadius: 'md',
@@ -49,7 +49,7 @@ const mantineTheme: MantineThemeOverride = {
     'xl': 16
   },
   other: {
-    // colors
+    // Colors
     canvasBackgroundColor: defaultTheme.colors.dark[7],
     nodeHeaderBackgroundColor: defaultTheme.colors.blue[9],
     nodeBackgroundColor: defaultTheme.colors.dark[5],
@@ -62,21 +62,21 @@ const mantineTheme: MantineThemeOverride = {
     scrollbarThumbColor: 'rgba(255, 255, 255, 0.4)',
     gridMinorColor: 'rgba(255, 255, 255, 0.08)',
     gridMajorColor: 'rgba(255, 255, 255, 0.1)',
-    // shadows
+    // Shadows
     nodeContainerShadow: '0px 0px 5px rgba(0, 0, 0, 0.6)',
     fieldContainerShadow: 'none',
-    // borders
+    // Borders
     fieldBorder: '1px none rgba(255, 255, 255, 0.3)',
     nodeHoverOutline: `2px solid ${defaultTheme.colors.blue[9]}`,
     nodeActiveOutline: '2px solid rgba(255, 255, 255, 0.6)',
-    // mantine-specific
+    // Mantine-specific
     fieldComponentVariant: 'filled',
   },
 }
 
 declare module '@mantine/core' {
   export interface MantineThemeOther {
-    // colors
+    // Colors
     canvasBackgroundColor: string
     nodeBackgroundColor: string
     nodeHeaderBackgroundColor: string
@@ -89,14 +89,14 @@ declare module '@mantine/core' {
     scrollbarThumbColor: string
     gridMinorColor: string
     gridMajorColor: string
-    // shadows
+    // Shadows
     nodeContainerShadow: string
     fieldContainerShadow: string
-    // borders
+    // Borders
     fieldBorder: string
     nodeHoverOutline: string
     nodeActiveOutline: string
-    // mantine-specific
+    // Mantine-specific
     fieldComponentVariant: InputVariant
   }
 }
@@ -111,19 +111,12 @@ const inputOverrides = (theme: MantineTheme) => ({
   },
 })
 
-const styleOverrides: MantineProviderProps['styles'] = {
+export const styleOverrides: MantineProviderProps['styles'] = {
   Select: inputOverrides,
   TextInput: inputOverrides,
   MultiSelect: inputOverrides,
 }
 
-const classNames = {
+export const classNames = {
   Select: { root: 'mantine-select-filled' },
-}
-
-export {
-  fixedTheme,
-  mantineTheme,
-  styleOverrides,
-  classNames,
 }

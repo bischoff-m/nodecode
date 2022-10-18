@@ -218,6 +218,11 @@ const useStyles = createStyles(() => ({
 
 /** @category Component */
 export default function NodeCanvas(): JSX.Element {
+
+  ////////////////////////////////////////////////////////////////////////////////////////
+  // Hooks
+  ////////////////////////////////////////////////////////////////////////////////////////
+
   // Styles
   const { classes } = useStyles()
 
@@ -234,87 +239,59 @@ export default function NodeCanvas(): JSX.Element {
     ['space', () => toggleNewNodePopupOpen()],
   ])
 
-
-  ////////////////////////////////////////////////////////////////////////////////////////
-  // Event Listeners
-  ////////////////////////////////////////////////////////////////////////////////////////
-
-  /**
-   * Enables dragging the canvas container if the wheel was pressed.
-   * @param e - Mouse down event on the canvas
-   */
-  function handleMouseDown(e: MouseEvent<HTMLDivElement>) {
-    prevDragPos.x = e.clientX
-    prevDragPos.y = e.clientY
-    // if wheel was pressed
-    isDragging = e.button === 1
-    if (isDragging) {
-      e.preventDefault()
-      // Show the dragging cursor
-      containerDiv?.classList.add(classes.dragging)
-      // Start updating the background grid
-      isGridAnimated = true
-      window.requestAnimationFrame(updateGrid)
+  // Effects
+  useEffect(() => {
+    // Listen for keys
+    const onKeyDown = (e: KeyboardEvent) => {
+      if ([
+        'Control'
+      ].includes(e.key) && !keysPressed.includes(e.key))
+        keysPressed.push(e.key)
     }
-  }
+    const onKeyUp = (e: KeyboardEvent) => {
+      if (keysPressed.includes(e.key))
+        keysPressed.splice(keysPressed.indexOf(e.key), 1)
+    }
+    document.addEventListener('keydown', onKeyDown)
+    document.addEventListener('keyup', onKeyUp)
 
-  /**
-   * Disables dragging the canvas container if the wheel was released.
-   */
-  function handleMouseUp() {
-    isDragging = false
-    isGridAnimated = false
-    containerDiv?.classList.remove(classes.dragging)
-  }
+    // Set refs that are needed for converting between screen and canvas coordinates
+    containerRef.current && (containerDiv = containerRef.current)
+    canvasRef.current && (canvasDiv = canvasRef.current)
 
-  /**
-   * Translates the canvas when it is dragged using the mouse wheel.
-   * @param e - Mouse move event on the canvas
-   */
-  function handleMouseMove(e: MouseEvent<HTMLDivElement>) {
-    e.preventDefault()
-    if (!isDragging) return
-
-    // Runs when the mouse is dragged while the mouse wheel is pressed
-    innerOffset.x += e.clientX - prevDragPos.x
-    innerOffset.y += e.clientY - prevDragPos.y
-    prevDragPos.x = e.clientX
-    prevDragPos.y = e.clientY
+    // Update the position of the `canvasDiv`
     updateCanvasStyle()
-  }
 
-  /**
-   * Zooms in/out of the canvas if the `Control` button is pressed while scrolling.
-   * @param e - Mouse wheel (scroll) event on the canvas
-   */
-  function handleWheel(e: WheelEvent<HTMLDivElement>) {
-    // TODO: Min and max for zoom
-    if (containerDiv == null || isDragging || !keysPressed.includes('Control')) return
-    e.stopPropagation()
-    const { left, top, width, height } = containerDiv.getBoundingClientRect()
-
-    // Calculations from https://stackoverflow.com/a/46833254/16953263
-    // Position of cursor relative to the center point of the container
-    const zoomPoint = {
-      x: e.clientX - left - width / 2,
-      y: e.clientY - top - height / 2,
+    // Initialize the dimensions of the background grid and the drawing context
+    if (gridRef.current) {
+      const { width, height } = gridRef.current.getBoundingClientRect()
+      gridRef.current.width = width
+      gridRef.current.height = height
+      gridContext = gridRef.current.getContext('2d')
     }
-    const zoomTarget = {
-      x: (zoomPoint.x - innerOffset.x) / zoom,
-      y: (zoomPoint.y - innerOffset.y) / zoom,
+    // If the window is resized, also resize the background grid and update it afterwards
+    const onResize = () => {
+      if (!gridRef.current) return
+      const { width, height } = gridRef.current.getBoundingClientRect()
+      gridRef.current.width = width
+      gridRef.current.height = height
+      requestAnimationFrame((t) => updateGrid(t, true))
     }
-    zoom *= ZOOMFACTOR ** Math.sign(e.deltaY)
+    window.addEventListener('resize', onResize)
 
-    innerOffset.x = zoomPoint.x - zoomTarget.x * zoom
-    innerOffset.y = zoomPoint.y - zoomTarget.y * zoom
+    // Start updating the background grid
+    window.requestAnimationFrame(updateGrid)
 
-    // Update this component
-    updateCanvasStyle()
-    requestAnimationFrame((t) => updateGrid(t, true))
+    return () => {
+      // Remove listeners registered above
+      document.removeEventListener('keydown', onKeyDown)
+      document.removeEventListener('keyup', onKeyUp)
+      window.removeEventListener('resize', onResize)
 
-    // Updated other components that registered a callback
-    onZoomCallbacks.forEach((callback) => callback(zoom))
-  }
+      // Stop updating the background grid
+      isGridAnimated = false
+    }
+  }, [])
 
 
   ////////////////////////////////////////////////////////////////////////////////////////
@@ -415,58 +392,91 @@ export default function NodeCanvas(): JSX.Element {
   }
 
 
-  useEffect(() => {
-    // Listen for keys
-    const onKeyDown = (e: KeyboardEvent) => {
-      if ([
-        'Control'
-      ].includes(e.key) && !keysPressed.includes(e.key))
-        keysPressed.push(e.key)
-    }
-    const onKeyUp = (e: KeyboardEvent) => {
-      if (keysPressed.includes(e.key))
-        keysPressed.splice(keysPressed.indexOf(e.key), 1)
-    }
-    document.addEventListener('keydown', onKeyDown)
-    document.addEventListener('keyup', onKeyUp)
+  ////////////////////////////////////////////////////////////////////////////////////////
+  // Event Listeners
+  ////////////////////////////////////////////////////////////////////////////////////////
 
-    // Set refs that are needed for converting between screen and canvas coordinates
-    containerRef.current && (containerDiv = containerRef.current)
-    canvasRef.current && (canvasDiv = canvasRef.current)
+  /**
+   * Enables dragging the canvas container if the wheel was pressed.
+   * @param e - Mouse down event on the canvas
+   */
+  function handleMouseDown(e: MouseEvent<HTMLDivElement>) {
+    prevDragPos.x = e.clientX
+    prevDragPos.y = e.clientY
+    // if wheel was pressed
+    isDragging = e.button === 1
+    if (isDragging) {
+      e.preventDefault()
+      // Show the dragging cursor
+      containerDiv?.classList.add(classes.dragging)
+      // Start updating the background grid
+      isGridAnimated = true
+      window.requestAnimationFrame(updateGrid)
+    }
+  }
 
-    // Update the position of the `canvasDiv`
+  /**
+   * Disables dragging the canvas container if the wheel was released.
+   */
+  function handleMouseUp() {
+    isDragging = false
+    isGridAnimated = false
+    containerDiv?.classList.remove(classes.dragging)
+  }
+
+  /**
+   * Translates the canvas when it is dragged using the mouse wheel.
+   * @param e - Mouse move event on the canvas
+   */
+  function handleMouseMove(e: MouseEvent<HTMLDivElement>) {
+    e.preventDefault()
+    if (!isDragging) return
+
+    // Runs when the mouse is dragged while the mouse wheel is pressed
+    innerOffset.x += e.clientX - prevDragPos.x
+    innerOffset.y += e.clientY - prevDragPos.y
+    prevDragPos.x = e.clientX
+    prevDragPos.y = e.clientY
     updateCanvasStyle()
+  }
 
-    // Initialize the dimensions of the background grid and the drawing context
-    if (gridRef.current) {
-      const { width, height } = gridRef.current.getBoundingClientRect()
-      gridRef.current.width = width
-      gridRef.current.height = height
-      gridContext = gridRef.current.getContext('2d')
+  /**
+   * Zooms in/out of the canvas if the `Control` button is pressed while scrolling.
+   * @param e - Mouse wheel (scroll) event on the canvas
+   */
+  function handleWheel(e: WheelEvent<HTMLDivElement>) {
+    // TODO: Min and max for zoom
+    if (containerDiv == null || isDragging || !keysPressed.includes('Control')) return
+    e.stopPropagation()
+    const { left, top, width, height } = containerDiv.getBoundingClientRect()
+
+    // Calculations from https://stackoverflow.com/a/46833254/16953263
+    // Position of cursor relative to the center point of the container
+    const zoomPoint = {
+      x: e.clientX - left - width / 2,
+      y: e.clientY - top - height / 2,
     }
-    // If the window is resized, also resize the background grid and update it afterwards
-    const onResize = () => {
-      if (!gridRef.current) return
-      const { width, height } = gridRef.current.getBoundingClientRect()
-      gridRef.current.width = width
-      gridRef.current.height = height
-      requestAnimationFrame((t) => updateGrid(t, true))
+    const zoomTarget = {
+      x: (zoomPoint.x - innerOffset.x) / zoom,
+      y: (zoomPoint.y - innerOffset.y) / zoom,
     }
-    window.addEventListener('resize', onResize)
+    zoom *= ZOOMFACTOR ** Math.sign(e.deltaY)
 
-    // Start updating the background grid
-    window.requestAnimationFrame(updateGrid)
+    innerOffset.x = zoomPoint.x - zoomTarget.x * zoom
+    innerOffset.y = zoomPoint.y - zoomTarget.y * zoom
 
-    return () => {
-      // Remove listeners registered above
-      document.removeEventListener('keydown', onKeyDown)
-      document.removeEventListener('keyup', onKeyUp)
-      window.removeEventListener('resize', onResize)
+    // Update this component
+    updateCanvasStyle()
+    requestAnimationFrame((t) => updateGrid(t, true))
 
-      // Stop updating the background grid
-      isGridAnimated = false
-    }
-  }, [])
+    // Updated other components that registered a callback
+    onZoomCallbacks.forEach((callback) => callback(zoom))
+  }
+
+
+  ////////////////////////////////////////////////////////////////////////////////////////
+  // Return
+  ////////////////////////////////////////////////////////////////////////////////////////
 
   return (
     <MantineProvider
