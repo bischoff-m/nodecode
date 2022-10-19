@@ -2,7 +2,11 @@
  * The `Noodle` component is used to connect nodes and consists of two hidden, but
  * draggable circles (handles) and an SVG to draw a Bézier curve between the two handles.
  * The handles can connect to the sockets of nodes and will snap to them if a handle
- * intersects the socket.
+ * intersects the socket. To make the handles draggable, they are wrapped with the
+ * `<Draggable></Draggable>` component from the library
+ * [react-draggable](https://www.npmjs.com/package/react-draggable).
+ * 
+ * ### Left and Right Socket Keys
  *
  * To store which socket each handle is connected to, the React state variables
  * `socketKeyLeft` and `socketKeyRight` are used. If both sockets are defined, the handles
@@ -17,6 +21,8 @@
  * socket or an empty input socket.
  *
  * There should always be at least one of the socket keys defined.
+ * 
+ * ### Drawing the Curve
  *
  * To draw the Bézier curve, the
  * [`<path>` SVG element](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/path)
@@ -47,8 +53,8 @@ import { getCanvasZoom, screenToCanvas } from '@/components/NodeCanvas'
 import { useSelectorTyped } from '@/redux/hooks'
 import {
   socketPositions as socketPos,
-  onMoveNodeSockets,
-  removeOnMoveNodeSockets
+  addNodeMovedListener,
+  removeNodeMovedListener
 } from '@/redux/socketsSlice'
 import { fixedTheme } from '@/styles/themeCanvas'
 import type { Vec2D } from '@/types/util'
@@ -57,7 +63,11 @@ import type { Vec2D } from '@/types/util'
 const handleSize = fixedTheme.handleDraggableSize
 
 /** Is true when the user began to drag and(!) moved his mouse. */
-let isDragging = false //
+let isDragging = false
+
+/** The position of the cursor in canvas coordinates. */
+let mousePos: Vec2D = { x: 0, y: 0 }
+
 
 /** {@link https://mantine.dev/styles/create-styles/} */
 const useStyles = createStyles({
@@ -82,19 +92,19 @@ type MaybeKey = string | undefined
 
 /** @category Component */
 export type NoodleProps = {
-  /** TODO */
-  keyLeft?: string
-  /** TODO */
-  keyRight?: string
-  /** TODO */
+  /** Socket that the left handle should initially be connected to. */
+  keyLeft: MaybeKey
+  /** Socket that the right handle should initially be connected to. */
+  keyRight: MaybeKey
+  /** Unique identifier of this noodle that is used in the global program state. */
   noodleID: string
-  /** TODO */
+  /** Function that should be called when one of the socket keys changes. */
   onSocketUpdate?: (leftSocketKey: MaybeKey, rightSocketKey: MaybeKey) => void
 }
 
 /** @category Component */
 export default function Noodle(props: NoodleProps): JSX.Element {
-  // TODO
+  // Check for bugs
   if (!props.keyLeft && !props.keyRight)
     throw new Error('Noodle: at least one default socket key is required')
 
@@ -118,14 +128,12 @@ export default function Noodle(props: NoodleProps): JSX.Element {
   const socketPosAfterMove = useSelectorTyped((state) => state.sockets.positions)
 
   // React state
-  /** TODO */
-  const [mousePos, setMousePos] = useState<Vec2D>({ x: 0, y: 0 })
   /** Is true when the user began to drag, even if he did not move his mouse yet. */
   const [beganDragging, setBeganDragging] = useState<boolean>(false)
 
-  /** TODO */
+  /** Socket key of the socket that the left handle is connected to. */
   const [socketKeyLeft, setSocketKeyLeft] = useState<MaybeKey>(undefined)
-  /** TODO */
+  /** Socket key of the socket that the right handle is connected to. */
   const [socketKeyRight, setSocketKeyRight] = useState<MaybeKey>(undefined)
 
   // Additional checks for the socket key update methods
@@ -143,7 +151,7 @@ export default function Noodle(props: NoodleProps): JSX.Element {
   // Effects
   useEffect(() => {
     return () => {
-      removeOnMoveNodeSockets(props.noodleID)
+      removeNodeMovedListener(props.noodleID)
     }
   }, [])
 
@@ -153,13 +161,14 @@ export default function Noodle(props: NoodleProps): JSX.Element {
   }, [props])
 
 
-  // TODO
   // If a node that the noodle is connected to is moved, update the path of the noodle
-  onMoveNodeSockets((nodeKey: string) => {
+  addNodeMovedListener((nodeKey: string) => {
     if (!socketKeyLeft || !socketKeyRight || !refPath.current)
       return
+    // Check if the noodle is connected to the given node
     const leftNodeKey = allSockets[socketKeyLeft].nodeKey
     const rightNodeKey = allSockets[socketKeyRight].nodeKey
+    // If connected, update the curve
     if (nodeKey === leftNodeKey || nodeKey === rightNodeKey)
       refPath.current.setAttribute('d', getCurve())
   }, props.noodleID)
@@ -238,45 +247,52 @@ export default function Noodle(props: NoodleProps): JSX.Element {
   }
 
   /**
-   * TODO
-   * Calculates the path (d-Attribute of svg.path) of the noodle for the current state
-   * (socketKeyLeft, socketKeyRight)
-   * @returns
+   * Calculates the d-attribute of the
+   * [`<path>` SVG element](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/path)
+   * to draw a cubic Bézier curve between the left and the right handle of this noodle.
+   * The curve is updated repeatedly whenever one of the handles is dragged (see the
+   * `onDrag` function) or one of the two nodes that the noodle could be attached to is
+   * moved (see `addNodeMovedListener`).
+   * @returns `d-attribute` of the `<path>` element that shows a cubic Bézier curve
    */
   function getCurve(): string {
-    if (!refSVG.current || !(isDragging || (socketKeyLeft && socketKeyRight)))
+    // Return a point if the noodle is collapsed or not mounted yet
+    if (!refSVG.current || (!isDragging && (!socketKeyLeft || !socketKeyRight)))
       return 'M0 0 C 0 0, 0 0, 0 0'
 
     // Left and right anchor of bezier curve
     let posLeft: Vec2D
     let posRight: Vec2D
 
+    // If the socket key is defined, the curve should start or end at the according socket
+    // Otherwise, the curve should start or end at the cursor
     if (socketKeyLeft) {
       const socketPos = posFromSocketKey(socketKeyLeft)
-      posLeft = { x: socketPos.x + 7, y: socketPos.y }
+      posLeft = { x: socketPos.x + fixedTheme.handleSize / 2, y: socketPos.y }
     } else {
       posLeft = mousePos
     }
     if (socketKeyRight) {
       const socketPos = posFromSocketKey(socketKeyRight)
-      posRight = { x: socketPos.x - 7, y: socketPos.y }
+      posRight = { x: socketPos.x - fixedTheme.handleSize / 2, y: socketPos.y }
     } else {
       posRight = mousePos
     }
 
-    // Move svg container to top left handle position
+    // Move svg container to top left handle position and add padding
     const minX = Math.min(posLeft.x, posRight.x)
     const minY = Math.min(posLeft.y, posRight.y)
     const maxX = Math.max(posLeft.x, posRight.x)
     const maxY = Math.max(posLeft.y, posRight.y)
     const paddingX = (maxX - minX) / 2 + handleSize
     const paddingY = 4 * handleSize
+
     refSVG.current.setAttribute(
       'style',
       `transform: translate(${minX - paddingX}px, ${minY - paddingY}px)`,
     )
 
-    // Set width and height for svg
+    // Set width and height for svg container
     const width = maxX - minX + paddingX * 2
     const height = maxY - minY + paddingY * 2
     if (isNaN(width) || isNaN(height))
@@ -306,40 +322,52 @@ export default function Noodle(props: NoodleProps): JSX.Element {
   ////////////////////////////////////////////////////////////////////////////////////////
 
   /**
-   * TODO
-   * Updates state when one of the handles is dragged
-   * @param isLeft
-   * @param event
+   * Updates the socket keys and the curve of the noodle and is called when one of the
+   * handles is dragged. This triggers a component update if one of the handles is
+   * connected or disconnected from a socket.
+   * @param isLeft - Whether the left or right handle was dragged.
+   * @param event - The event that was triggered when one of the handles was dragged.
    */
   function onDrag(isLeft: boolean, event: DraggableEvent): void {
+    // Update the global variables
     beganDragging && (isDragging = true)
     const e = event as ReactMouseEvent
+    mousePos = screenToCanvas({ x: e.clientX, y: e.clientY })
 
-    const newMousePos = screenToCanvas({ x: e.clientX, y: e.clientY })
+    // Check if the handle should snap to a socket
     const setSocketKey = isLeft ? setKeyLeft : setKeyRight
     const otherSocketKey = isLeft ? socketKeyRight : socketKeyLeft
     const excludeNode = otherSocketKey ? allSockets[otherSocketKey].nodeKey : undefined
-    const snapSocketKey = snapsToSocket(newMousePos, excludeNode)
+    const snapSocketKey = snapsToSocket(mousePos, excludeNode)
+
+    // Update the socket key state
+    // Left handle should only connect to output and right handle only to input sockets
     const snapSocket = snapSocketKey ? allSockets[snapSocketKey] : undefined
-    if (snapSocketKey && (isLeft ? !snapSocket?.isInput : snapSocket?.isInput)) {
+    if (snapSocket && (isLeft ? !snapSocket.isInput : snapSocket.isInput)) {
       // Stick to nearest socket
       setSocketKey(snapSocketKey)
     } else {
       // Stick to mouse
       setSocketKey(undefined)
     }
-    setMousePos(newMousePos)
+
+    // Update the curve
+    refPath.current?.setAttribute('d', getCurve())
   }
 
   /**
-   * TODO
+   * Is triggered after the user dragged a handle, updates the dragging variables and
+   * calls the `onSocketUpdate` method that is provided by
+   * {@link "renderer/components/NoodleProvider" NoodleProvider}. If the socket keys
+   * changed, this will kill this instance of the `Noodle` component, because the socket
+   * keys are used by the `NoodleProvider` to generate a unique and stable key for each
+   * noodle. The key needs to change if the socket keys change, which makes this component
+   * unmount.
    */
   function onStop(): void {
     setBeganDragging(false)
     isDragging = false
     props.onSocketUpdate && props.onSocketUpdate(socketKeyLeft, socketKeyRight)
-    setSocketKeyLeft(props.keyLeft)
-    setSocketKeyRight(props.keyRight)
   }
 
 
@@ -366,6 +394,7 @@ export default function Noodle(props: NoodleProps): JSX.Element {
             opacity={fixedTheme.noodleBackgroundOpacity}
           />
         }
+        {/* Path element that renders as a bezier curve. */}
         <path
           ref={refPath}
           d={getCurve()}
@@ -378,6 +407,8 @@ export default function Noodle(props: NoodleProps): JSX.Element {
           fill="none"
         />
       </svg>
+
+      {/* Left handle */}
       <Draggable
         handle={'.handleLeft'}
         position={getHandlePos(true)}
@@ -396,6 +427,8 @@ export default function Noodle(props: NoodleProps): JSX.Element {
           }}
         ></div>
       </Draggable>
+
+      {/* Right handle */}
       <Draggable
         handle={'.handleRight'}
         position={getHandlePos(false)}

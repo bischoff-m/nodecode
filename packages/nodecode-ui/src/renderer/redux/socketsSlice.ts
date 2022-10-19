@@ -29,11 +29,11 @@ type OnMoveCallback = (
 
 const onMoveCallbacks: { [noodleID: string]: OnMoveCallback } = {}
 
-export const onMoveNodeSockets = (
+export const addNodeMovedListener = (
   callback: OnMoveCallback,
   noodleID: string
 ) => onMoveCallbacks[noodleID] = callback
-export const removeOnMoveNodeSockets = (noodleID: string) => delete onMoveCallbacks[noodleID]
+export const removeNodeMovedListener = (noodleID: string) => delete onMoveCallbacks[noodleID]
 
 // functions to set state
 export function moveNodeSockets(nodeKey: string, by: Vec2D): void {

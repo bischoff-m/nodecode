@@ -1,3 +1,9 @@
+/**
+ * 
+ * 
+ * @module
+ */
+
 import { createStyles, MantineSize, Stack, useMantineTheme } from '@mantine/core'
 import { useRef, useState } from 'react'
 import type { ReactNode } from 'react'
@@ -11,6 +17,8 @@ import { moveNodeSockets, moveNodeSocketsStop } from '@/redux/socketsSlice'
 import { fixedTheme } from '@/styles/themeCanvas'
 import { Vec2D } from '@/types/util'
 
+
+/** {@link https://mantine.dev/styles/create-styles/} */
 const useStyles = createStyles((theme) => ({
   card: {
     position: 'absolute',
@@ -36,6 +44,7 @@ const useStyles = createStyles((theme) => ({
   },
 }))
 
+/** @category Component */
 export type NodeProps = {
   children?: ReactNode
   nodeKey: string
@@ -44,13 +53,25 @@ export type NodeProps = {
   y: number
 }
 
-export default function Node(props: NodeProps) {
+/** @category Component */
+export default function Node(props: NodeProps): JSX.Element {
+
+  // Styles
   const { classes } = useStyles()
   const theme = useMantineTheme()
+
+  // Refs
   const nodeRef = useRef<HTMLDivElement>(null)
-  const [canvasZoom, setCanvasZoom] = useState<number>(getCanvasZoom()) // variable is mirrored from NodeCanvas to enable state updates
-  let lastNodePos: Vec2D | null = null // position of node before being dragged
-  let nodePos: Vec2D | null = null // position of node while being dragged
+
+  // State and variables
+  /** Variable is mirrored from `NodeCanvas` to enable state updates. */
+  const [canvasZoom, setCanvasZoom] = useState<number>(getCanvasZoom())
+
+  /** Position of node before being dragged. */
+  let lastNodePos: Vec2D | null = null
+  /** Position of node while being dragged. */
+  let nodePos: Vec2D | null = null
+  /** Whether the cursor hovers over the title bar of the node. */
   let isHovering = false
 
   const dispatch = useDispatchTyped()
@@ -68,6 +89,10 @@ export default function Node(props: NodeProps) {
     else
       nodeRef.current.style.outline = 'none'
   }
+
+  ////////////////////////////////////////////////////////////////////////////////////////
+  // Event Listeners
+  ////////////////////////////////////////////////////////////////////////////////////////
 
   function onStart(event: DraggableEvent, data: DraggableData) {
     lastNodePos = { x: data.x, y: data.y }
@@ -100,6 +125,11 @@ export default function Node(props: NodeProps) {
     nodePos = { x: data.x, y: data.y }
     lastNodePos = { x: data.x, y: data.y }
   }
+
+
+  ////////////////////////////////////////////////////////////////////////////////////////
+  // Return
+  ////////////////////////////////////////////////////////////////////////////////////////
 
   return (
     <Draggable

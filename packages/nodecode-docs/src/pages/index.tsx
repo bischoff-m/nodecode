@@ -32,6 +32,13 @@ export default function Home(): JSX.Element {
       <HomepageHeader />
       <main>
         <HomepageFeatures />
+        {/* 
+          Three use cases:
+          - Create programs visually using predefined nodes
+          - Implement your own nodes
+          - Contribute to UI and runtime development
+
+        */}
       </main>
     </Layout>
   )
