@@ -83,7 +83,7 @@ export function setSelectedNode(nodeKey: string | null) {
  * @event
  * @param callback - The function that should be called when a new node is selected.
  */
-export function onNodeSelected(callback: (nodeKey: string | null) => void) {
+export function addNodeSelectedListener(callback: (nodeKey: string | null) => void) {
   onNodeSelectedCallbacks.push(callback)
 }
 

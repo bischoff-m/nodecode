@@ -148,7 +148,7 @@ export function getCanvasZoom() { return zoom }
  * @event
  * @param callback - The function that should be called when zoom is triggered
  */
-export function onZoomChanged(callback: ZoomCallback) { onZoomCallbacks.push(callback) }
+export function addZoomChangedListener(callback: ZoomCallback) { onZoomCallbacks.push(callback) }
 
 /**
  * Transforms screen coordinates to canvas coordinates (e.g. for mouse events).

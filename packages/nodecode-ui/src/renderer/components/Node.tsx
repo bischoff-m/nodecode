@@ -1,5 +1,7 @@
 /**
+ * This component consists of a `<Draggable></Draggable>` component that wraps everything.
  * 
+ * - Update of nodePos, lastNodePos, global state and redux state
  * 
  * @module
  */
@@ -9,8 +11,8 @@ import { useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import Draggable from 'react-draggable'
 import type { DraggableData, DraggableEvent } from 'react-draggable'
-import { getCanvasZoom, onZoomChanged } from '@/components/NodeCanvas'
-import { getSelectedNode, onNodeSelected, setSelectedNode } from '@/components/NodeProvider'
+import { getCanvasZoom, addZoomChangedListener } from '@/components/NodeCanvas'
+import { getSelectedNode, addNodeSelectedListener, setSelectedNode } from '@/components/NodeProvider'
 import { useDispatchTyped } from '@/redux/hooks'
 import { moveNode } from '@/redux/programSlice'
 import { moveNodeSockets, moveNodeSocketsStop } from '@/redux/socketsSlice'
@@ -46,15 +48,22 @@ const useStyles = createStyles((theme) => ({
 
 /** @category Component */
 export type NodeProps = {
+  /** The field components of this node. */
   children?: ReactNode
+  /** The unique identifier to refer to this node in the global program state. */
   nodeKey: string
+  /** Name that is displayed in the header of the node. */
   title: string
+  /** X-Coordinate of the node on the canvas. */
   x: number
+  /** Y-Coordinate of the node on the canvas. */
   y: number
 }
 
 /** @category Component */
 export default function Node(props: NodeProps): JSX.Element {
+  // Redux
+  const dispatch = useDispatchTyped()
 
   // Styles
   const { classes } = useStyles()
@@ -74,11 +83,15 @@ export default function Node(props: NodeProps): JSX.Element {
   /** Whether the cursor hovers over the title bar of the node. */
   let isHovering = false
 
-  const dispatch = useDispatchTyped()
+  // Update this component when the canvas zoom changed or a new node is selected
+  addZoomChangedListener((newZoom: number) => setCanvasZoom(newZoom))
+  addNodeSelectedListener(() => setHighlight())
 
-  onZoomChanged((newZoom: number) => setCanvasZoom(newZoom))
-  onNodeSelected(() => setHighlight())
+  ////////////////////////////////////////////////////////////////////////////////////////
+  // Functions
+  ////////////////////////////////////////////////////////////////////////////////////////
 
+  /** Reads the global state which node is selected and sets the outline of this node. */
   function setHighlight() {
     if (!nodeRef.current)
       return
@@ -94,11 +107,21 @@ export default function Node(props: NodeProps): JSX.Element {
   // Event Listeners
   ////////////////////////////////////////////////////////////////////////////////////////
 
+  /**
+   * 
+   * @param event - The event that was triggered when one of the handles was dragged.
+   * @param data - Event data that (among other things) stores the position of the handle.
+   */
   function onStart(event: DraggableEvent, data: DraggableData) {
     lastNodePos = { x: data.x, y: data.y }
     nodePos = { x: data.x, y: data.y }
   }
 
+  /**
+   * 
+   * @param event - The event that was triggered when one of the handles was dragged.
+   * @param data - Event data that (among other things) stores the position of the handle.
+   */
   function onDrag(event: DraggableEvent, data: DraggableData) {
     if (!nodePos)
       return
@@ -109,6 +132,11 @@ export default function Node(props: NodeProps): JSX.Element {
     nodePos = { x: data.x, y: data.y }
   }
 
+  /**
+   * 
+   * @param event - The event that was triggered when one of the handles was dragged.
+   * @param data - Event data that (among other things) stores the position of the handle.
+   */
   function onStop(event: DraggableEvent, data: DraggableData) {
     if (lastNodePos && lastNodePos.x === data.x && lastNodePos.y === data.y)
       return
@@ -153,13 +181,13 @@ export default function Node(props: NodeProps): JSX.Element {
           setSelectedNode(props.nodeKey)
         }}
       >
-        <div
+        <header
           className={classes.header}
           onMouseOver={() => { isHovering = true; setHighlight() }}
           onMouseOut={() => { isHovering = false; setHighlight() }}
         >
           {props.title}
-        </div>
+        </header>
         <Stack className={classes.content} justify="flex-start" spacing={fixedTheme.nodeFieldSpacing}>
           {props.children}
         </Stack>
