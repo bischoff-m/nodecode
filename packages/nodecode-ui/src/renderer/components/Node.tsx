@@ -1,7 +1,13 @@
 /**
- * This component consists of a `<Draggable></Draggable>` component that wraps everything.
+ * A `Node` consists of a header and a vertical stack of fields. The title string for the
+ * header and the field components are given via the props. A node can also be
+ * highlighted.
  * 
- * - Update of nodePos, lastNodePos, global state and redux state
+ * Everything is wrapped by a `<Draggable></Draggable>` element from the
+ * [react-draggable](https://www.npmjs.com/package/react-draggable) library, so the node
+ * can be moved by dragging the header.
+ * 
+ * TODO: Update of nodePos, lastNodePos, global state and redux state
  * 
  * @module
  */
@@ -54,9 +60,9 @@ export type NodeProps = {
   nodeKey: string
   /** Name that is displayed in the header of the node. */
   title: string
-  /** X-Coordinate of the node on the canvas. */
+  /** Default X-Coordinate of the node on the canvas. */
   x: number
-  /** Y-Coordinate of the node on the canvas. */
+  /** Default Y-Coordinate of the node on the canvas. */
   y: number
 }
 
@@ -76,10 +82,10 @@ export default function Node(props: NodeProps): JSX.Element {
   /** Variable is mirrored from `NodeCanvas` to enable state updates. */
   const [canvasZoom, setCanvasZoom] = useState<number>(getCanvasZoom())
 
-  /** Position of node before being dragged. */
-  let lastNodePos: Vec2D | null = null
-  /** Position of node while being dragged. */
-  let nodePos: Vec2D | null = null
+  /** Position of the node before being dragged. */
+  let lastNodePos: Vec2D = { x: props.x, y: props.y }
+  /** Position of the node while being dragged. */
+  let nodePos: Vec2D = { x: props.x, y: props.y }
   /** Whether the cursor hovers over the title bar of the node. */
   let isHovering = false
 
@@ -108,7 +114,8 @@ export default function Node(props: NodeProps): JSX.Element {
   ////////////////////////////////////////////////////////////////////////////////////////
 
   /**
-   * 
+   * Is triggered when the user starts to drag the node and updates internal variables
+   * that keep track of the position of the node.
    * @param event - The event that was triggered when one of the handles was dragged.
    * @param data - Event data that (among other things) stores the position of the handle.
    */
@@ -118,7 +125,11 @@ export default function Node(props: NodeProps): JSX.Element {
   }
 
   /**
-   * 
+   * Is triggered repeatedly while the user is dragging the node. This updates the
+   * position of the sockets that belong to this node in the
+   * {@link "renderer/redux/socketsSlice".socketPositions} global non-redux state. This
+   * is needed to make the connections between this node and other nodes stick while
+   * dragging.
    * @param event - The event that was triggered when one of the handles was dragged.
    * @param data - Event data that (among other things) stores the position of the handle.
    */
@@ -133,23 +144,26 @@ export default function Node(props: NodeProps): JSX.Element {
   }
 
   /**
-   * 
+   * Is triggered when the user stops dragging the node. This updates the position of the
+   * sockets that belong the this node in the `socketsSlice` global redux state.
+   * Also, the position of the node is updated in the `programSlice`.
    * @param event - The event that was triggered when one of the handles was dragged.
    * @param data - Event data that (among other things) stores the position of the handle.
    */
   function onStop(event: DraggableEvent, data: DraggableData) {
-    if (lastNodePos && lastNodePos.x === data.x && lastNodePos.y === data.y)
+    if (lastNodePos.x === data.x && lastNodePos.y === data.y)
       return
 
     dispatch(moveNodeSocketsStop(props.nodeKey))
-    if (lastNodePos)
-      dispatch(moveNode({
-        key: props.nodeKey,
-        delta: {
-          x: data.x - lastNodePos.x,
-          y: data.y - lastNodePos.y
-        }
-      }))
+
+    dispatch(moveNode({
+      key: props.nodeKey,
+      delta: {
+        x: data.x - lastNodePos.x,
+        y: data.y - lastNodePos.y
+      }
+    }))
+
     nodePos = { x: data.x, y: data.y }
     lastNodePos = { x: data.x, y: data.y }
   }
@@ -181,6 +195,7 @@ export default function Node(props: NodeProps): JSX.Element {
           setSelectedNode(props.nodeKey)
         }}
       >
+        {/* Handle for the <Draggable></Draggable> element */}
         <header
           className={classes.header}
           onMouseOver={() => { isHovering = true; setHighlight() }}
@@ -188,6 +203,8 @@ export default function Node(props: NodeProps): JSX.Element {
         >
           {props.title}
         </header>
+
+        {/* Field components in a vertical stack */}
         <Stack className={classes.content} justify="flex-start" spacing={fixedTheme.nodeFieldSpacing}>
           {props.children}
         </Stack>
