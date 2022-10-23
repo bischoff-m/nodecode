@@ -7,7 +7,10 @@
  * [react-draggable](https://www.npmjs.com/package/react-draggable) library, so the node
  * can be moved by dragging the header.
  * 
- * TODO: Update of nodePos, lastNodePos, global state and redux state
+ * **TODO**
+ * 
+ * Refactor node position states in `Node` and `NodeProvider` to merge the duplicates
+ * `lastNodePos`, `props.x/props.y` and `state.program.nodes[props.nodeKey].display`.
  * 
  * @module
  */
