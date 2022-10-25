@@ -1,5 +1,8 @@
 # nodecode
-Low-code platform based on node graph architecture.
+
+Low-code development platform for flow-based visual programming.
+
+# Getting Started
 
 This is a monorepo that consists of the following packages:
 
