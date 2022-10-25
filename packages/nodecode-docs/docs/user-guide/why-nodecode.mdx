@@ -1,12 +1,13 @@
 ---
 sidebar_position: 2
+title: But why?
 ---
 
-# Why nodecode?
+# Why `nodecode`?
 
 There are many use cases where the user needs to define steps to calculate the solution to
-a problem. If there are not too many different possible steps, it is often helpful to
-abstract from the code level and provide a visual interface for building a solution.
+a problem. If there are not too many different possible steps, it is helpful to abstract
+from the code level and provide a visual interface for building a solution.
 
 In node editors, each possible step is represented as a node and data flow between steps
 as a connection. This makes it easier for the user to solve the problem, as he can focus
@@ -15,9 +16,69 @@ programming to still build complex programs. For example, `nodecode` should be a
 used as an SQL query builder, so that little prior knowledge is required to request data
 from a database and process it upon receipt.
 
-The concept of a node editor or very similar concepts have been used for a long time in
-many different programs for various application areas. Some examples are
+## Other Software
 
+The concept of a node editor or similar concepts have been used in many different programs
+for various application areas. Some examples are
+
+- [Node-RED](https://nodered.org/) - Flow-based development tool
 - [Blender](https://www.blender.org/) - 3D computer graphics tool
 - [Unreal Engine](https://www.unrealengine.com/) - 3D computer graphics game engine
+- [Simulink](https://www.mathworks.com/products/simulink.html) - Block diagram environment for model-based design
 - [RapidMiner](https://rapidminer.com/) - Data science platform
+- [Yahoo! Pipes](https://en.wikipedia.org/wiki/Yahoo!_Pipes) - Web application for building data mashups
+- [Apache NiFi](https://nifi.apache.org/) - Automate the flow of data between software systems
+
+The node editors offered in these programs are optimized for a specific application. For
+example, it is possible to generate textures in Blender with the node editor or to
+simulate a mathematical model in Simulink.
+
+In contrast, `nodecode` tries to deliver an application-independent platform that provides
+visual elements for a wide range of applications. The goal is to be able to work with
+data, compute 3D graphics, simulate a model, all in the same program.
+
+## Compared to Node-RED
+
+Compared to Node-RED, `nodecode` makes a clearer separation between the frontend, which is
+responsible for building node programs, and the backend, which is responsible for
+executing node programs. In the future the backend should be able to execute programs via
+a CLI without the frontend, so that node programs can be embedded in any other program
+as subroutines.
+
+The backend is written in Python which makes `nodecode` more suitable for data
+science and scientific use cases. Also, in Node-RED, the state of every node can be viewed
+by clicking it. In `nodecode`, these fields are shown directly on the node in the editor
+("Blender-style" nodes).
+
+## Setting of this project
+
+This project is part of the [SMITH project](https://www.smith.care/) and the result of my
+research assistant job at the chair
+[i11 Embedded Systems](https://www.embedded.rwth-aachen.de/) at
+[RWTH Aachen University](https://www.rwth-aachen.de/cms/~a/root/) under the supervision of
+**Simon Fonck**. It aims to simplify and automate the access and processing of data on
+databases used at the chair.
+
+For this use case, the program should provide SQL nodes that can be used to build SQL 
+queries visually and `pandas` nodes that are used to process (filter, transform,
+aggregate, ...) the data requested via the queries. Unfortunately, `nodecode` could not be
+developed far enough within the project to make these functions usable.
+
+## Current State: *October 2022*
+
+Currently, the basic functions of the node editor (canvas) are done. Some basic fields are
+implemented and the foundation has been laid to easily implement further fields. These
+fields can be used to define nodes in the JSON format, of which some basic nodes are
+implemented. The nodes can be added and removed from the canvas and can be connected to
+build a program.
+
+The node program is read from a file once the app starts and can be written to the same
+file after editing using the *SAVE* button. There is also the *RUN* button and the *QUIT*
+button which send commands/requests to the runtime.
+
+The runtime (backend) is a separate program that connects to the UI (frontend) using
+[socket.io](https://socket.io/). Its main function is to run programs supplied by the
+frontend. To do this, every node should have a python script that implements its function
+using a framework provided by the backend. I could not finish this framework in time and
+only two testing nodes are implemented. However, not much is missing to make the backend
+work.

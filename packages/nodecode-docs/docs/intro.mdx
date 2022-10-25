@@ -1,6 +1,27 @@
 ---
+slug: /
 sidebar_position: 1
+title: Getting Started
 ---
+
+# `nodecode`
+
+export function Tagline() {
+    import('nodecode-docs/docusaurus.config.js').then((config) => {
+        document.getElementById('tagline').innerHTML = '▶ ' + config.tagline
+    })
+    return (
+        <span id='tagline' style={{
+            fontSize: 20,
+        }}></span>
+    )
+}
+
+<Tagline />
+
+<br/>
+<br/>
+<br/>
 
 # Getting Started
 

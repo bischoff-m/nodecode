@@ -8,7 +8,7 @@ const lightCodeTheme = require('prism-react-renderer/themes/github')
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'nodecode-docs',
-  tagline: 'Low-code platform based on node graph architecture',
+  tagline: 'Low-code development platform for flow-based visual programming',
   url: 'https://TODO.com',
   baseUrl: '/',
   onBrokenLinks: 'throw',
