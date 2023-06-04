@@ -2,6 +2,8 @@
 
 Low-code development platform for flow-based visual programming.
 
+![Example Screenshot](README_images/Screenshot%202023-06-04.png)
+
 # Getting Started
 
 This is a monorepo that consists of the following packages:
