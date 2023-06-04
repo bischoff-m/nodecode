@@ -1,7 +1,7 @@
 <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="./packages/nodecode-docs/static/img/logo-light.svg">
-    <source media="(prefers-color-scheme: light)" srcset="./packages/nodecode-docs/static/img/logo-dark.svg">
-    <img width="64" height="64" align="right" src="./packages/nodecode-docs/static/img/logo-dark.svg">
+    <source media="(prefers-color-scheme: dark)" srcset="./README_images/logo-light.svg">
+    <source media="(prefers-color-scheme: light)" srcset="./README_images/logo-dark.svg">
+    <img width="64" height="64" align="right" src="./README_images/logo-dark.svg">
 </picture>
 <h1>nodecode</h1>
 
