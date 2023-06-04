@@ -1,4 +1,9 @@
-# nodecode
+<picture>
+    <source media="(prefers-color-scheme: dark)" srcset="./packages/nodecode-docs/static/img/logo-light.svg">
+    <source media="(prefers-color-scheme: light)" srcset="./packages/nodecode-docs/static/img/logo-dark.svg">
+    <img width="64" height="64" align="right" src="./packages/nodecode-docs/static/img/logo-dark.svg">
+</picture>
+<h1>nodecode</h1>
 
 Low-code development platform for flow-based visual programming.
 
